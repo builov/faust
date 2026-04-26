@@ -1,0 +1,15 @@
+{
+  "original": [
+    "Twinkle, twinkle, little star,",
+    "How I wonder what you are!",
+    "Up above the world so high,",
+    "Like a diamond in the sky."
+  ],
+
+  "translations": {
+    "0": "Сияй, сияй, маленькая звезда,",
+    "1": "Как мне интересно, кто ты такая!",
+    "2": "Высоко над миром так высоко,",
+    "3": "Словно алмаз в небесах."
+  }
+}
