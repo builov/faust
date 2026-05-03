@@ -1,0 +1,19 @@
+{
+    "name": "builov/faust",
+    "description": "faust tranlations app",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Builov\\Faust\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dmitriy",
+            "email": "builov@inbox.ru"
+        }
+    ],
+    "require": {
+        "twig/twig": "^3.0"
+    }
+}

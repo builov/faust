@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .grid-container {
+            grid-template-columns: 30px {% for i in range(1, columns_count) %}1fr {% endfor %};">
+        }
+    </style>
+</head>
+<body>
+{#<h1>{{ title }}</h1>#}
+{#<ol>#}
+{#    {% for item in original %}#}
+{#        <li class="{{ item[1] }}">{{ item[0]|raw }}</li>#}
+{#    {% else %}#}
+{#        <li>Список пуст</li>#}
+{#    {% endfor %}#}
+{#</ol>#}
+
+<div class="grid-container">
+
+    {% for item in data %}
+        <div class="line-num {{ item[0][1] }}">{{ loop.index }}</div>
+        <div class="{{ item[0][1] }}">{{ item[0][0]|raw }}</div>
+        <div class="{{ item[1][1] }}">{{ item[1][0]|raw }}</div>
+    {% else %}
+        <div>Список пуст</div>
+    {% endfor %}
+
+</div>
+
+
+
+
+</body>
+</html>
