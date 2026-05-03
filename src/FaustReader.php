@@ -27,7 +27,8 @@ class FaustReader
             'faust' => './../data/faust.txt',
             'faust_markup' => './../data/faust_markup.txt',
             'holodkovskiy' => './../data/holodkovskiy.txt',
-            'holodkovskiy_markup' => './../data/holodkovskiy_markup.txt',
+//            'holodkovskiy_markup' => './../data/holodkovskiy_markup.txt',
+            'minaev' => './../data/minaev.txt'
         ];
     }
 
@@ -39,7 +40,21 @@ class FaustReader
 
         $data = file($this->files[$identifier], FILE_IGNORE_NEW_LINES);
 
-        return array_values(array_filter($data, fn($value) => trim($value) !== "")); //или array_filter($data); - с сохранением пустых строк
+        $result = array_values(array_filter($data, fn($value) => trim($value) !== "")); //или array_filter($data); - с сохранением пустых строк
+
+        if ($identifier == 'minaev') {
+            $startFrom = 35;
+
+//            print_r($result); exit;
+
+            $emptyLinesArr = array_fill(0, $startFrom, '');
+
+            $result = array_merge($emptyLinesArr, $result);
+
+//            print_r($result); exit;
+        }
+
+        return $result;
     }
 
 //    public function addFile(string $identifier, string $path): void

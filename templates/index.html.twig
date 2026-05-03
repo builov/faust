@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="/style.css">
     <style>
         .grid-container {
-            grid-template-columns: 30px {% for i in range(1, columns_count) %}1fr {% endfor %};">
+            grid-template-columns: 30px {% for i in range(1, columns) %}1fr {% endfor %};">
         }
     </style>
 </head>
@@ -21,10 +21,13 @@
 
 <div class="grid-container">
 
-    {% for item in data %}
+    {% for line in data %}
         <div class="line-num {{ item[0][1] }}">{{ loop.index }}</div>
-        <div class="{{ item[0][1] }}">{{ item[0][0]|raw }}</div>
-        <div class="{{ item[1][1] }}">{{ item[1][0]|raw }}</div>
+
+        {% for cell in line %}
+            <div class="{{ cell[1] }}">{{ cell[0]|raw }}</div>
+        {% endfor %}
+        
     {% else %}
         <div>Список пуст</div>
     {% endfor %}

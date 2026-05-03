@@ -6,7 +6,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $selected = [
     'faust',
-    'holodkovskiy'
+    'holodkovskiy',
+    'minaev'
 ];
 
 $reader = new FaustReader();
@@ -51,7 +52,7 @@ $twig = new \Twig\Environment($loader, [
 echo $twig->render('index.html.twig', [
     'title' => 'Фауст',
     'data' => $combined,
-    'columns' => count($combined[0]),
+    'columns' => 3, //count($combined[0]),
 ]);
 
 
