@@ -37,26 +37,47 @@
 .character_list {
     font-style: italic;
     margin-bottom: 1rem;
+
 }
-.character_list:has(+ .character_list) {
-    margin-bottom: unset;
-}
+/*.default + .character_list {*/
+/*    margin-top: 1rem;*/
+/*}*/
+/*.character_list:has(+ .character_list) {*/
+/*    margin-bottom: unset;*/
+/*}*/
 
 .speech_heading {
     font-weight: bold;
     margin-bottom: 1rem;
+    /*margin-top: 1rem;*/
 }
+/*.default + .speech_heading {*/
+/*    margin-top: 1rem;*/
+/*}*/
 
 .stage_direction {
     font-style: italic;
     margin-bottom: 1rem;
+    font-weight: normal;
+    /*margin-top: 1rem;*/
 }
-.stage_direction:has(+ .stage_direction) {
-    margin-bottom: unset;
+.default .stage_direction {
+    margin-bottom:unset;
+    margin-top:unset;
 }
+/*.default + .stage_direction {*/
+/*    margin-top: 1rem;*/
+/*}*/
+/*.stage_direction:has(+ .stage_direction) {*/
+/*    margin-bottom: unset;*/
+/*}*/
 
 .entrance {
     font-style: italic;
     margin-bottom: 1rem;
+    /*margin-top: 1rem;*/
 }
+/*.default + .entrance {*/
+/*    margin-top: 1rem;*/
+/*}*/
 

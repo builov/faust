@@ -1073,7 +1073,6 @@ Euch ist er da!
 
 Vor dem Thor.
 
-
 Spaziergänger aller Art ziehen hinaus.
 
 Einige Handwerksbursche.
@@ -1632,6 +1631,8 @@ Studirzimmer.
 
 Faust mit dem Pudel hereintretend.
 
+empty_line
+
 Verlassen hab' ich Feld und Auen,
 Die eine tiefe Nacht bedeckt,
 Mit ahndungsvollem heil'gem Grauen
@@ -1799,8 +1800,7 @@ Die stärkste von meinen Künsten!
 
 Mephistopheles
 
-(tritt, indem der Nebel fällt, gekleidet wie ein fahrender Scholastikus,
-hinter dem Ofen hervor.)
+(tritt, indem der Nebel fällt, gekleidet wie ein fahrender Scholastikus, hinter dem Ofen hervor.)
 
 Wozu der Lärm? was steht dem Herrn zu Diensten?
 
@@ -3408,8 +3408,7 @@ Das Vaterland verleiht die allerbesten Gaben.
 
 Mephistopheles.
 
-(indem er an dem Platz, wo Frosch sitzt, ein Loch in den Tischrand
-bohrt.)
+(indem er an dem Platz, wo Frosch sitzt, ein Loch in den Tischrand bohrt.)
 
 Verschafft ein wenig Wachs, die Pfropfen gleich zu machen!
 
@@ -3428,8 +3427,7 @@ Und recht mussirend soll er seyn!
 
 Mephistopheles.
 
-(bohrt, einer hat indessen die Wachspropfen[Wachspfropfen] gemacht und
-verstopft.)
+(bohrt, einer hat indessen die Wachspropfen[Wachspfropfen] gemacht und verstopft.)
 
 Brander.
 
@@ -3480,8 +3478,7 @@ Nun zieht die Pfropfen und genießt!
 
 Alle.
 
-(indem sie die Pfropfen ziehen, und jedem der verlangte Wein in's Glas
-läuft.)
+(indem sie die Pfropfen ziehen, und jedem der verlangte Wein in's Glas läuft.)
 
 O schöner Brunnen, der uns fließt!
 
@@ -3511,8 +3508,7 @@ Wird sich gar herrlich offenbaren.
 
 Siebel.
 
-(trinkt unvorsichtig, der Wein fließt auf die Erde, und wird zur
-Flamme.)
+(trinkt unvorsichtig, der Wein fließt auf die Erde, und wird zur Flamme.)
 
 Helft! Feuer! helft! die Hölle brennt!
 
@@ -3593,8 +3589,7 @@ Brander.
 Hier unter diesem grünen Laube,
 Seht, welch ein Stock! Seht, welche Traube!
 
-(Er faßt Siebeln bei[bey] der Nase. Die andern thun es wechselseitig und
-heben die Messer.)
+(Er faßt Siebeln bei[bey] der Nase. Die andern thun es wechselseitig und heben die Messer.)
 
 Mephistopheles wie oben.
 
@@ -3665,12 +3660,7 @@ Nun sag' mir eins, man soll kein Wunder glauben!
 Hexenküche.
 
 
-Auf einem niedrigen Herde steht ein großer Kessel über dem Feuer. In dem
-Dampfe, der davon in die Höhe steigt, zeigen sich verschiedne Gestalten.
-Eine Meerkatze sitzt bey dem Kessel und schäumt ihn, und sorgt daß er
-nicht überläuft. Der Meerkater mit den Jungen sitzt darneben und wärmt
-sich. Wände und Decke sind mit dem seltsamsten Hexenhausrath
-ausgeschmückt.
+Auf einem niedrigen Herde steht ein großer Kessel über dem Feuer. In dem Dampfe, der davon in die Höhe steigt, zeigen sich verschiedne Gestalten. Eine Meerkatze sitzt bey dem Kessel und schäumt ihn, und sorgt daß er nicht überläuft. Der Meerkater mit den Jungen sitzt darneben und wärmt sich. Wände und Decke sind mit dem seltsamsten Hexenhausrath ausgeschmückt.
 
 Faust. Mephistopheles.
 

@@ -19,46 +19,152 @@ namespace Builov\Faust;
 
 class FaustReader
 {
-    private array $files;
-
-    public function __construct()
-    {
-        $this->files = [
-            'faust' => './../data/faust.txt',
-            'faust_markup' => './../data/faust_markup.txt',
-            'holodkovskiy' => './../data/holodkovskiy.txt',
-//            'holodkovskiy_markup' => './../data/holodkovskiy_markup.txt',
-            'minaev' => './../data/minaev.txt'
-        ];
-    }
+    private array $files = [
+        'faust' => [
+            'path' => './../data/faust.txt',
+            'markup' => './../data/faust_markup.txt',
+        ],
+//        'faust_markup' => [
+//            './../data/faust_markup.txt'
+//        ],
+        'holodkovskiy' => [
+            'path' => './../data/holodkovskiy.txt',
+//            'markup' => './../data/holodkovskiy_markup.txt',
+            'markup' => './../data/faust_markup.txt',
+        ],
+        'minaev' => [
+            'path' => './../data/minaev.txt',
+            'markup' => './../data/faust_markup.txt',
+            'starts_from' => [36]
+        ],
+        'shishkov' => [
+            'path' => './../data/shishkov.txt',
+            'markup' => './../data/faust_markup.txt',
+            'starts_from' => [36]
+        ],
+        'griboedov' => [
+            'path' => './../data/griboedov.txt',
+            'markup' => './../data/faust_markup.txt',
+            'starts_from' => [36]
+        ],
+        'nabokov' => [
+            'path' => './../data/nabokov.txt',
+            'markup' => './../data/faust_markup.txt',
+            'starts_from' => [3]
+        ],
+        'zhukovskiy' => [
+            'path' => './../data/zhukovskiy.txt',
+            'markup' => './../data/faust_markup.txt',
+            'starts_from' => [3]
+        ],
+        'balmont' => [
+            'path' => './../data/balmont.txt',
+            'markup' => './../data/faust_markup.txt',
+            'starts_from' => [397,1725]
+        ],
+        'pasternak' => [
+            'path' => './../data/pasternak.txt',
+            'markup' => './../data/faust_markup.txt'
+        ],
+        'zhiganets' => [
+            'path' => './../data/zhiganets.txt',
+            'markup' => './../data/faust_markup.txt',
+            'starts_from' => [1481]
+        ]
+    ];
 
     public function read(string $identifier): array|false
     {
-        if (!isset($this->files[$identifier])) {
+        if (!isset($this->files[$identifier]['path'])) {
             return false;
         }
 
-        $data = file($this->files[$identifier], FILE_IGNORE_NEW_LINES);
+        /** получение сырого текста */
+        $handle = fopen($this->files[$identifier]['path'], "r");
+        $textRaw = [];
+        $i = 0;
 
-        $result = array_values(array_filter($data, fn($value) => trim($value) !== "")); //или array_filter($data); - с сохранением пустых строк
-
-        if ($identifier == 'minaev') {
-            $startFrom = 35;
-
-//            print_r($result); exit;
-
-            $emptyLinesArr = array_fill(0, $startFrom, '');
-
-            $result = array_merge($emptyLinesArr, $result);
-
-//            print_r($result); exit;
+        if ($handle) {
+            while (($line = fgets($handle)) !== false) {
+                $line = trim($line);
+                if ($line === "") { //удаление пустых строк
+                    continue;
+                }
+                if ($line === "DELIMITER") {
+                    $i++;
+                    continue;
+                }
+                if ($line === "empty_line") { //замена empty_line на пустую строку
+                    $textRaw[$i][] = "";
+                } else {
+                    $textRaw[$i][] = $line;
+                }
+            }
+            fclose($handle);
         }
 
-        return $result;
-    }
+        $startIndex = 0;
+        $result = $textRaw[0];
 
-//    public function addFile(string $identifier, string $path): void
-//    {
-//        $this->files[$identifier] = $path;
-//    }
+        /** добавление пустых строк (для фрагментов) */
+        if (isset($this->files[$identifier]['starts_from'])) {
+            $result = [];
+
+//            if (count($textRaw) == 1) {
+//                $emptyLinesArr = array_fill($startIndex, $this->files[$identifier]['starts_from'][0] - 1, '');
+//                $result = array_merge($emptyLinesArr, $textRaw[0]);
+//            } else {
+                foreach ($this->files[$identifier]['starts_from'] as $fragmentKey => $startLine) {
+//                    echo $startIndex;
+
+                    $emptyLinesArr = array_fill($startIndex, $startLine - ($startIndex + 1), '');
+                    $result = array_merge($result, $emptyLinesArr, $textRaw[$fragmentKey]);
+
+                    $startIndex = count($result);
+                }
+
+//                print_r($result); exit;
+//            }
+        }
+
+        //todo добить пустыми строками до конца, если нужно
+
+        /** получение разметки */
+        $handle = fopen($this->files[$identifier]['markup'], "r");
+        $markupArr = [];
+
+        if ($handle) {
+            while (($line = fgets($handle)) !== false) {
+                $line = trim($line);
+                if ($line === "") { //удаление пустых строк
+                    continue;
+                }
+
+                $markupArr[] = $line;
+            }
+            fclose($handle);
+        }
+
+        $markup = [];
+        foreach ($markupArr as $line) {
+            $type = explode(' / ', $line);
+
+            if (isset($type[1])) {
+                foreach (explode(',', $type[1]) as $lineNumber) {
+                    $markup[$lineNumber] = $type[0];
+                }
+            }
+        }
+
+        /** разметка сырого текста */
+        $textMarkedUp = array_map(function($key, $value) use ($markup) {
+            if (isset($markup[$key+1])) {
+                return [$value, $markup[$key+1]];
+            } else {
+                return [$value, 'default'];
+            }
+        }, array_keys($result), $result);
+
+        return $textMarkedUp;
+    }
 }
