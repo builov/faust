@@ -4,9 +4,9 @@
     <title>{{ title }}</title>
     <link rel="stylesheet" href="/style.css">
     <style>
-        .grid-container {
-            grid-template-columns: 30px {% for i in range(1, columns) %}1fr {% endfor %};">
-        }
+        {#.grid-container {#}
+        {#    grid-template-columns: 30px {% for i in range(1, columns) %}1fr {% endfor %};">#}
+        {#}#}
     </style>
 </head>
 <body>
@@ -19,23 +19,71 @@
 {#    {% endfor %}#}
 {#</ol>#}
 
-<div class="grid-container">
-
-    {% for line in data %}
-        <div class="line-num {{ item[0][1] }}">{{ loop.index }}</div>
-
-        {% for cell in line %}
-            <div class="{{ cell[1] }}">{{ cell[0]|raw }}</div>
+<header>
+    <ul id="buttons">
+        {% for id, title in buttons %}
+            <li><a href="/?show={{ id }}" data-id="{{ id }}" class="btn">{{ title }}</a></li>
         {% endfor %}
-        
-    {% else %}
-        <div>Список пуст</div>
+    </ul>
+</header>
+
+{#<div class="grid-container" >#}
+
+{#    {% for line in data %}#}
+{#        <div class="line-num {{ item[0][1] }}">{{ loop.index }}</div>#}
+
+{#        {% for cell in line %}#}
+{#            <div class="{{ cell[1] }}">{{ cell[0]|raw }}</div>#}
+{#        {% endfor %}#}
+{#        #}
+{#    {% else %}#}
+{#        <div>Список пуст</div>#}
+{#    {% endfor %}#}
+
+{#</div>#}
+
+{#{{ data|length }}#}
+
+<table class="main-container">
+    <thead>
+        <tr>
+            <th></th>
+            {% for id, text in data %}
+                <th data-text-id="{{ id }}"></th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+    {% for line in data|first %}
+        <tr data-num="{{ loop.index0 }}">
+            <td>
+                {{ loop.index0 }}
+            </td>
+            <td>
+                <div class="{{ line[1] }}">{{ line[0]|raw }}</div>
+            </td>
+
+            {% for text in data|slice(1) %}
+                <td>
+                    <div class="{{ text[loop.parent.loop.index0][1] }}">{{ text[loop.parent.loop.index0][0]|raw }}</div>
+                </td>
+            {% endfor %}
+
+{#            <td>#}
+{#                <div class="{{ data[1][loop.index0][1] }}">{{ data[1][loop.index0][0]|raw }}</div>#}
+{#            </td>#}
+{#            <td>#}
+{#                <div class="{{ data[2][loop.index0][1] }}">{{ data[2][loop.index0][0]|raw }}</div>#}
+{#            </td>#}
+        </tr>
     {% endfor %}
-
-</div>
-
-
+    </tbody>
+</table>
 
 
+
+
+
+<script src="script2.js" defer></script>
 </body>
 </html>

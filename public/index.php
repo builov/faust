@@ -4,29 +4,42 @@ use Builov\Faust\FaustReader;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$selected = [
-    'faust',
+$src = [
+    'original',
     'pasternak',
     'holodkovskiy',
+    'minaev',
+    'shishkov',
+    'griboedov',
+    'nabokov',
+    'zhukovskiy',
+    'balmont',
+    'zhiganets',
+];
+
+$selected = [
+    'faust',
+//    'pasternak',
+//    'holodkovskiy',
 //    'minaev',
 //    'shishkov',
 //    'griboedov',
 //    'nabokov',
 //    'zhukovskiy',
+//    'b-kiy',
 //    'balmont',
 //    'zhiganets',
 ];
 
-$reader = new FaustReader();
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['show'])) {
+    $selected = $_GET['show'];
 
-$texts = [];
-foreach ($selected as $text_id) {
-    $texts[] = $reader->read($text_id);
+    $selected = htmlspecialchars($selected, ENT_QUOTES, 'UTF-8');
 }
 
-$combined = array_map(function(...$lines) {
-    return $lines;
-}, ...$texts);
+$reader = new FaustReader();
+
+$buttons = $reader->getButtons();
 
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/../templates');
 
@@ -35,12 +48,33 @@ $twig = new \Twig\Environment($loader, [
     'debug' => true,
 ]);
 
+if (!is_array($selected)) { // вернуть json
+    $text = $reader->read($selected);
+
+    echo json_encode($text);
+
+    return;
+}
+
+$texts = [];
+foreach ($selected as $text_id) {
+    $texts[$text_id] = $reader->read($text_id);
+}
+
+//$combined = array_map(function (...$lines) {
+//    return $lines;
+//}, ...$texts);
+
+$combined = $texts;
+
 //print_r($combined); exit;
 
 echo $twig->render('index.html.twig', [
     'title' => 'Фауст',
     'data' => $combined,
-    'columns' => count($combined[0]),
+//    'columns' => count($combined[0]),
+    'columns' => count($texts),
+    'buttons' => $buttons,
 ]);
 
 

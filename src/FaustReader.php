@@ -23,6 +23,7 @@ class FaustReader
         'faust' => [
             'path' => './../data/faust.txt',
             'markup' => './../data/faust_markup.txt',
+            'title' => 'Оригинальный текст',
         ],
 //        'faust_markup' => [
 //            './../data/faust_markup.txt'
@@ -31,45 +32,60 @@ class FaustReader
             'path' => './../data/holodkovskiy.txt',
 //            'markup' => './../data/holodkovskiy_markup.txt',
             'markup' => './../data/faust_markup.txt',
+            'title' => 'Перевод Холодковского',
         ],
         'minaev' => [
             'path' => './../data/minaev.txt',
             'markup' => './../data/faust_markup.txt',
-            'starts_from' => [36]
+            'starts_from' => [36],
+            'title' => 'Перевод Минаева',
         ],
         'shishkov' => [
             'path' => './../data/shishkov.txt',
             'markup' => './../data/faust_markup.txt',
-            'starts_from' => [36]
+            'starts_from' => [36],
+            'title' => 'Перевод Шишкова',
         ],
         'griboedov' => [
             'path' => './../data/griboedov.txt',
             'markup' => './../data/faust_markup.txt',
-            'starts_from' => [36]
+            'starts_from' => [36],
+            'title' => 'Перевод Грибоедова',
         ],
         'nabokov' => [
             'path' => './../data/nabokov.txt',
             'markup' => './../data/faust_markup.txt',
-            'starts_from' => [3]
+            'starts_from' => [3],
+            'title' => 'Перевод Набокова',
         ],
         'zhukovskiy' => [
             'path' => './../data/zhukovskiy.txt',
             'markup' => './../data/faust_markup.txt',
-            'starts_from' => [3]
+            'starts_from' => [3],
+            'title' => 'Перевод Жуковского',
+        ],
+        'b-kiy' => [
+            'path' => './../data/b-kiy.txt',
+            'markup' => './../data/faust_markup.txt',
+            'starts_from' => [3],
+            'title' => 'Н. Б—кий (1892)',
         ],
         'balmont' => [
             'path' => './../data/balmont.txt',
             'markup' => './../data/faust_markup.txt',
-            'starts_from' => [397,1725]
+            'starts_from' => [397,1725],
+            'title' => 'Переводы Бальмонта',
         ],
         'pasternak' => [
             'path' => './../data/pasternak.txt',
-            'markup' => './../data/faust_markup.txt'
+            'markup' => './../data/faust_markup.txt',
+            'title' => 'Перевод Пастернака',
         ],
         'zhiganets' => [
             'path' => './../data/zhiganets.txt',
             'markup' => './../data/faust_markup.txt',
-            'starts_from' => [1481]
+            'starts_from' => [1481],
+            'title' => 'Шура Жиганец',
         ]
     ];
 
@@ -166,5 +182,16 @@ class FaustReader
         }, array_keys($result), $result);
 
         return $textMarkedUp;
+    }
+
+
+    public function getButtons(): array
+    {
+        $files = [];
+        foreach ($this->files as $id => $values) {
+            $files[$id] = $values['title'];
+        }
+
+        return $files;
     }
 }
