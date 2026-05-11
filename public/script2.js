@@ -82,37 +82,26 @@ const updateTable = (data, id) => {
     table.style.display = '';
 };
 
-function deleteColumnById(textId) {
+const deleteColumnById = (textId) => {
     const table = document.querySelector('.main-container');
-
-    // 1. Находим нужный заголовок в thead
+    // 1. Ищем заголовок именно с этим ID
     const headerCell = table.querySelector(`th[data-text-id="${textId}"]`);
 
-    if (!headerCell) {
-        console.warn('Колонка не найдена');
-        return;
-    }
+    if (!headerCell) return;
 
-    // 2. Получаем индекс колонки
+    // 2. Получаем актуальный индекс колонки
     const colIndex = headerCell.cellIndex;
 
-    // 3. Оптимизация: скрываем таблицу перед массовым удалением
+    // 3. Отключаем отрисовку для скорости
     table.style.display = 'none';
 
-    // 4. Удаляем ячейки во всех строках (включая thead и tbody)
+    // 4. Удаляем ячейки во всех секциях (thead и tbody)
     const rows = table.rows;
     for (let i = 0; i < rows.length; i++) {
-        // Проверяем наличие ячейки, чтобы избежать ошибок при разной длине строк
         if (rows[i].cells[colIndex]) {
             rows[i].deleteCell(colIndex);
         }
     }
 
-    // 5. Возвращаем таблицу на экран
     table.style.display = '';
-}
-
-// Пример вызова:
-// deleteColumnById('faust');
-
-
+};
