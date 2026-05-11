@@ -62,19 +62,11 @@
             <td>
                 <div class="{{ line[1] }}">{{ line[0]|raw }}</div>
             </td>
-
             {% for text in data|slice(1) %}
                 <td>
                     <div class="{{ text[loop.parent.loop.index0][1] }}">{{ text[loop.parent.loop.index0][0]|raw }}</div>
                 </td>
             {% endfor %}
-
-{#            <td>#}
-{#                <div class="{{ data[1][loop.index0][1] }}">{{ data[1][loop.index0][0]|raw }}</div>#}
-{#            </td>#}
-{#            <td>#}
-{#                <div class="{{ data[2][loop.index0][1] }}">{{ data[2][loop.index0][0]|raw }}</div>#}
-{#            </td>#}
         </tr>
     {% endfor %}
     </tbody>

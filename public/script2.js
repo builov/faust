@@ -11,6 +11,9 @@ buttons.addEventListener('click', async (event) => {
 
         if (document.querySelector(`[data-text-id="${id}"]`)) {
             console.log('Элемент найден.');
+
+            deleteColumnById(id);
+
             return;
         }
 
@@ -31,20 +34,7 @@ buttons.addEventListener('click', async (event) => {
         //
         // console.log(container);
 
-// Формируем строку HTML из массива
-//         const html = json.map(([text, className]) => {
-//             return `<div class="${className}">${text}</div>`;
-//         }).join('');
-
-// Добавляем в конец контейнера (перед закрывающим тегом)
-//         container.insertAdjacentHTML('beforeend', html);
-
-
-
-
         updateTable(json, id);
-
-
     }
 });
 
@@ -91,4 +81,38 @@ const updateTable = (data, id) => {
     // 4. Включаем отрисовку обратно
     table.style.display = '';
 };
+
+function deleteColumnById(textId) {
+    const table = document.querySelector('.main-container');
+
+    // 1. Находим нужный заголовок в thead
+    const headerCell = table.querySelector(`th[data-text-id="${textId}"]`);
+
+    if (!headerCell) {
+        console.warn('Колонка не найдена');
+        return;
+    }
+
+    // 2. Получаем индекс колонки
+    const colIndex = headerCell.cellIndex;
+
+    // 3. Оптимизация: скрываем таблицу перед массовым удалением
+    table.style.display = 'none';
+
+    // 4. Удаляем ячейки во всех строках (включая thead и tbody)
+    const rows = table.rows;
+    for (let i = 0; i < rows.length; i++) {
+        // Проверяем наличие ячейки, чтобы избежать ошибок при разной длине строк
+        if (rows[i].cells[colIndex]) {
+            rows[i].deleteCell(colIndex);
+        }
+    }
+
+    // 5. Возвращаем таблицу на экран
+    table.style.display = '';
+}
+
+// Пример вызова:
+// deleteColumnById('faust');
+
 
