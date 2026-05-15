@@ -66,7 +66,8 @@ const updateTable = (data, id) => {
             const [text, className] = item;
             const div = document.createElement('div');
             div.className = className;
-            div.textContent = text;
+            // div.textContent = text;
+            div.innerHTML = text;
             cell.appendChild(div);
         }
     });

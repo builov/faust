@@ -57,7 +57,7 @@
     {% for line in data|first %}
         <tr data-num="{{ loop.index0 }}">
             <td>
-                {{ loop.index0 }}
+                {{ loop.index0 + 1 }}
             </td>
             <td>
                 <div class="{{ line[1] }}">{{ line[0]|raw }}</div>

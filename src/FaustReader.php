@@ -86,6 +86,12 @@ class FaustReader
             'markup' => './../data/faust_markup.txt',
             'starts_from' => [1481],
             'title' => 'Шура Жиганец',
+        ],
+        'pavlov' => [
+            'path' => './../data/pavlov.txt',
+            'markup' => './../data/faust_markup.txt',
+            'starts_from' => [36],
+            'title' => 'Перевод И. Павлова',
         ]
     ];
 

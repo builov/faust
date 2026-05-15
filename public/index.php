@@ -19,6 +19,7 @@ $src = [
 
 $selected = [
     'faust',
+    'pavlov',
 //    'pasternak',
 //    'holodkovskiy',
 //    'minaev',
