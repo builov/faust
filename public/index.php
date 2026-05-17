@@ -3,6 +3,7 @@
 use Builov\Faust\FaustReader;
 
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../config.php';
 
 $src = [
     'original',
@@ -19,9 +20,9 @@ $src = [
 
 $selected = [
     'faust',
-    'pavlov',
+//    'pavlov',
 //    'pasternak',
-//    'holodkovskiy',
+    'holodkovskiy',
 //    'minaev',
 //    'shishkov',
 //    'griboedov',
@@ -30,6 +31,18 @@ $selected = [
 //    'b-kiy',
 //    'balmont',
 //    'zhiganets',
+//    'tutchev'
+//    'bek'
+//'kaftyrev'
+//'venevitinov'
+//'merezhkovskiy'
+//'hitrova'
+//    'ogarev'
+//'berg'
+//'lihonin'
+//'turgenev'
+//    'zagorskiy'
+    'aksakov'
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['show'])) {
@@ -40,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['show'])) {
 
 $reader = new FaustReader();
 
-$buttons = $reader->getButtons();
+//$buttons = $reader->getButtons();
 
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/../templates');
 
@@ -75,7 +88,8 @@ echo $twig->render('index.html.twig', [
     'data' => $combined,
 //    'columns' => count($combined[0]),
     'columns' => count($texts),
-    'buttons' => $buttons,
+//    'buttons' => $buttons,
+    'meta' => $reader->getMeta(),
 ]);
 
 

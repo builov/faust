@@ -1,4 +1,8 @@
+const textMetaData = JSON.parse(document.getElementById('meta-data').textContent);
+console.log(textMetaData);
+
 const buttons = document.querySelector('#buttons');
+const table = document.querySelector('.main-container');
 
 buttons.addEventListener('click', async (event) => {
     event.preventDefault();
@@ -39,7 +43,6 @@ buttons.addEventListener('click', async (event) => {
 });
 
 const updateTable = (data, id) => {
-    const table = document.querySelector('.main-container');
     if (!table) return;
 
     // console.log(data);
@@ -79,12 +82,13 @@ const updateTable = (data, id) => {
     headerCell.dataset.textId = id;
     theadRow.appendChild(headerCell);
 
+    setColumnTitle(id);
+
     // 4. Включаем отрисовку обратно
     table.style.display = '';
 };
 
 const deleteColumnById = (textId) => {
-    const table = document.querySelector('.main-container');
     // 1. Ищем заголовок именно с этим ID
     const headerCell = table.querySelector(`th[data-text-id="${textId}"]`);
 
@@ -106,3 +110,11 @@ const deleteColumnById = (textId) => {
 
     table.style.display = '';
 };
+
+const setColumnTitle = (textId) => {
+    const headerCell = table.querySelector(`th[data-text-id="${textId}"]`);
+
+    if (!headerCell) return;
+
+    headerCell.textContent = textMetaData[textId].title;
+}

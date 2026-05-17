@@ -19,81 +19,22 @@ namespace Builov\Faust;
 
 class FaustReader
 {
-    private array $files = [
-        'faust' => [
-            'path' => './../data/faust.txt',
-            'markup' => './../data/faust_markup.txt',
-            'title' => 'Оригинальный текст',
-        ],
-//        'faust_markup' => [
-//            './../data/faust_markup.txt'
-//        ],
-        'holodkovskiy' => [
-            'path' => './../data/holodkovskiy.txt',
-//            'markup' => './../data/holodkovskiy_markup.txt',
-            'markup' => './../data/faust_markup.txt',
-            'title' => 'Перевод Холодковского',
-        ],
-        'minaev' => [
-            'path' => './../data/minaev.txt',
-            'markup' => './../data/faust_markup.txt',
-            'starts_from' => [36],
-            'title' => 'Перевод Минаева',
-        ],
-        'shishkov' => [
-            'path' => './../data/shishkov.txt',
-            'markup' => './../data/faust_markup.txt',
-            'starts_from' => [36],
-            'title' => 'Перевод Шишкова',
-        ],
-        'griboedov' => [
-            'path' => './../data/griboedov.txt',
-            'markup' => './../data/faust_markup.txt',
-            'starts_from' => [36],
-            'title' => 'Перевод Грибоедова',
-        ],
-        'nabokov' => [
-            'path' => './../data/nabokov.txt',
-            'markup' => './../data/faust_markup.txt',
-            'starts_from' => [3],
-            'title' => 'Перевод Набокова',
-        ],
-        'zhukovskiy' => [
-            'path' => './../data/zhukovskiy.txt',
-            'markup' => './../data/faust_markup.txt',
-            'starts_from' => [3],
-            'title' => 'Перевод Жуковского',
-        ],
-        'b-kiy' => [
-            'path' => './../data/b-kiy.txt',
-            'markup' => './../data/faust_markup.txt',
-            'starts_from' => [3],
-            'title' => 'Н. Б—кий (1892)',
-        ],
-        'balmont' => [
-            'path' => './../data/balmont.txt',
-            'markup' => './../data/faust_markup.txt',
-            'starts_from' => [397,1725],
-            'title' => 'Переводы Бальмонта',
-        ],
-        'pasternak' => [
-            'path' => './../data/pasternak.txt',
-            'markup' => './../data/faust_markup.txt',
-            'title' => 'Перевод Пастернака',
-        ],
-        'zhiganets' => [
-            'path' => './../data/zhiganets.txt',
-            'markup' => './../data/faust_markup.txt',
-            'starts_from' => [1481],
-            'title' => 'Шура Жиганец',
-        ],
-        'pavlov' => [
-            'path' => './../data/pavlov.txt',
-            'markup' => './../data/faust_markup.txt',
-            'starts_from' => [36],
-            'title' => 'Перевод И. Павлова',
-        ]
-    ];
+    private array $files = [];
+
+    public function __construct() {
+        if ($json = file_get_contents(DATA_DIR . 'config.json')) {
+
+            $this->files = json_decode($json, true);
+
+            if ($this->files === null && json_last_error() !== JSON_ERROR_NONE) {
+                echo "Ошибка чтения config.json: " . json_last_error_msg(); exit;
+            }
+        }
+    }
+
+    public function getMeta() {
+        return $this->files;
+    }
 
     public function read(string $identifier): array|false
     {
@@ -102,7 +43,7 @@ class FaustReader
         }
 
         /** получение сырого текста */
-        $handle = fopen($this->files[$identifier]['path'], "r");
+        $handle = fopen(DATA_DIR . $this->files[$identifier]['path'], "r");
         $textRaw = [];
         $i = 0;
 
@@ -136,9 +77,7 @@ class FaustReader
 //                $emptyLinesArr = array_fill($startIndex, $this->files[$identifier]['starts_from'][0] - 1, '');
 //                $result = array_merge($emptyLinesArr, $textRaw[0]);
 //            } else {
-                foreach ($this->files[$identifier]['starts_from'] as $fragmentKey => $startLine) {
-//                    echo $startIndex;
-
+                foreach ($this->files[$identifier]['starts_from'] as $fragmentKey => $startLine) { // обход массива 'starts_from'
                     $emptyLinesArr = array_fill($startIndex, $startLine - ($startIndex + 1), '');
                     $result = array_merge($result, $emptyLinesArr, $textRaw[$fragmentKey]);
 
@@ -149,10 +88,8 @@ class FaustReader
 //            }
         }
 
-        //todo добить пустыми строками до конца, если нужно
-
         /** получение разметки */
-        $handle = fopen($this->files[$identifier]['markup'], "r");
+        $handle = fopen(DATA_DIR . $this->files[$identifier]['markup'][0], "r");
         $markupArr = [];
 
         if ($handle) {
@@ -191,13 +128,13 @@ class FaustReader
     }
 
 
-    public function getButtons(): array
-    {
-        $files = [];
-        foreach ($this->files as $id => $values) {
-            $files[$id] = $values['title'];
-        }
-
-        return $files;
-    }
+//    public function getButtons(): array
+//    {
+//        $files = [];
+//        foreach ($this->files as $id => $values) {
+//            $files[$id] = $values['title'];
+//        }
+//
+//        return $files;
+//    }
 }

@@ -1,0 +1,278 @@
+{
+  "faust": {
+    "path": "faust.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "title": "Оригинальный текст"
+  },
+  "holodkovskiy": {
+    "path": "holodkovskiy.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "title": "Перевод Н. А. Холодковского"
+  },
+  "pasternak": {
+    "path": "pasternak.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "title": "Перевод Б. Пастернака"
+  },
+  "pavlov": {
+    "path": "pavlov.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      36
+    ],
+    "title": "И. Павлов. Оба пролога и первые 15 сцен «Фауста» Гёте (1875)"
+  },
+  "minaev": {
+    "path": "minaev.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      36
+    ],
+    "title": "Дм. Минаев. В театре. (Из Гете) (1869)"
+  },
+  "shishkov": {
+    "path": "shishkov.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      36
+    ],
+    "title": "А. А. Шишков. Директор театра (Из Гетева Фауста) (1834)"
+  },
+  "griboedov": {
+    "path": "griboedov.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      36
+    ],
+    "title": "А. С. Грибоедов. Отрывок из Гёте (1824)"
+  },
+  "nabokov": {
+    "path": "nabokov.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      3
+    ],
+    "title": "В. Набоков. Посвящение к «Фаусту» (1932)"
+  },
+  "zhukovskiy": {
+    "path": "zhukovskiy.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      3
+    ],
+    "title": "В. А. Жуковский. «Опять ты здесь, мой благодатный гений...» (1817)"
+  },
+  "b-kiy": {
+    "path": "b-kiy.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      3
+    ],
+    "title": "Н. Б—кий. Посвящение к Фаусту (Из Гёте) (1892)"
+  },
+  "balmont": {
+    "path": "balmont.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      397,
+      1725
+    ],
+    "title": "К. Бальмонт. Из «Фауста» Гёте (1895)"
+  },
+  "zhiganets": {
+    "path": "zhiganets.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      1481
+    ],
+    "title": "Фима Жиганец. Отрывки из «Фауста» Гёте (2015)"
+  },
+  "tutchev": {
+    "path": "tutchev.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      262,
+      533,
+      849,
+      1201,
+      3368,
+      4056
+    ],
+    "title": "Ф. И. Тютчев. Из «Фауста» Гёте (1828–29)"
+  },
+  "korinfskiy": {
+    "path": "korinfskiy.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      3368
+    ],
+    "title": "Аполлон Коринфский. Фульский король (Из В. Гёте) (1899)"
+  },
+  "krasov": {
+    "path": "krasov.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      3368
+    ],
+    "title": "В. И. Kpаcoв. Король (Из Гете) (1859)"
+  },
+  "barykova": {
+    "path": "barykova.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      3,
+      259
+    ],
+    "title": "А. П. Барыкова. Из «Фауста» Гёте (1897)"
+  },
+  "bek": {
+    "path": "bek.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      397,
+      998
+    ],
+    "title": "И. А. Бек. Отрывки из «Фауста» (1837)"
+  },
+  "kaftyrev": {
+    "path": "kaftyrev.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      4236,
+      4531,
+      4773,
+      5596
+    ],
+    "title": "Д. Кафтырев. Из «Фауста» (1864)"
+  },
+  "venevitinov": {
+    "path": "venevitinov.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      1195,
+      4055,
+      4236
+    ],
+    "title": "Д. В. Веневитинов. Отрывки из «Фауста» (1827)"
+  },
+  "merezhkovskiy": {
+    "path": "merezhkovskiy.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      259,
+      4533
+    ],
+    "title": "Д. Мережковский. Из «Фауста» Гете (1892-93)"
+  },
+  "hitrova": {
+    "path": "hitrova.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      3,
+      4533
+    ],
+    "title": "Хитрова. Из «Фауста» (1901)"
+  },
+  "ogarev": {
+    "path": "ogarev.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      1725
+    ],
+    "title": "Н. П. Огарев. Сцена из «Фауста»"
+  },
+  "berg": {
+    "path": "berg.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      671
+    ],
+    "title": "Н. В. Берг. Из «Фауста» (1860)"
+  },
+  "lihonin": {
+    "path": "lihonin.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      848
+    ],
+    "title": "М. Лихонин. Отрывок из Фауста, соч. Гёте (1831)"
+  },
+  "turgenev": {
+    "path": "turgenev.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      5596
+    ],
+    "title": "И.С. Тургенев. Последняя сцена первой части «Фауста» Гёте (1844)"
+  },
+  "zagorskiy": {
+    "path": "zagorskiy.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      3368
+    ],
+    "title": "М. Загорский. Царь Фулеский. Из Гёте (1825)"
+  },
+  "aksakov": {
+    "path": "aksakov.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      259
+    ],
+    "title": "К. С. Аксаков. Из «Фауста» (1839)"
+  }
+}
