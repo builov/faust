@@ -1631,8 +1631,6 @@ Studirzimmer.
 
 Faust mit dem Pudel hereintretend.
 
-empty_line
-
 Verlassen hab' ich Feld und Auen,
 Die eine tiefe Nacht bedeckt,
 Mit ahndungsvollem heil'gem Grauen
@@ -7568,6 +7566,17 @@ Ich höre ferne Trommeln.
 Nur ungestört! es sind im Rohr
 Die unisonen Dommeln.
 
+empty_line
+empty_line
+empty_line
+empty_line
+empty_line
+empty_line
+empty_line
+empty_line
+empty_line
+empty_line
+
 Dogmatiker.
 
 Ich lasse mich nicht irre schreyn,
@@ -7768,13 +7777,11 @@ Mephistopheles.
 
 Vorbey! Vorbey!
 
-
-
-
 Kerker.
 
-
 Faust, mit einem Bund Schlüssel und einer Lampe, vor einem eisernen Thürchen.
+
+empty_line
 
 Mich faßt ein längst entwohnter Schauer,
 Der Menschheit ganzer Jammer faßt mich an.

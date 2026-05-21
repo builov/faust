@@ -5,24 +5,37 @@ use Builov\Faust\FaustReader;
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../config.php';
 
-$src = [
-    'original',
-    'pasternak',
-    'holodkovskiy',
-    'minaev',
-    'shishkov',
-    'griboedov',
-    'nabokov',
-    'zhukovskiy',
-    'balmont',
-    'zhiganets',
-];
+//$src = [
+//    'original',
+//    'pasternak',
+//    'holodkovskiy',
+//    'minaev',
+//    'shishkov',
+//    'griboedov',
+//    'nabokov',
+//    'zhukovskiy',
+//    'balmont',
+//    'zhiganets',
+//];
 
 $selected = [
     'faust',
 //    'pavlov',
 //    'pasternak',
-    'holodkovskiy',
+//    'holodkovskiy',
+    'fet',
+//    'ivanov'
+//    'zertelev'
+//    'trunin'
+//    'grekov'
+//    'strugovshikov'
+//    'vronchenko'
+//    'maklezova'
+//    'golovanov'
+//    'vrangel'
+    'mamontov'
+//    'brusov'
+//    'guber'
 //    'minaev',
 //    'shishkov',
 //    'griboedov',
@@ -42,7 +55,9 @@ $selected = [
 //'lihonin'
 //'turgenev'
 //    'zagorskiy'
-    'aksakov'
+//    'aksakov',
+//    'sempervero'
+//'mihaylov'
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['show'])) {
