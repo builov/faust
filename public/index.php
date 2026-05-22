@@ -22,8 +22,8 @@ $selected = [
     'faust',
 //    'pavlov',
 //    'pasternak',
-//    'holodkovskiy',
-    'fet',
+    'holodkovskiy',
+//    'fet',
 //    'ivanov'
 //    'zertelev'
 //    'trunin'
