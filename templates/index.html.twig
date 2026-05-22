@@ -2,7 +2,8 @@
 <html>
 <head>
     <title>{{ title }}</title>
-    <link rel="stylesheet" href="/style.css">
+    <!-- Подключаем скомпилированные стили (Bootstrap включен сюда) -->
+    <link rel="stylesheet" href="/dist/css/main.css">
     <style>
         {#.grid-container {#}
         {#    grid-template-columns: 30px {% for i in range(1, columns) %}1fr {% endfor %};">#}
@@ -20,9 +21,17 @@
 {#</ol>#}
 
 <header>
-    <ul id="buttons">
+    <ul id="buttons" class="list-inline">
         {% for id, data in meta %}
-            <li><a href="/?show={{ id }}" data-id="{{ id }}" class="btn">{{ data.title }}</a></li>
+            <li class="list-inline-item m-1">
+                <a href="/?show={{ id }}" data-id="{{ id }}"
+                {% if id in selected %}
+                    class="btn btn-secondary btn-sm"
+                {% else %}
+                   class="btn btn-outline-secondary btn-sm"
+                {% endif %}
+                >{{ data.title }}</a>
+            </li>
         {% endfor %}
     </ul>
 </header>
@@ -78,6 +87,7 @@
 <script id="meta-data" type="application/json">
     {{ meta|json_encode(constant('JSON_UNESCAPED_UNICODE'))|raw }}
 </script>
-<script src="script2.js" defer></script>
+{#<script src="script2.js" defer></script>#}
+<script src="/dist/js/bundle.js"></script>
 </body>
 </html>

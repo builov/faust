@@ -33,7 +33,7 @@ $selected = [
 //    'maklezova'
 //    'golovanov'
 //    'vrangel'
-    'mamontov'
+//    'mamontov'
 //    'brusov'
 //    'guber'
 //    'minaev',
@@ -101,6 +101,7 @@ $combined = $texts;
 echo $twig->render('index.html.twig', [
     'title' => 'Фауст',
     'data' => $combined,
+    'selected' => array_keys($combined),
 //    'columns' => count($combined[0]),
     'columns' => count($texts),
 //    'buttons' => $buttons,

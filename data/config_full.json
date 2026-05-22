@@ -13,6 +13,33 @@
     ],
     "title": "Перевод Э. Губера (1838)"
   },
+  "vronchenko": {
+    "path": "vronchenko.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "title": "Перевод М. П. Вронченко (1844)"
+  },
+  "strugovshikov": {
+    "path": "strugovshikov.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      259
+    ],
+    "title": "Перевод А. Н. Струговщикова (1856)"
+  },
+  "grekov": {
+    "path": "grekov.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "starts_from": [
+      259
+    ],
+    "title": "Перевод Н. П. Грекова (1859)"
+  },
   "holodkovskiy": {
     "path": "holodkovskiy.txt",
     "markup": [
@@ -20,12 +47,61 @@
     ],
     "title": "Перевод Н. А. Холодковского (1878)"
   },
+  "trunin": {
+    "path": "trunin.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "title": "Перевод П. В. Трунина (1883)"
+  },
+  "vrangel": {
+    "path": "vrangel.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "title": "Перевод Н. Е. Врангеля (1889)"
+  },
+  "maklezova": {
+    "path": "maklezova.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "title": "Перевод Н. П. Маклецовой (1897)"
+  },
+  "golovanov": {
+    "path": "golovanov.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "title": "Перевод Н. Н. Голованова (1898)"
+  },
   "fet": {
     "path": "fet.txt",
     "markup": [
       "faust_markup.txt"
     ],
     "title": "Перевод А. А. Фета (1899)"
+  },
+  "zertelev": {
+    "path": "zertelev.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "title": "Перевод Д. Н. Цертелева (1899)"
+  },
+  "mamontov": {
+    "path": "mamontov.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "title": "Перевод А. Мамонтова (1901)"
+  },
+  "ivanov": {
+    "path": "ivanov.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "title": "Перевод К. А. Иванова (1919)."
   },
   "brusov": {
     "path": "brusov.txt",

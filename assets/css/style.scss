@@ -1,0 +1,129 @@
+// 1. Изменяем стандартные значения Bootstrap ДО его импорта
+$font-family-base: Georgia, Cambria, "Times New Roman", Times, serif; //стандартное значение $font-family-serif;
+//$font-size-root: 14px;
+
+@import "~bootstrap/scss/bootstrap";
+
+.main-container {
+    counter-reset: row-number;
+    margin-left: 50px; /* Размер отступа равен ширине зоны номеров */
+    position: relative;
+}
+
+.main-container tr {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+}
+
+.main-container tbody tr {
+    counter-increment: row-number;
+    position: relative; /* База для позиционирования номера строки */
+}
+
+/* Выносим номер влево за пределы строки */
+.main-container tbody tr td:first-child::before {
+    content: counter(row-number);
+    position: absolute;
+    left: -45px;       /* Выталкиваем номер влево на поля */
+    top: 50%;
+    transform: translateY(-50%); /* Центрируем по вертикали */
+
+    width: 35px;
+    text-align: right; /* Выравниваем разряды (1, 10, 100) по правому краю */
+    color: #a0a0a0;
+    font-size: 0.9em;
+    font-family: monospace; /* Моноширинный шрифт идеален для цифр */
+}
+
+
+div.title {
+    font-size: 2rem;
+    font-weight: bold;
+}
+tr.title {
+    margin-bottom: 1rem;
+}
+.default + .title {
+    margin-top: 2rem;
+}
+
+
+div.subtitle {
+    font-size: 1rem;
+    font-weight: normal;
+    font-style: italic;
+
+}
+tr.subtitle {
+    margin-bottom: 1rem;
+}
+
+
+div.scene_title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+tr.scene_title {
+    margin-bottom: 1rem;
+}
+.default + .scene_title {
+    margin-top: 1rem;
+}
+
+
+tr.stanza_end {
+    margin-bottom: 1rem;
+}
+
+
+div.character_list {
+    font-style: italic;
+}
+tr.character_list {
+    margin-bottom: 1rem;
+}
+.default + .character_list {
+    margin-top: 1rem;
+}
+
+
+div.speech_heading {
+    font-weight: bold;
+}
+tr.speech_heading {
+    margin-bottom: 1rem;
+}
+.default + .speech_heading {
+    margin-top: 1rem;
+}
+
+
+div.stage_direction,
+div.slugline
+{
+    font-style: italic;
+    font-weight: normal;
+}
+tr.stage_direction,
+tr.slugline
+{
+    margin-bottom: 1rem;
+}
+.default + .stage_direction {
+    margin-top: 1rem;
+}
+.default + .slugline {
+    margin-top: 1rem;
+}
+
+div.entrance {
+    font-style: italic;
+}
+tr.entrance {
+    margin-bottom: 1rem;
+}
+.default + .entrance {
+    margin-top: 1rem;
+}
