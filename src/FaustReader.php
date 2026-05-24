@@ -45,6 +45,7 @@ class FaustReader
         /** получение сырого текста */
         $handle = fopen(DATA_DIR . $this->files[$identifier]['path'], "r");
         $textRaw = [];
+        $fragmentTitle = null;
         $i = 0;
 
         if ($handle) {
@@ -54,7 +55,13 @@ class FaustReader
                     continue;
                 }
                 if ($line === "DELIMITER") {
+                    $textRaw[$i][0] .= $fragmentTitle;
+
                     $i++;
+                    continue;
+                }
+                if (str_starts_with($line, "<title>")) {
+                    $fragmentTitle = str_replace(["<title>", "</title>"], '', '<div class="floating-title scene_title">' . $line . '</div>');;
                     continue;
                 }
                 if ($line === "empty_line") { //замена empty_line на пустую строку

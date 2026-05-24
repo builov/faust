@@ -19,21 +19,38 @@ $font-family-base: Georgia, Cambria, "Times New Roman", Times, serif; //стан
 .main-container tbody tr {
     counter-increment: row-number;
     position: relative; /* База для позиционирования номера строки */
-}
 
-/* Выносим номер влево за пределы строки */
-.main-container tbody tr td:first-child::before {
-    content: counter(row-number);
-    position: absolute;
-    left: -45px;       /* Выталкиваем номер влево на поля */
-    top: 50%;
-    transform: translateY(-50%); /* Центрируем по вертикали */
+    /* Выносим номер влево за пределы строки */
+    td:first-child::before {
+        content: counter(row-number);
+        position: absolute;
+        left: -45px;       /* Выталкиваем номер влево на поля */
+        top: 50%;
+        transform: translateY(-50%); /* Центрируем по вертикали */
 
-    width: 35px;
-    text-align: right; /* Выравниваем разряды (1, 10, 100) по правому краю */
-    color: #a0a0a0;
-    font-size: 0.9em;
-    font-family: monospace; /* Моноширинный шрифт идеален для цифр */
+        width: 35px;
+        text-align: right; /* Выравниваем разряды (1, 10, 100) по правому краю */
+        color: #a0a0a0;
+        font-size: 0.9em;
+        font-family: monospace; /* Моноширинный шрифт идеален для цифр */
+    }
+
+    td div {
+        position: relative;
+    }
+
+    td div.floating-title {
+        position: absolute; /* Вырывает элемент из потока верстки (он больше не сдвигает текст) */
+        bottom: 100%;       /* Сдвигает заголовок строго НАД фрагментом текста */
+        left: 0;            /* Выравнивает по левому краю фрагмента */
+        white-space: nowrap;/* Запрещает заголовку переноситься на новую строку */
+        font-style: normal;
+
+        /* Дополнительные стили для красоты (шрифт, размер, отступ) */
+        //font-size: 12px;
+        //color: #6c757d;     /* Серый цвет в стиле Bootstrap link-secondary */
+        margin-bottom: .5em; /* Небольшой зазор между заголовком и текстом */
+    }
 }
 
 

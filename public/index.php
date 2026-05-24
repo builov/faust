@@ -22,8 +22,8 @@ $selected = [
     'faust',
 //    'pavlov',
 //    'pasternak',
-    'holodkovskiy',
-//    'fet',
+//    'holodkovskiy',
+    'fet',
 //    'ivanov'
 //    'zertelev'
 //    'trunin'
@@ -58,6 +58,7 @@ $selected = [
 //    'aksakov',
 //    'sempervero'
 //'mihaylov'
+//'krasov'
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['show'])) {

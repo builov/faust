@@ -1,15 +1,13 @@
 import 'bootstrap';
 import '../css/./style.scss';
 
-console.log('Bootstrap успешно подключен!');
-
 // import logoImg from '../images/logo.png'; //импорт картинок для динамической вставки
 // const img = document.createElement('img');
 // img.src = logoImg; // Ссылка на скопированный файл в public/dist/images/
 // document.body.appendChild(img);
 
 const textMetaData = JSON.parse(document.getElementById('meta-data').textContent);
-console.log(textMetaData);
+// console.log(textMetaData);
 
 const buttons = document.querySelector('#buttons');
 const table = document.querySelector('.main-container');
@@ -131,6 +129,40 @@ const setColumnTitle = (textId) => {
     if (!headerCell) return;
 
     headerCell.textContent = textMetaData[textId].title;
+
+    if (textMetaData[textId]?.starts_from) {
+        let startsFrom = textMetaData[textId].starts_from;
+
+        if (startsFrom.length > 1) { //если больше одного фрагмента
+
+            //получение индекса ячейки в ряду
+            let index = 0;
+            let element = headerCell;
+            while ((element = element.previousElementSibling)) {
+                index++;
+            }
+
+            const listItems = startsFrom.map((path) => {
+                const row = document.getElementById(path);
+                // return `<li><a href="#${path}" class="link-secondary">${row.children[index].querySelector('.floating-title').innerText}</a></li>`;
+                // return `<li><a href="#${path}" class="link-secondary">
+                //         ${row.children[index]?.querySelector('.floating-title')?.innerText ?? `«${row.children[index]?.innerText}»` ?? ''}
+                //         </a></li>`;
+                return `<li><a href="#${path}" class="link-secondary">
+                    ${row.children[index]?.querySelector('.floating-title')?.innerText ?? `«${row.children[index]?.innerText}»` ?? ''}
+                    </a></li>`;
+
+            }).join('');
+
+            const links = `<ul>${listItems}</ul>`;
+
+            headerCell.insertAdjacentHTML('beforeend', links);
+        }
+
+        else { //если фрагмент один
+            headerCell.innerHTML = `<a href="#${startsFrom[0]}" class="link-secondary">${headerCell.textContent}</a>`;
+        }
+    }
 }
 
 const setButtonState = (button, textId) => {

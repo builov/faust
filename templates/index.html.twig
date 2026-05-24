@@ -64,7 +64,7 @@
     </thead>
     <tbody>
     {% for line in data|first %}
-        <tr data-num="{{ loop.index0 }}" class="{{ line[1] }}">
+        <tr data-num="{{ loop.index0 }}" class="{{ line[1] }}" id="{{ loop.index0 + 1 }}">
 {#            <td>#}
 {#                {{ loop.index0 + 1 }}#}
 {#            </td>#}
