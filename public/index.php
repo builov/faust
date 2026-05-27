@@ -20,6 +20,7 @@ require_once __DIR__ . '/../config.php';
 
 $selected = [
     'faust',
+//    'translate',
 //    'pavlov',
 //    'pasternak',
 //    'holodkovskiy',
@@ -57,9 +58,14 @@ $selected = [
 //    'zagorskiy'
 //    'aksakov',
 //    'sempervero'
-//'mihaylov'
+'mihaylov'
 //'krasov'
+//'barykova'
 ];
+
+
+//Сделай подстрочный перевод на русский без немецкого оригинала, построчный, максимально близкий к структуре и порядку слов.
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['show'])) {
     $selected = $_GET['show'];

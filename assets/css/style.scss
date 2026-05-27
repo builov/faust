@@ -144,3 +144,153 @@ tr.entrance {
 .default + .entrance {
     margin-top: 1rem;
 }
+
+
+
+
+///* Контейнер-ориентир для абсолютного позиционирования подсказки */
+//.tooltip-wrapper {
+//    position: relative;
+//    display: inline-block;
+//}
+//
+///* Стили кнопки-звёздочки */
+//.comment-trigger {
+//    background: none;
+//    border: none;
+//    color: #0066cc;
+//    cursor: pointer;
+//    font-size: 1.2em;
+//    padding: 0 2px;
+//}
+//
+///* Скрытая по умолчанию подсказка с анимацией */
+///* Обновленный блок подсказки */
+//.tooltip-text {
+//    position: absolute;
+//    bottom: 130%;
+//    left: 50%;
+//    transform: translateX(-50%) translateY(10px);
+//    background-color: #222;
+//    color: #fff;
+//
+//    /* Увеличили отступ справа (32px), чтобы текст не перекрывал крестик */
+//    padding: 10px 32px 10px 14px;
+//
+//    border-radius: 6px;
+//    font-size: 14px;
+//    line-height: 1.4;
+//    z-index: 100;
+//    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+//    white-space: normal;
+//    width: max-content;
+//    max-width: 250px;
+//    word-wrap: break-word;
+//    text-align: left;
+//    opacity: 0;
+//    visibility: hidden;
+//    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+//}
+//
+///* Маленький треугольник (стрелочка) под подсказкой */
+//.tooltip-text::after {
+//    content: "";
+//    position: absolute;
+//    top: 100%;
+//    left: 50%;
+//    transform: translateX(-50%);
+//    border-width: 6px;
+//    border-style: solid;
+//    border-color: #222 transparent transparent transparent;
+//}
+//
+///* Класс активации */
+//.tooltip-text.is-active {
+//    opacity: 1;
+//    visibility: visible;
+//    transform: translateX(-50%) translateY(0);
+//}
+//
+///* Стили для кнопки-крестика */
+//.tooltip-close {
+//    position: absolute;
+//    top: 4px;
+//    right: 6px;
+//    background: none;
+//    border: none;
+//    color: #aaa;
+//    font-size: 18px;
+//    line-height: 1;
+//    cursor: pointer;
+//    padding: 4px;
+//    transition: color 0.2s ease;
+//}
+//
+///* Подсветка крестика при наведении */
+//.tooltip-close:hover {
+//    color: #fff;
+//}
+
+
+/* Стили для окна <dialog> */
+/* Контейнер строки для правильного позиционирования подсказки */
+.text-line {
+    position: relative;
+    display: inline-block;
+}
+
+/* Стили для динамической звёздочки */
+.comment-trigger {
+    background: none;
+    border: none;
+    color: #0066cc;
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 0 4px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Нативное окно <dialog>, когда оно открыто */
+dialog[open] {
+    display: block;
+    position: absolute;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: max-content;
+    max-width: 280px;
+    white-space: normal;
+
+    background: #222;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+
+    /* Одинаковые аккуратные отступы со всех сторон */
+    padding: 12px;
+    font-size: 14px;
+    line-height: 1.4;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 100;
+}
+
+/* Стили для крестика, который теперь отображается НАД текстом */
+.dialog-close {
+    display: block;       /* Превращаем в блочный элемент */
+    width: 100%;          /* Занимает всю ширину над текстом */
+    text-align: right;    /* Сам крестик прижимаем к правому краю */
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 0 6px 0;   /* Отступ снизу, чтобы отодвинуть текст */
+    line-height: 1;
+    margin-top: -4px;     /* Небольшая компенсация верхнего отступа окна */
+}
+
+.dialog-close:hover {
+    color: #fff;
+}

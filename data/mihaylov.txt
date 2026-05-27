@@ -35,7 +35,7 @@ empty_line
               Хор
 
 Dies irae, dies illa
-Solvet saeclum in favilla3.
+Solvet saeclum in favilla<dialog>День гнева, этот день обратит мир в пепел (лат.).  ...День   гнева,   этот  день...-  слова  из  католического  церковного гимна, который приводится в переведенной сцене и далее.</dialog>.
 
           Звук органа.
 
@@ -62,7 +62,7 @@ Solvet saeclum in favilla3.
 
 Judex ergo cum sedebit
 Quidquid latet, adparebit
-Nil inultura remanebit4.
+Nil inultura remanebit<dialog>Когда  воссядет  судия,  то  откроется  все  сокровенное  и ничто не останется без возмездия (лат.).</dialog>.
 
             Гретхен
 
@@ -83,7 +83,7 @@ Nil inultura remanebit4.
 
 Quid sum miser tune dicturus?
 Quem patronum cogaturus,
-Cum vix iustus sit securus5.
+Cum vix iustus sit securus<dialog>Что  я  скажу  тогда, несчастный, какого покровителя я буду умолять, когда и праведник едва спасется? (лат.)</dialog>.
 
             Злой дух
 
@@ -95,7 +95,7 @@ Cum vix iustus sit securus5.
 
               Хор
 
-Quid cum miser tune dicturus?6
+Quid cum miser tune dicturus?<dialog>Что я скажу тогда, несчастный? (лат.)</dialog>
 
             Гретхен
 

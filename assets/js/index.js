@@ -174,3 +174,131 @@ const setButtonState = (button, textId) => {
         button.classList.replace('btn-secondary', 'btn-outline-secondary');
     }
 }
+
+
+
+
+
+
+/* Комментарий
+// 1. Находим все элементы-обёртки
+const wrappers = document.querySelectorAll('.tooltip-wrapper');
+
+wrappers.forEach(wrapper => {
+    const btn = wrapper.querySelector('.comment-trigger');
+    const tooltip = wrapper.querySelector('.tooltip-text');
+    const closeBtn = wrapper.querySelector('.tooltip-close');
+
+    // Клик по звёздочке
+    btn.addEventListener('click', (event) => {
+        event.stopPropagation();
+
+        // Сначала закрываем все остальные открытые подсказки
+        document.querySelectorAll('.tooltip-text.is-active').forEach(openTooltip => {
+            if (openTooltip !== tooltip) {
+                openTooltip.classList.remove('is-active');
+            }
+        });
+
+        tooltip.classList.toggle('is-active');
+    });
+
+    // Клик по крестику закрывает подсказку
+    closeBtn.addEventListener('click', (event) => {
+        event.stopPropagation(); // Стопаем всплытие, чтобы не срабатывали другие клики
+        tooltip.classList.remove('is-active');
+    });
+
+    // Защита: клик внутри самой подсказки не должен её закрывать
+    tooltip.addEventListener('click', (event) => {
+        event.stopPropagation();
+    });
+});
+
+// Клик в любом другом месте экрана закрывает все открытые подсказки
+document.addEventListener('click', () => {
+    document.querySelectorAll('.tooltip-text.is-active').forEach(tooltip => {
+        tooltip.classList.remove('is-active');
+    });
+});
+*/
+
+
+
+const dialogs = document.querySelectorAll('dialog');
+
+dialogs.forEach(dialog => {
+    // 1. Создаем и вставляем звёздочку перед тегом <dialog>
+    const trigger = document.createElement('button');
+    trigger.className = 'comment-trigger';
+    trigger.textContent = '*';
+    dialog.before(trigger);
+
+    // Функция для удаления крестика при закрытии
+    const removeCloseButton = () => {
+        const existingCloseBtn = dialog.querySelector('.dialog-close');
+        if (existingCloseBtn) existingCloseBtn.remove();
+    };
+
+    // 2. Логика клика по звёздочке
+    trigger.addEventListener('click', (event) => {
+        event.stopPropagation();
+
+        // Закрываем другие открытые диалоги на странице
+        document.querySelectorAll('dialog[open]').forEach(openDialog => {
+            if (openDialog !== dialog) {
+                openDialog.close();
+            }
+        });
+
+        if (!dialog.open) {
+            // ДИНАМИЧЕСКОЕ СОЗДАНИЕ КНОПКИ ЗАКРЫТИЯ ПРИ ВСПЛЫТИИ:
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'dialog-close';
+            closeBtn.innerHTML = '&times;';
+            closeBtn.setAttribute('aria-label', 'Закрыть');
+
+            // Вставляем крестик в самое начало контента внутри dialog
+            dialog.prepend(closeBtn);
+
+            // Вешаем событие закрытия на созданный крестик
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dialog.close();
+            });
+
+            // Открываем окно
+            dialog.show();
+
+            // УМНАЯ АВТОПРОКРУТКА:
+            // Используем setTimeout(..., 50), чтобы диалог сначала отобразился в DOM,
+            // иначе браузер не сможет правильно рассчитать его размеры и положение.
+            setTimeout(() => {
+                dialog.scrollIntoView({
+                    behavior: 'smooth', // Плавная анимация скролла
+                    block: 'nearest',   // Прокрутит ровно настолько, чтобы элемент полностью влез в экран
+                    inline: 'nearest'   // Защита от горизонтального выезда на мобильных
+                });
+            }, 50);
+        } else {
+            dialog.close();
+        }
+    });
+
+    // Нативный метод тега <dialog> генерирует событие 'close' при закрытии окна
+    dialog.addEventListener('close', removeCloseButton);
+
+    // Клик внутри самого диалога не закрывает его
+    dialog.addEventListener('click', (event) => {
+        event.stopPropagation();
+    });
+});
+
+// Клик в любом месте экрана закрывает все открытые диалоги
+document.addEventListener('click', () => {
+    document.querySelectorAll('dialog[open]').forEach(dialog => {
+        dialog.close();
+    });
+});
+
+

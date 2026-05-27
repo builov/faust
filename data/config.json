@@ -6,6 +6,13 @@
     ],
     "title": "Оригинальный текст"
   },
+  "translate": {
+    "path": "translate.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "title": "Подстрочник"
+  },
   "guber": {
     "path": "guber.txt",
     "markup": [
@@ -281,7 +288,7 @@
     ],
     "starts_from": [
       3,
-      259
+      262
     ],
     "title": "А. П. Барыкова. Из «Фауста» Гёте (1897)"
   },
@@ -302,7 +309,7 @@
     ],
     "starts_from": [
       3,
-      4533
+      4534
     ],
     "title": "Хитрова. Из «Фауста» (1901)"
   },
