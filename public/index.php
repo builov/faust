@@ -10,7 +10,7 @@ $selected = [
 //    'pavlov',
 //    'pasternak',
 //    'holodkovskiy',
-//    'fet',
+    'fet',
 //    'ivanov'
 //    'zertelev'
 //    'trunin'
@@ -22,7 +22,7 @@ $selected = [
 //    'vrangel'
 //    'mamontov'
 //    'brusov'
-//    'guber'
+    'guber'
 //    'minaev',
 //    'shishkov',
 //    'griboedov',
