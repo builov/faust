@@ -1,22 +1,8 @@
 <?php
-
 use Builov\Faust\FaustReader;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../config.php';
-
-//$src = [
-//    'original',
-//    'pasternak',
-//    'holodkovskiy',
-//    'minaev',
-//    'shishkov',
-//    'griboedov',
-//    'nabokov',
-//    'zhukovskiy',
-//    'balmont',
-//    'zhiganets',
-//];
 
 $selected = [
     'faust',
@@ -24,7 +10,7 @@ $selected = [
 //    'pavlov',
 //    'pasternak',
 //    'holodkovskiy',
-    'fet',
+//    'fet',
 //    'ivanov'
 //    'zertelev'
 //    'trunin'
@@ -58,14 +44,12 @@ $selected = [
 //    'zagorskiy'
 //    'aksakov',
 //    'sempervero'
-'mihaylov'
+//'mihaylov'
 //'krasov'
 //'barykova'
 ];
 
-
 //Сделай подстрочный перевод на русский без немецкого оригинала, построчный, максимально близкий к структуре и порядку слов.
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['show'])) {
     $selected = $_GET['show'];
@@ -75,7 +59,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['show'])) {
 
 $reader = new FaustReader();
 
-//$buttons = $reader->getButtons();
+//if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['receive'])) { // && $_POST['receive'] == 'config'
+//    echo json_encode($reader->getMeta());
+//
+//    exit;
+//}
 
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/../templates');
 
@@ -84,6 +72,9 @@ $twig = new \Twig\Environment($loader, [
     'debug' => true,
 ]);
 
+/**
+ * если selected строка, а не массив, она передана get-запросом с кнопки
+ */
 if (!is_array($selected)) { // вернуть json
     $text = $reader->read($selected);
 
@@ -97,23 +88,14 @@ foreach ($selected as $text_id) {
     $texts[$text_id] = $reader->read($text_id);
 }
 
-//$combined = array_map(function (...$lines) {
-//    return $lines;
-//}, ...$texts);
-
-$combined = $texts;
-
 //print_r($combined); exit;
 
 echo $twig->render('index.html.twig', [
     'title' => 'Фауст',
-    'data' => $combined,
-    'selected' => array_keys($combined),
-//    'columns' => count($combined[0]),
+    'data' => $texts,
+    'selected' => array_keys($texts),
     'columns' => count($texts),
-//    'buttons' => $buttons,
     'meta' => $reader->getMeta(),
 ]);
-
 
 //https://www.gutenberg.org/ebooks/21000

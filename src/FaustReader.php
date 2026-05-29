@@ -32,7 +32,7 @@ class FaustReader
         }
     }
 
-    public function getMeta() {
+    public function getMeta() { //todo переделать чтоб возвращал json
         return $this->files;
     }
 
@@ -133,15 +133,4 @@ class FaustReader
 
         return $textMarkedUp;
     }
-
-
-//    public function getButtons(): array
-//    {
-//        $files = [];
-//        foreach ($this->files as $id => $values) {
-//            $files[$id] = $values['title'];
-//        }
-//
-//        return $files;
-//    }
 }

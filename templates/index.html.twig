@@ -10,7 +10,7 @@
         {#}#}
     </style>
 </head>
-<body>
+<body class="app-loading">
 {#<h1>{{ title }}</h1>#}
 {#<ol>#}
 {#    {% for item in original %}#}
@@ -82,12 +82,20 @@
 </table>
 
 
+<div id="loading-indicator" class="spinner-border d-none" role="status">
+    <span class="visually-hidden">Загрузка...</span>
+</div>
 
+{#<div class="app-loader">#}
+{#    <div class="spinner-border text-primary" role="status">#}
+{#        <span class="visually-hidden">Загрузка...</span>#}
+{#    </div>#}
+{#</div>#}
 
 <script id="meta-data" type="application/json">
     {{ meta|json_encode(constant('JSON_UNESCAPED_UNICODE'))|raw }}
 </script>
-{#<script src="script2.js" defer></script>#}
+
 <script src="/dist/js/bundle.js"></script>
 </body>
 </html>
