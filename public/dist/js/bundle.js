@@ -3160,10 +3160,12 @@ function _showTranslationsMenu2() {
       while (1) switch (_context2.p = _context2.n) {
         case 0:
           // Конфигурация: разрешаем только безопасное форматирование текста и ссылки
+          /** @type {import('dompurify').Config} */
           purifyConfig = {
             ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'a', 'br', 'span', 'p'],
-            ALLOWED_ATTR: ['href', 'target', 'title', 'class'] // Разрешаем ссылки и оформление, но блокируем onclick/onerror
-            // RETURN_TRUSTED_TYPE: false // Оставляем false для совместимости с innerHTML
+            ALLOWED_ATTR: ['href', 'target', 'title', 'class'],
+            // Разрешаем ссылки и оформление, но блокируем onclick/onerror
+            RETURN_TRUSTED_TYPE: false // Оставляем false для совместимости с innerHTML
           }; // console.log('td: ', td);
           _context2.p = 1;
           _classPrivateFieldGet(_columnLoader, this).show();
@@ -3192,6 +3194,11 @@ function _showTranslationsMenu2() {
                     var cell = row.cells[colIndex];
                     var child = cell.firstElementChild;
                     var safeHtml = dompurify__WEBPACK_IMPORTED_MODULE_8__["default"].sanitize(text, purifyConfig);
+                    // const safeHtml = DOMPurify.sanitize(text, {
+                    //     ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'a', 'br', 'span', 'p'],
+                    //     ALLOWED_ATTR: ['href', 'target', 'title', 'class']
+                    // });
+
                     if (child) {
                       child.innerHTML = safeHtml;
                     } else {
@@ -3909,7 +3916,8 @@ var MetaData = /*#__PURE__*/function () {
     key: "getStartsFrom",
     value: function getStartsFrom(textId) {
       var _classPrivateFieldGet4, _classPrivateFieldGet5;
-      return (_classPrivateFieldGet4 = (_classPrivateFieldGet5 = _classPrivateFieldGet(_data, this)[textId]) === null || _classPrivateFieldGet5 === void 0 ? void 0 : _classPrivateFieldGet5.starts_from) !== null && _classPrivateFieldGet4 !== void 0 ? _classPrivateFieldGet4 : [];
+      // return this.#data[textId]?.starts_from ?? [];
+      return (_classPrivateFieldGet4 = (_classPrivateFieldGet5 = _classPrivateFieldGet(_data, this)[textId]) === null || _classPrivateFieldGet5 === void 0 ? void 0 : _classPrivateFieldGet5.startsFrom) !== null && _classPrivateFieldGet4 !== void 0 ? _classPrivateFieldGet4 : [];
     }
 
     /**

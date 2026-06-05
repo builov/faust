@@ -12,7 +12,8 @@ export class MetaData {
     }
 
     getStartsFrom(textId) {
-        return this.#data[textId]?.starts_from ?? [];
+        // return this.#data[textId]?.starts_from ?? [];
+        return this.#data[textId]?.startsFrom ?? [];
     }
 
     /**

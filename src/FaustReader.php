@@ -36,77 +36,77 @@ class FaustReader
         return $this->files;
     }
 
-
-    private function getLineArray($id)
-    {
-        if (!isset($this->files[$id])) {
-            return [];
-        }
-
-        $fileConfig = $this->files[$id];
-        $filePath = DATA_DIR . $fileConfig['path'];
-
-        if (!file_exists($filePath)) {
-            return [];
-        }
-
-        // 1. Читаем файл и распределяем по фрагментам с сохранением сквозных индексов
-        $lineIndex = 0;
-        $textRaw = [];
-        $chunkIndex = 0;
-
-        $lines = file($filePath, FILE_IGNORE_NEW_LINES);
-
-        foreach ($lines as $line) {
-            $line = trim($line);
-
-            if ($line === "") {
-                continue;
-            }
-            if (str_starts_with($line, "<title>")) {
-                continue;
-            }
-            if ($line === "DELIMITER") {
-                $chunkIndex++;
-                continue;
-            }
-
-            if ($line === "empty_line") {
-                $lineIndex++;
-            } else {
-                // Сохраняем строку под её уникальным сквозным индексом внутри фрагмента
-                $textRaw[$chunkIndex][$lineIndex] = $line; // todo: обработать html-теги
-                $lineIndex++;
-            }
-        }
-
-        // Полный перевод
-        if (!isset($fileConfig['starts_from'])) {
-            return $textRaw[0] ?? [];
-        }
-
-        // фрагменты
-        $result = [];
-
-        foreach ($fileConfig['starts_from'] as $fragmentKey => $startLine) {
-            if (!isset($textRaw[$fragmentKey]) || empty($textRaw[$fragmentKey])) {
-                continue;
-            }
-
-            // Находим минимальный оригинальный индекс в этом фрагменте, чтобы корректно рассчитать относительное смещение для каждой строки.
-            $firstKeyInFragment = array_key_first($textRaw[$fragmentKey]);
-
-            foreach ($textRaw[$fragmentKey] as $originalIndex => $line) {
-                // Вычисляем новый индекс строки в финальном массиве:
-                // Стартовая позиция + дистанция от начала этого фрагмента
-                $finalIndex = ($startLine - 1) + ($originalIndex - $firstKeyInFragment);
-
-                $result[$finalIndex] = $line;
-            }
-        }
-
-        return $result;
-    }
+//
+//    private function getLineArray($id)
+//    {
+//        if (!isset($this->files[$id])) {
+//            return [];
+//        }
+//
+//        $fileConfig = $this->files[$id];
+//        $filePath = DATA_DIR . $fileConfig['path'];
+//
+//        if (!file_exists($filePath)) {
+//            return [];
+//        }
+//
+//        // 1. Читаем файл и распределяем по фрагментам с сохранением сквозных индексов
+//        $lineIndex = 0;
+//        $textRaw = [];
+//        $chunkIndex = 0;
+//
+//        $lines = file($filePath, FILE_IGNORE_NEW_LINES);
+//
+//        foreach ($lines as $line) {
+//            $line = trim($line);
+//
+//            if ($line === "") {
+//                continue;
+//            }
+//            if (str_starts_with($line, "<title>")) {
+//                continue;
+//            }
+//            if ($line === "DELIMITER") {
+//                $chunkIndex++;
+//                continue;
+//            }
+//
+//            if ($line === "empty_line") {
+//                $lineIndex++;
+//            } else {
+//                // Сохраняем строку под её уникальным сквозным индексом внутри фрагмента
+//                $textRaw[$chunkIndex][$lineIndex] = $line; // todo: обработать html-теги
+//                $lineIndex++;
+//            }
+//        }
+//
+//        // Полный перевод
+//        if (!isset($fileConfig['starts_from'])) {
+//            return $textRaw[0] ?? [];
+//        }
+//
+//        // фрагменты
+//        $result = [];
+//
+//        foreach ($fileConfig['starts_from'] as $fragmentKey => $startLine) {
+//            if (!isset($textRaw[$fragmentKey]) || empty($textRaw[$fragmentKey])) {
+//                continue;
+//            }
+//
+//            // Находим минимальный оригинальный индекс в этом фрагменте, чтобы корректно рассчитать относительное смещение для каждой строки.
+//            $firstKeyInFragment = array_key_first($textRaw[$fragmentKey]);
+//
+//            foreach ($textRaw[$fragmentKey] as $originalIndex => $line) {
+//                // Вычисляем новый индекс строки в финальном массиве:
+//                // Стартовая позиция + дистанция от начала этого фрагмента
+//                $finalIndex = ($startLine - 1) + ($originalIndex - $firstKeyInFragment);
+//
+//                $result[$finalIndex] = $line;
+//            }
+//        }
+//
+//        return $result;
+//    }
 
 
     public function read(string $identifier): array|false
