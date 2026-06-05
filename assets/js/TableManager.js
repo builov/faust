@@ -1,10 +1,16 @@
 export class TableManager {
     #table;
     #metaData;
+    #onContentUpdated;
 
-    constructor(tableElement, metaData) {
+    constructor(tableElement, metaData, options) {
         this.#table = tableElement;
         this.#metaData = metaData;
+        this.#onContentUpdated = options.onContentUpdated || (() => {});
+    }
+
+    get element() {
+        return this.#table;
     }
 
     // Публичные методы для внешнего управления
@@ -14,6 +20,7 @@ export class TableManager {
         this.#createHeaderCell(id);
         this.#enableRender();
         this.#setColumnTitle(id);
+        this.#onContentUpdated();
     }
 
     // вариант без удаления таблицы из DOM
@@ -99,7 +106,7 @@ export class TableManager {
             this.#addLinksToHeader(headerCell, startsFrom);
         }
 
-        console.log('#setColumnTitle: ', headerCell);
+        // console.log('#setColumnTitle: ', headerCell);
     }
 
     #addLinksToHeader(headerCell, startsFrom) {

@@ -277,7 +277,7 @@ dialog[open] {
 }
 
 /* Стили для крестика, который теперь отображается НАД текстом */
-.dialog-close {
+.inline-comment-close {
     display: block;       /* Превращаем в блочный элемент */
     width: 100%;          /* Занимает всю ширину над текстом */
     text-align: right;    /* Сам крестик прижимаем к правому краю */
@@ -291,7 +291,7 @@ dialog[open] {
     margin-top: -4px;     /* Небольшая компенсация верхнего отступа окна */
 }
 
-.dialog-close:hover {
+.inline-comment-close:hover {
     color: #fff;
 }
 
@@ -394,5 +394,30 @@ body.app-loading .app-loader {
 
     &:hover {
         background-color: rgba(0, 0, 0, 0.8);
+    }
+}
+
+
+
+.context-menu {
+    position: fixed;
+    z-index: 2000;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    list-style: none;
+    padding: 4px 0;
+    margin: 0;
+    min-width: 180px;
+
+    li {
+        padding: 6px 12px;
+        cursor: pointer;
+        font-size: 14px;
+        color: #333;
+        &:hover {
+            background: #f0f0f0;
+        }
     }
 }

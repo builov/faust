@@ -2,9 +2,11 @@ import { Fetcher } from './Fetcher.js';
 import { MetaData } from './MetaData.js';
 import { TableManager } from './TableManager.js';
 import { ButtonToggleManager } from './ButtonToggleManager.js';
-import { DialogController } from './DialogController.js';
+import { InlineCommentController } from './InlineCommentController.js';
 import { Loader } from './Loader.js';
 import { ScrollToTopButton } from './ScrollToTopButton.js';
+import { ContextMenu } from './ContextMenu.js';
+import DOMPurify from 'dompurify';
 
 export class App {
     #metaData;
@@ -27,65 +29,168 @@ export class App {
 
         this.#fetcher = new Fetcher();
 
+        const mainContainer = document.querySelector('.main-container');
+
         // Создаём менеджеры, зависящие от метаданных и DOM
         this.#tableManager = new TableManager(
-            document.querySelector('.main-container'),
-            this.#metaData
+            mainContainer,
+            this.#metaData,
+            {
+                onContentUpdated: () => this.initDynamicDialogs()
+            }
         );
 
         this.#buttonToggleManager = new ButtonToggleManager(this.#tableManager);
 
-        this.#dialogController = new DialogController();
+        this.#dialogController = new InlineCommentController(mainContainer);
+
+        this.#initContextMenu();
 
         // Инициализация кнопки «наверх»
         new ScrollToTopButton();
-
-        // console.log('app constructor start');
-        //
-        // this.#fetcher = new Fetcher();
-        //
-        // // Блокируем интерфейс до завершения init
-        // document.body.classList.add('app-loading');
-        //
-        // this.#columnLoader = new Loader();
-        // // Если в HTML есть готовый контейнер, можно передать:
-        // // this.#loader = new Loader(document.getElementById('loading-indicator'));
-        //
-        // console.log('app constructor end');
     }
 
     init() {
         console.log('app init start');
 
         this.#initFilterButtons();
-        this.#dialogController.init(document.querySelectorAll('dialog'));
-
-        // try {
-        //     // 1. Загружаем метаданные (POST-запрос на нужный эндпоинт)
-        //     // const rawMeta = await this.#fetcher.postJson('/meta.php', { receive: 'config' });
-        //     const rawMeta = JSON.parse(document.getElementById('meta-data').textContent);
-        //     this.#metaData = new MetaData(rawMeta);
-        //
-        //     // 2. Создаём менеджеры, зависящие от метаданных и DOM
-        //     this.#tableManager = new TableManager(
-        //         document.querySelector('.main-container'),
-        //         this.#metaData
-        //     );
-        //     this.#buttonToggleManager = new ButtonToggleManager(this.#tableManager);
-        //     this.#dialogController = new DialogController();
-        //
-        //     // 3. Запускаем UI-логику
-        //     this.#initFilterButtons();
-        //     this.#dialogController.init(document.querySelectorAll('dialog'));
-        // } catch (error) {
-        //     console.error('Не удалось инициализировать приложение:', error);
-        // } finally {
-        //     document.body.classList.remove('app-loading');
-        // }
+        this.initDynamicDialogs();
 
         // Снятие блокировки кнопок
         document.body.classList.remove('app-loading');
         console.log('app init end');
+    }
+
+    // ---------- КОНТЕКСТНОЕ МЕНЮ ПЕРЕВОДОВ ----------
+    #initContextMenu() {
+        const container = document.querySelector('.main-container');
+        if (!container) return;
+
+        container.addEventListener('contextmenu', (event) => {
+            const td = event.target.closest('td');
+            if (!td) return;
+            const row = td.closest('tr');
+            if (!row) return;
+            const lineNum = row.dataset.num;
+            if (!lineNum) return;
+
+            event.preventDefault();
+            // Передаём td в первое меню
+            this.#showContextMenu(lineNum, event.clientX, event.clientY, td);
+        });
+    }
+
+    #showContextMenu(lineNum, x, y, td) {
+        const items = [
+            { label: 'Перевести строку', action: () => this.#handleTranslation(lineNum, 'line', x, y, td) },
+            { label: 'Перевести строфу', action: () => this.#handleTranslation(lineNum, 'stanza', x, y, td) },
+            { label: 'Перевести реплику', action: () => this.#handleTranslation(lineNum, 'speech', x, y, td) },
+            // { label: 'Перевести всё', action: () => this.#handleTranslation(lineNum, 'all', x, y, td) },
+        ];
+        new ContextMenu({ items, x, y }).show();
+    }
+
+    /** Определяет массив строк для перевода и вызывает соответствующий метод. */
+    #handleTranslation(lineNum, type, x, y, td) {
+        // const ids = this.#metaData.getRelatedlineNums(lineNum, type);
+        const ids = this.#getRelatedlineNums(lineNum, type);
+
+        // console.log(ids); return;
+
+        this.#showTranslationsMenu(ids, type, x, y, td).then(r => {
+            console.log('переведены строки: ', ids);
+        });
+
+    }
+
+    // async #showTranslationsMenu(lineNum, type, x, y, td) {
+    //     try {
+    //         this.#columnLoader.show();
+    //         const translations = await this.#fetcher.fetchTranslations([lineNum], type);
+    //
+    //         if (!translations || translations.length === 0) {
+    //             alert('Нет доступных переводов');
+    //             return;
+    //         }
+    //
+    //         const items = translations.map(translation => {
+    //             return {
+    //                 label: translation.label,
+    //                 action: () => {
+    //                     td.innerHTML = translation.texts[0];
+    //                 }
+    //             };
+    //         });
+    //
+    //         // Показываем второе меню справа от первого
+    //         new ContextMenu({ items, x: x + 200, y }).show();
+    //     } catch (err) {
+    //         console.error('Ошибка загрузки переводов:', err);
+    //         alert('Не удалось загрузить переводы');
+    //     } finally {
+    //         this.#columnLoader.hide();
+    //     }
+    // }
+
+    async #showTranslationsMenu(lineNums, type, x, y, td) {
+        // Конфигурация: разрешаем только безопасное форматирование текста и ссылки
+        /** @type {import('dompurify').Config} */
+        const purifyConfig = {
+            ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'a', 'br', 'span', 'p'],
+            ALLOWED_ATTR: ['href', 'target', 'title', 'class'], // Разрешаем ссылки и оформление, но блокируем onclick/onerror
+            RETURN_TRUSTED_TYPE: false // Оставляем false для совместимости с innerHTML
+        };
+
+        // console.log('td: ', td);
+        try {
+            this.#columnLoader.show();
+            const translations = await this.#fetcher.fetchTranslations(lineNums, type);
+
+            if (!translations || translations.length === 0) {
+                alert('Нет доступных переводов');
+                return;
+            }
+
+            const colIndex = td.cellIndex;
+
+            const items = translations.map(translations => ({
+                label: translations.label,
+                action: () => {
+                    Object.entries(translations.texts).forEach(([lineNum, text]) => {
+                        const row = document.querySelector(`tr[data-num="${lineNum}"]`);
+
+                        if (row && row.cells[colIndex]) {
+                            const cell = row.cells[colIndex];
+                            const child = cell.firstElementChild;
+
+                            const safeHtml = DOMPurify.sanitize(text, purifyConfig);
+                            // const safeHtml = DOMPurify.sanitize(text, {
+                            //     ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'a', 'br', 'span', 'p'],
+                            //     ALLOWED_ATTR: ['href', 'target', 'title', 'class']
+                            // });
+
+                            if (child) {
+                                child.innerHTML = safeHtml;
+                            } else {
+                                cell.innerHTML = safeHtml;
+                            }
+                        }
+                    });
+                }
+            }));
+
+            new ContextMenu({ items, x: x + 200, y }).show();
+        } catch (err) {
+            console.error('Ошибка загрузки переводов:', err);
+            alert('Не удалось загрузить переводы');
+        } finally {
+            this.#columnLoader.hide();
+        }
+    }
+
+    initDynamicDialogs() {
+        // Находим комментарии и передаем их в контроллер, чтобы он сгенерировал для них кнопки "*"
+        this.#dialogController.init(document.querySelectorAll('.main-container dialog'));
     }
 
     #initFilterButtons() {
@@ -127,5 +232,95 @@ export class App {
                 this.#columnLoader.hide();
             }
         });
+    }
+
+    /**
+     * Возвращает массив data-num строк для заданного типа контекста.
+     * Использует CSS-классы строк таблицы для поиска границ.
+     * @param {string} lineNum - data-num строки, с которой начали
+     * @param {'line'|'stanza'|'speech'} type
+     * @returns {string[]}
+     */
+    #getRelatedlineNums(lineNum, type) {
+        if (type === 'line') {
+            return [lineNum];
+        }
+
+        const table = this.#tableManager.element;
+        if (!table || (type !== 'stanza' && type !== 'speech')) {
+            return [lineNum];
+        }
+
+        const startRow = table.querySelector(`tr[data-num="${lineNum}"]`);
+        if (!startRow) {
+            return [lineNum];
+        }
+
+        const isSpeech = type === 'speech';
+
+        // Функция проверки: является ли строка границей контекста
+        const isBoundary = (line) => {
+            for (const cls of line.classList) {
+                if (cls === 'default') {
+                    continue;
+                }
+                if (isSpeech && (cls === 'stanza_end' || cls === 'stage_direction')) {
+                    continue;
+                }
+
+                return true;
+            }
+
+            return false;
+        };
+
+        // Поиск начала диапазона: первая строка после ближайшей границы сверху
+        let beginRow = table.rows[0];
+        let current = startRow.previousElementSibling;
+
+        while (current) {
+            if (isBoundary(current)) {
+                beginRow = current.nextElementSibling;
+                break;
+            }
+
+            current = current.previousElementSibling;
+        }
+
+        // Поиск конца диапазона: последняя строка перед ближайшей границей снизу
+        let endRow = table.rows[table.rows.length - 1];
+        current = startRow.nextElementSibling;
+
+        while (current) {
+            if (isBoundary(current)) {
+                if (type === 'stanza' && current.classList.contains('stanza_end')) {
+                    endRow = current; // включить строку с классом stanza_end
+                } else {
+                    endRow = current.previousElementSibling; // закончить перед границей
+                }
+                break;
+            }
+
+            current = current.nextElementSibling;
+        }
+
+        // Сбор data-num от beginRow до endRow включительно
+        const ids = [];
+        let row = beginRow;
+
+        while (row) {
+            const num = row.dataset.num;
+
+            if (num) {
+                ids.push(num);
+            }
+            if (row === endRow) {
+                break;
+            }
+
+            row = row.nextElementSibling;
+        }
+
+        return ids;
     }
 }
