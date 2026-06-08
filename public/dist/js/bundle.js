@@ -3916,8 +3916,8 @@ var MetaData = /*#__PURE__*/function () {
     key: "getStartsFrom",
     value: function getStartsFrom(textId) {
       var _classPrivateFieldGet4, _classPrivateFieldGet5;
-      // return this.#data[textId]?.starts_from ?? [];
-      return (_classPrivateFieldGet4 = (_classPrivateFieldGet5 = _classPrivateFieldGet(_data, this)[textId]) === null || _classPrivateFieldGet5 === void 0 ? void 0 : _classPrivateFieldGet5.startsFrom) !== null && _classPrivateFieldGet4 !== void 0 ? _classPrivateFieldGet4 : [];
+      return (_classPrivateFieldGet4 = (_classPrivateFieldGet5 = _classPrivateFieldGet(_data, this)[textId]) === null || _classPrivateFieldGet5 === void 0 ? void 0 : _classPrivateFieldGet5.starts_from) !== null && _classPrivateFieldGet4 !== void 0 ? _classPrivateFieldGet4 : [];
+      // return this.#data[textId]?.startsFrom ?? [];
     }
 
     /**
