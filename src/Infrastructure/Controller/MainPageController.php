@@ -28,7 +28,22 @@ class MainPageController
         // Выполняем бизнес-логику и получаем безопасный DTO
         $pageData = $this->useCase->execute($selectedIds);
 
-        // Рендерим шаблон, передавая свойства DTO
+        //конвертация из массива TextDTO в массив попроще (-1 уровень)
+        $result = [];
+        foreach ($pageData->texts as $key => $textDTO) {
+            $result[$key] = array_map(function ($line) {
+                return [
+                    $line->text,
+                    $line->cssClass
+                ];
+            }, $textDTO->lines);
+        }
+
+        $pageData->texts = $result;
+        unset($result);
+
+//        print_r($pageData->meta); exit;
+
         $html = $this->twig->render('index.html.twig', [
             'title' => 'Фауст',
             'data' => $pageData->texts,

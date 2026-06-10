@@ -6,24 +6,27 @@ use Builov\Faust\Infrastructure\Controller\TranslationApiController;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Инициализируем зависимости один раз при старте
-$container = ContainerFactory::build();
+$DI = ContainerFactory::build();
 
-$showParam = $_GET['show'] ?? null;
+$textId = $_GET['show'] ?? null;
 
 // Минимальный роутинг
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && is_string($showParam)) {
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && is_string($textId)) {
 
     // Передаем управление API-контроллеру
-    $controller = $container[TranslationApiController::class];
-    $response = $controller->handle($showParam);
+    $controller = $DI[TranslationApiController::class];
+    $response = $controller->handle($textId);
 
 } else {
-
-    // Формируем параметры для дефолтной страницы
-    $selected = is_array($showParam) ? $showParam : ['faust', 'fet', 'guber'];
+    // параметры для дефолтной страницы
+    $selected = [
+        'faust',
+        'fet',
+        'aksakov'
+    ];
 
     // Передаем управление контроллеру главной страницы
-    $controller = $container[MainPageController::class];
+    $controller = $DI[MainPageController::class];
     $response = $controller->handle($selected);
 }
 

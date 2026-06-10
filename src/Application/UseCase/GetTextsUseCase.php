@@ -19,31 +19,32 @@ class GetTextsUseCase
     {
     }
 
-    /** @param string[] $ids */
-    public function execute(array $ids): MainPageResponseDTO
+    /** @param string[] $textIds */
+    public function execute(array $textIds): MainPageResponseDTO
     {
         $allMeta = $this->repository->getAllMeta();
         $textDTOs = [];
 
-        foreach ($ids as $id) {
+        foreach ($textIds as $id) {
             if (isset($allMeta[$id])) {
-                $poemText = $this->repository->getById($id);
-                $textDTOs[$id] = TextMapper::toDTO($poemText, $allMeta[$id]);
+                $text = $this->repository->getById($id);
+                $textDTOs[$id] = TextMapper::toDTO($text, $allMeta[$id]);
             }
         }
 
         // Преобразуем доменную коллекцию метаданных в простой массив для UI
         $metaData = [];
         foreach ($allMeta as $meta) {
-            $metaData[] = [
+            $metaData[$meta->getId()] = [
                 'id' => $meta->getId(),
-                'title' => $meta->getTitle()
+                'title' => $meta->getTitle(),
+                'startsFrom' => $meta->getFragmentStarts()
             ];
         }
 
         return new MainPageResponseDTO(
             $textDTOs,
-            $metaData,
+            $metaData, //для указанных id
             count($textDTOs)
         );
     }

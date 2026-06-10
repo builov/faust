@@ -30,11 +30,10 @@ class ContainerFactory
         $configReader = new JsonConfigReader($configPath);
 //        print_r($configReader->read()); exit;
 
-        $textReader = new FileTextReader();
+        $textReader = new FileTextReader($baseDir . 'data');
 
         $repository = new TextRepository($configReader, $textReader);
-
-        print_r($repository->getById('faust')); exit;
+//        print_r($repository->getById('aksakov')); exit;
 
         $getTextsUseCase = new GetTextsUseCase($repository);
         $getSingleTextUseCase = new GetSingleTextUseCase($repository);

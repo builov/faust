@@ -21,7 +21,7 @@ class GetSingleTextUseCase
             throw new \InvalidArgumentException("Translation not found: " . $id);
         }
 
-        $poemText = $this->repository->getById($id);
-        return TextMapper::toDTO($poemText, $allMeta[$id]);
+        $text = $this->repository->getById($id);
+        return TextMapper::toDTO($text, $allMeta[$id]);
     }
 }

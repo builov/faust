@@ -1,21 +1,25 @@
 <?php
-
 /**
- * паспорт перевода. Содержит ID, название, автора и правила сборки фрагментов.
- * Метаданные перевода. Содержит ID, название, тип (полный/частичный)
- * и связи с файлами (в абстрактном виде).
+ * паспорт текста. Содержит ID, название, тип (полный/частичный), ссылки на файлы и правила сборки фрагментов.
  */
 
 namespace Builov\Faust\Domain\Model;
 
 class TextMeta
 {
+    /**
+     * @param string $id
+     * @param string $title
+     * @param string $filePath
+     * @param string[] $markupPaths Массив путей к файлам разметки
+     * @param int[] $fragmentStarts
+     */
     public function __construct(
         private string $id,
         private string $title,
         private string $filePath,
-        private array $markupPath,
-        private array  $fragmentStarts = []
+        private array $markupPaths,
+        private array $fragmentStarts = []
     )
     {
     }
@@ -35,9 +39,16 @@ class TextMeta
         return $this->filePath;
     }
 
-    public function getMarkupPath(): string
+    /** @return string[] */
+    public function getMarkupPaths(): array
     {
-        return $this->markupPath[0];
+        return $this->markupPaths;
+    }
+
+    /** @return int[] */
+    public function getFragmentStarts(): array
+    {
+        return $this->fragmentStarts;
     }
 
     public function isFull(): bool

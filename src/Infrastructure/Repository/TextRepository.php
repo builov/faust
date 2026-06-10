@@ -32,7 +32,7 @@ class TextRepository implements TextRepositoryInterface
         }
 
         $meta = $metaList[$id];
-        $lines = $this->textReader->readLines($meta->getFilePath(), $meta->getMarkupPath());
+        $lines = $this->textReader->readLines($meta);
 
         return new Text($id, $lines);
     }

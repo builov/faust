@@ -1,13 +1,5 @@
 <?php
-
 /**
- * текст перевода (или оригинала). Хранит массив строк или фрагментов.
- * Знает, полный он или частичный.
- *
- * Синхронизация строк: За точное совпадение номеров строк оригинала и перевода
- * теперь отвечает доменная модель TranslationText. Она гарантирует,
- * что строка №5 перевода всегда встанет напротив строки №5 оригинала.
- *
  * Агрегат, представляющий текст (оригинал или перевод) как упорядоченную коллекцию объектов TextLine.
  * Отвечает за логику сопоставления номеров строк оригинала и перевода.
  */
@@ -19,17 +11,58 @@ class Text
     /** @param TextLine[] $lines */
     public function __construct(
         private string $id,
-        private array $lines
-    ) {}
+        private array  $lines
+    )
+    {
+    }
 
-    public function getId(): string { return $this->id; }
+    public function getId(): string
+    {
+        return $this->id;
+    }
 
     /** @return TextLine[] */
-    public function getLines(): array { return $this->lines; }
+    public function getLines(): array
+    {
+        return $this->lines;
+    }
 
     // Пример доменной логики: проверка наличия строки в переводе
     public function hasLine(int $lineNumber): bool
     {
         return isset($this->lines[$lineNumber]);
     }
+
+    /**
+     * Возвращает массив номеров строк, входящих в строфу для заданной строки
+     * @param int $targetLine Номер строки, на которой вызвали меню
+     * @return int[] Список номеров строк, составляющих строфу
+     */
+    public function getStanzaLineNumbers(int $targetLine): array
+    {
+        // 1. Собираем все номера строк, которые помечены как 'stanza_end'
+        $endLines = [];
+        foreach ($this->lines as $num => $line) {
+            if ($line->getCssClass() === 'stanza_end') {
+                $endLines[] = $num;
+            }
+        }
+        sort($endLines);
+
+        // 2. Ищем границы строфы для нашей targetLine
+        $startLine = 1;
+        $endLine = count($this->lines);
+
+        foreach ($endLines as $index => $currentEnd) {
+            if ($currentEnd >= $targetLine) {
+                $endLine = $currentEnd;
+                $startLine = ($index > 0) ? $endLines[$index - 1] + 1 : 1;
+                break;
+            }
+        }
+
+        // 3. Возвращаем массив номеров строк от старта до конца строфы
+        return range($startLine, $endLine);
+    }
 }
+

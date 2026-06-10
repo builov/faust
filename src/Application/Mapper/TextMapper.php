@@ -9,10 +9,10 @@ use Builov\Faust\Application\DTO\TextLineDTO;
 
 class TextMapper
 {
-    public static function toDTO(Text $poemText, TextMeta $meta): TextDTO
+    public static function toDTO(Text $text, TextMeta $meta): TextDTO
     {
         $lineDTOs = [];
-        foreach ($poemText->getLines() as $number => $line) {
+        foreach ($text->getLines() as $number => $line) {
             $lineDTOs[$number] = new TextLineDTO(
                 $line->getNumber(),
                 $line->getText(),
@@ -21,7 +21,7 @@ class TextMapper
         }
 
         return new TextDTO(
-            $poemText->getId(),
+            $text->getId(),
             $meta->getTitle(),
             $lineDTOs
         );

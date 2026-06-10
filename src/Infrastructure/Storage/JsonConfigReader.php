@@ -28,7 +28,7 @@ class JsonConfigReader
                 $id,
                 $item['title'],
                 $item['path'],
-                $item['markup'],
+                $item['markup'] ?? [],
                 $item['starts_from'] ?? []
             );
         }
