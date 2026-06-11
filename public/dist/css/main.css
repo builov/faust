@@ -11875,11 +11875,19 @@ textarea.form-control-lg {
 }
 
 .main-container tbody tr {
+  height: 0;
+}
+.main-container tbody tr.default, .main-container tbody tr.title, .main-container tbody tr.subtitle, .main-container tbody tr.scene_title, .main-container tbody tr.character_list, .main-container tbody tr.stage_direction, .main-container tbody tr.entrance, .main-container tbody tr.slugline, .main-container tbody tr.stanza_end, .main-container tbody tr.speech_heading {
+  height: unset;
+}
+.main-container tbody tr {
   counter-increment: row-number;
   position: relative; /* База для позиционирования номера строки */
+}
+.main-container tbody tr.default, .main-container tbody tr.title, .main-container tbody tr.subtitle, .main-container tbody tr.scene_title, .main-container tbody tr.character_list, .main-container tbody tr.stage_direction, .main-container tbody tr.entrance, .main-container tbody tr.slugline, .main-container tbody tr.stanza_end, .main-container tbody tr.speech_heading {
   /* Выносим номер влево за пределы строки */
 }
-.main-container tbody tr td:first-child::before {
+.main-container tbody tr.default td:first-child::before, .main-container tbody tr.title td:first-child::before, .main-container tbody tr.subtitle td:first-child::before, .main-container tbody tr.scene_title td:first-child::before, .main-container tbody tr.character_list td:first-child::before, .main-container tbody tr.stage_direction td:first-child::before, .main-container tbody tr.entrance td:first-child::before, .main-container tbody tr.slugline td:first-child::before, .main-container tbody tr.stanza_end td:first-child::before, .main-container tbody tr.speech_heading td:first-child::before {
   content: counter(row-number);
   position: absolute;
   left: -45px; /* Выталкиваем номер влево на поля */

@@ -3640,7 +3640,7 @@ var Fetcher = /*#__PURE__*/function () {
         return _regenerator().w(function (_context3) {
           while (1) switch (_context3.n) {
             case 0:
-              return _context3.a(2, this.postJson('/translation.php', {
+              return _context3.a(2, this.postJson('/', {
                 lines: lines,
                 type: type
               }));
@@ -4159,6 +4159,7 @@ function _insertDataCells(id, data) {
       div.className = className;
       div.innerHTML = text;
       cell.appendChild(div);
+      cell.closest('tr').classList.add(className);
     }
   });
 }

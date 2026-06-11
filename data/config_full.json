@@ -6,6 +6,13 @@
     ],
     "title": "Оригинальный текст"
   },
+  "translate": {
+    "path": "translate.txt",
+    "markup": [
+      "faust_markup.txt"
+    ],
+    "title": "Подстрочник"
+  },
   "guber": {
     "path": "guber.txt",
     "markup": [

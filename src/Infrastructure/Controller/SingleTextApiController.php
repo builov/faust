@@ -11,7 +11,7 @@ use Builov\Faust\Application\UseCase\GetSingleTextUseCase;
 use Builov\Faust\Infrastructure\Http\JsonResponse;
 use Builov\Faust\Infrastructure\Http\Response;
 
-class TranslationApiController
+class SingleTextApiController
 {
     public function __construct(
         private GetSingleTextUseCase $useCase
@@ -21,7 +21,6 @@ class TranslationApiController
 
     public function handle(string $id): Response
     {
-        // Очистка входных параметров (санитаризация)
         $cleanId = htmlspecialchars(trim($id), ENT_QUOTES, 'UTF-8');
 
         try {

@@ -7,11 +7,14 @@ namespace Builov\Faust\Infrastructure\DI;
 
 use Builov\Faust\Application\UseCase\GetSingleTextUseCase;
 use Builov\Faust\Application\UseCase\GetTextsUseCase;
+use Builov\Faust\Application\UseCase\TranslateLinesUseCase;
+use Builov\Faust\Infrastructure\Controller\TranslateLinesApiController;
 use Builov\Faust\Infrastructure\Repository\TextRepository;
 use Builov\Faust\Infrastructure\Storage\FileTextReader;
 use Builov\Faust\Infrastructure\Storage\JsonConfigReader;
 use Builov\Faust\Infrastructure\Controller\MainPageController;
-use Builov\Faust\Infrastructure\Controller\TranslationApiController;
+use Builov\Faust\Infrastructure\Controller\SingleTextApiController;
+use Builov\Faust\Infrastructure\Storage\PhpFileCacheStorage;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
@@ -35,13 +38,17 @@ class ContainerFactory
         $repository = new TextRepository($configReader, $textReader);
 //        print_r($repository->getById('aksakov')); exit;
 
+        $cacheStorage = new PhpFileCacheStorage($baseDir . 'data/trans.php');
+
         $getTextsUseCase = new GetTextsUseCase($repository);
         $getSingleTextUseCase = new GetSingleTextUseCase($repository);
+        $translateLinesUseCase = new TranslateLinesUseCase($cacheStorage);
 
         // 3. Возвращаем плоский "контейнер" (карта классов)
         return [
             MainPageController::class => new MainPageController($getTextsUseCase, $twig),
-            TranslationApiController::class => new TranslationApiController($getSingleTextUseCase)
+            SingleTextApiController::class => new SingleTextApiController($getSingleTextUseCase),
+            TranslateLinesApiController::class => new TranslateLinesApiController($translateLinesUseCase)
         ];
     }
 }

@@ -17,23 +17,54 @@ $font-family-base: Georgia, Cambria, "Times New Roman", Times, serif; //стан
 }
 
 .main-container tbody tr {
+    height: 0;
+
+    &.default,
+    &.title,
+    &.subtitle,
+    &.scene_title,
+    &.character_list,
+    &.stage_direction,
+    &.entrance,
+    &.slugline,
+    &.stanza_end,
+    &.speech_heading
+    {
+        height: unset;
+    }
+
     counter-increment: row-number;
     position: relative; /* База для позиционирования номера строки */
 
-    /* Выносим номер влево за пределы строки */
-    td:first-child::before {
-        content: counter(row-number);
-        position: absolute;
-        left: -45px;       /* Выталкиваем номер влево на поля */
-        top: 50%;
-        transform: translateY(-50%); /* Центрируем по вертикали */
 
-        width: 35px;
-        text-align: right; /* Выравниваем разряды (1, 10, 100) по правому краю */
-        color: #a0a0a0;
-        font-size: 0.9em;
-        font-family: monospace; /* Моноширинный шрифт идеален для цифр */
+    &.default,
+    &.title,
+    &.subtitle,
+    &.scene_title,
+    &.character_list,
+    &.stage_direction,
+    &.entrance,
+    &.slugline,
+    &.stanza_end,
+    &.speech_heading
+    {
+        /* Выносим номер влево за пределы строки */
+        td:first-child::before {
+            content: counter(row-number);
+            position: absolute;
+            left: -45px; /* Выталкиваем номер влево на поля */
+            top: 50%;
+            transform: translateY(-50%); /* Центрируем по вертикали */
+
+            width: 35px;
+            text-align: right; /* Выравниваем разряды (1, 10, 100) по правому краю */
+            color: #a0a0a0;
+            font-size: 0.9em;
+            font-family: monospace; /* Моноширинный шрифт идеален для цифр */
+        }
     }
+
+
 
     td div {
         position: relative;
@@ -52,6 +83,9 @@ $font-family-base: Georgia, Cambria, "Times New Roman", Times, serif; //стан
         margin-bottom: .5em; /* Небольшой зазор между заголовком и текстом */
     }
 }
+
+
+
 
 
 div.title {

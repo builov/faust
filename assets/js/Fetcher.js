@@ -22,7 +22,7 @@ export class Fetcher {
      * @returns {Promise<Array<{label: string, texts: Array<{rowId: string, text: string}>}>>}
      */
     async fetchTranslations(lines, type) {
-        return this.postJson('/translation.php', { lines, type });
+        return this.postJson('/', { lines, type });
     }
 
     // async fetchTranslations(rowId, type) {

@@ -82,6 +82,8 @@ export class TableManager {
                 div.className = className;
                 div.innerHTML = text;
                 cell.appendChild(div);
+
+                cell.closest('tr').classList.add(className);
             }
         });
     }

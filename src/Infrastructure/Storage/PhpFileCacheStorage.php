@@ -1,6 +1,8 @@
 <?php
 
 namespace Builov\Faust\Infrastructure\Storage;
+use Builov\Faust\Domain\Repository\CacheStorageInterface;
+
 /**
  * обертка (декоратор). Вместо медленного чтения файлов использует
  * быстрый файл-индекс (бывший trans.php).
@@ -9,15 +11,15 @@ namespace Builov\Faust\Infrastructure\Storage;
  * Отвечает за методы all() и getLineArray().
  */
 
-class PhpFileCacheStorage
+class PhpFileCacheStorage implements CacheStorageInterface
 {
     public function __construct(private string $cacheFilePath) {}
 
     public function write(array $data): void
     {
         // Генерируем валидный PHP-код, возвращающий массив
-        $code = "<?php\n\nreturn " . var_export($data, true) . ";\n";
-        file_put_contents($this->cacheFilePath, $code);
+//        $code = "<?php\n\nreturn " . var_export($data, true) . ";\n";
+//        file_put_contents($this->cacheFilePath, $code);
     }
 
     public function read(): array

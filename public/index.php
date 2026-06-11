@@ -1,7 +1,9 @@
 <?php
+
 use Builov\Faust\Infrastructure\DI\ContainerFactory;
 use Builov\Faust\Infrastructure\Controller\MainPageController;
-use Builov\Faust\Infrastructure\Controller\TranslationApiController;
+use Builov\Faust\Infrastructure\Controller\SingleTextApiController;
+use Builov\Faust\Infrastructure\Controller\TranslateLinesApiController;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -14,14 +16,32 @@ $textId = $_GET['show'] ?? null;
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && is_string($textId)) {
 
     // Передаем управление API-контроллеру
-    $controller = $DI[TranslationApiController::class];
+    $controller = $DI[SingleTextApiController::class];
     $response = $controller->handle($textId);
+
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+
+    $lines = $data['lines'] ?? null;
+    $type = $data['type'] ?? null;
+
+    if (!is_array($lines) || !is_string($type)) {
+        http_response_code(422);
+        echo json_encode(['error' => 'Invalid parameters']);
+        exit;
+    }
+
+    $controller = $DI[TranslateLinesApiController::class];
+    $response = $controller->handle($lines, $type);
+//    $response = $controller->handle(["3", "4", "5", "6", "7", "8", "9", "10"],'stanza');
 
 } else {
     // параметры для дефолтной страницы
     $selected = [
-        'faust',
-        'fet',
+//        'faust',
+//        'fet',
         'aksakov'
     ];
 
