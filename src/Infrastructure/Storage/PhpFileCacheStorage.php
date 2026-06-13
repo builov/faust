@@ -8,18 +8,24 @@ use Builov\Faust\Domain\Repository\CacheStorageInterface;
  * быстрый файл-индекс (бывший trans.php).
  *
  * Реализует генерацию и чтение файла trans.php (двухуровневого массива строк).
- * Отвечает за методы all() и getLineArray().
  */
 
 class PhpFileCacheStorage implements CacheStorageInterface
 {
-    public function __construct(private string $cacheFilePath) {}
+    public function __construct(
+        private readonly string $cacheFilePath
+    ) {}
 
     public function write(array $data): void
     {
-        // Генерируем валидный PHP-код, возвращающий массив
-//        $code = "<?php\n\nreturn " . var_export($data, true) . ";\n";
-//        file_put_contents($this->cacheFilePath, $code);
+        $exported = var_export($data, true); // Используем var_export для создания валидного литерала массива
+
+        $code = "<?php\n\n// Автоматически сгенерированный файл данных\n// Создан: " . date('Y-m-d H:i:s')
+            . "\n// Всего массивов: " . count($data) . "\n\nreturn " . $exported . ";\n";
+
+        if (file_put_contents($this->cacheFilePath, $code) === false) {
+            die("Ошибка записи в $this->cacheFilePath\n");
+        }
     }
 
     public function read(): array

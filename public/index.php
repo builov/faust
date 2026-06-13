@@ -1,5 +1,6 @@
 <?php
 
+use Builov\Faust\Infrastructure\Controller\BuildCacheController;
 use Builov\Faust\Infrastructure\DI\ContainerFactory;
 use Builov\Faust\Infrastructure\Controller\MainPageController;
 use Builov\Faust\Infrastructure\Controller\SingleTextApiController;
@@ -11,6 +12,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $DI = ContainerFactory::build();
 
 $textId = $_GET['show'] ?? null;
+$mode = $_GET['mode'] ?? null;
 
 // Минимальный роутинг
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && is_string($textId)) {
@@ -18,6 +20,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && is_string($textId)) {
     // Передаем управление API-контроллеру
     $controller = $DI[SingleTextApiController::class];
     $response = $controller->handle($textId);
+
+} elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && $mode === 'reindex') {
+
+    $controller = $DI[BuildCacheController::class];
+    $response = $controller->handle();
 
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -40,9 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && is_string($textId)) {
 } else {
     // параметры для дефолтной страницы
     $selected = [
-//        'faust',
+        'faust',
 //        'fet',
-        'aksakov'
+//        'aksakov'
     ];
 
     // Передаем управление контроллеру главной страницы

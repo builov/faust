@@ -45,7 +45,7 @@ class FileTextReader
                 continue;
             }
             if ($line === "DELIMITER") {
-                $textChunks[$chunkIndex][0] .= $fragmentTitle;
+                $textChunks[$chunkIndex][0] = $fragmentTitle . $textChunks[$chunkIndex][0];
                 $chunkIndex++;
                 continue;
             }

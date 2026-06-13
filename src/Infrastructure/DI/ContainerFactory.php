@@ -7,7 +7,9 @@ namespace Builov\Faust\Infrastructure\DI;
 
 use Builov\Faust\Application\UseCase\GetSingleTextUseCase;
 use Builov\Faust\Application\UseCase\GetTextsUseCase;
+use Builov\Faust\Application\UseCase\RebuildCacheUseCase;
 use Builov\Faust\Application\UseCase\TranslateLinesUseCase;
+use Builov\Faust\Infrastructure\Controller\BuildCacheController;
 use Builov\Faust\Infrastructure\Controller\TranslateLinesApiController;
 use Builov\Faust\Infrastructure\Repository\TextRepository;
 use Builov\Faust\Infrastructure\Storage\FileTextReader;
@@ -27,7 +29,7 @@ class ContainerFactory
         $twig = new Environment($loader, ['cache' => false, 'debug' => true]);
 
         $baseDir = __DIR__ . '/../../../';
-        $configPath = $baseDir . 'data/config.json'; // Путь к вашему config.json
+        $configPath = $baseDir . 'data/config.json';
 
         // 2. Сборка слоев (снизу вверх)
         $configReader = new JsonConfigReader($configPath);
@@ -43,12 +45,14 @@ class ContainerFactory
         $getTextsUseCase = new GetTextsUseCase($repository);
         $getSingleTextUseCase = new GetSingleTextUseCase($repository);
         $translateLinesUseCase = new TranslateLinesUseCase($cacheStorage);
+        $rebuildCacheUseCase = new RebuildCacheUseCase($repository, $cacheStorage);
 
         // 3. Возвращаем плоский "контейнер" (карта классов)
         return [
             MainPageController::class => new MainPageController($getTextsUseCase, $twig),
             SingleTextApiController::class => new SingleTextApiController($getSingleTextUseCase),
-            TranslateLinesApiController::class => new TranslateLinesApiController($translateLinesUseCase)
+            TranslateLinesApiController::class => new TranslateLinesApiController($translateLinesUseCase),
+            BuildCacheController::class => new BuildCacheController($rebuildCacheUseCase)
         ];
     }
 }

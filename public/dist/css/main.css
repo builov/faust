@@ -11866,6 +11866,7 @@ textarea.form-control-lg {
   counter-reset: row-number;
   margin-left: 50px; /* Размер отступа равен ширине зоны номеров */
   position: relative;
+  margin-bottom: 4em;
 }
 
 .main-container tr {
@@ -11875,12 +11876,7 @@ textarea.form-control-lg {
 }
 
 .main-container tbody tr {
-  height: 0;
-}
-.main-container tbody tr.default, .main-container tbody tr.title, .main-container tbody tr.subtitle, .main-container tbody tr.scene_title, .main-container tbody tr.character_list, .main-container tbody tr.stage_direction, .main-container tbody tr.entrance, .main-container tbody tr.slugline, .main-container tbody tr.stanza_end, .main-container tbody tr.speech_heading {
-  height: unset;
-}
-.main-container tbody tr {
+  min-height: 1em;
   counter-increment: row-number;
   position: relative; /* База для позиционирования номера строки */
 }
@@ -11910,6 +11906,10 @@ textarea.form-control-lg {
   font-style: normal;
   /* Дополнительные стили для красоты (шрифт, размер, отступ) */
   margin-bottom: 0.5em; /* Небольшой зазор между заголовком и текстом */
+}
+.main-container tbody tr td:first-child div.floating-title {
+  position: initial;
+  margin-top: 2em;
 }
 
 div.title {

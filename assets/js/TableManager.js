@@ -78,12 +78,17 @@ export class TableManager {
             const item = data[i];
             if (item) {
                 const [text, className] = item;
-                const div = document.createElement('div');
-                div.className = className;
-                div.innerHTML = text;
-                cell.appendChild(div);
 
-                cell.closest('tr').classList.add(className);
+                if (text.trim().length > 0) {
+                    // console.log(text);
+
+                    const div = document.createElement('div');
+                    div.className = className;
+                    div.innerHTML = text;
+                    cell.appendChild(div);
+
+                    cell.closest('tr').classList.add(className);
+                }
             }
         });
     }

@@ -4151,15 +4151,22 @@ function _insertDataCells(id, data) {
   Array.from(rows).forEach(function (row, i) {
     var cell = row.insertCell(-1);
     var item = data[i];
+
+    // console.log(item);
+
     if (item) {
       var _item = _slicedToArray(item, 2),
         text = _item[0],
         className = _item[1];
-      var div = document.createElement('div');
-      div.className = className;
-      div.innerHTML = text;
-      cell.appendChild(div);
-      cell.closest('tr').classList.add(className);
+      if (text.trim().length > 0) {
+        // console.log(text);
+
+        var div = document.createElement('div');
+        div.className = className;
+        div.innerHTML = text;
+        cell.appendChild(div);
+        cell.closest('tr').classList.add(className);
+      }
     }
   });
 }

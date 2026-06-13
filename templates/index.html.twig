@@ -20,7 +20,7 @@
 {#    {% endfor %}#}
 {#</ol>#}
 
-<header>
+<header class="container-fluid mt-2">
     <ul id="buttons" class="list-inline">
         {% for id, data in meta %}
             <li class="list-inline-item m-1">
@@ -52,34 +52,35 @@
 {#</div>#}
 
 {#{{ data|length }}#}
-
-<table class="main-container">
-    <thead>
+<div class="container-fluid">
+    <table class="main-container">
+        <thead>
         <tr>
-{#            <th></th>#}
+            {#            <th></th>#}
             {% for id, text in data %}
                 <th data-text-id="{{ id }}"></th>
             {% endfor %}
         </tr>
-    </thead>
-    <tbody>
-    {% for line in data|first %}
-        <tr data-num="{{ loop.index0 }}" class="{{ line[1] }}" id="{{ loop.index0 + 1 }}">
-{#            <td>#}
-{#                {{ loop.index0 + 1 }}#}
-{#            </td>#}
-            <td>
-                <div class="{{ line[1] }}">{{ line[0]|raw }}</div>
-            </td>
-            {% for text in data|slice(1) %}
+        </thead>
+        <tbody>
+        {% for line in data|first %}
+            <tr data-num="{{ loop.index0 }}" class="{{ line[1] }}" id="{{ loop.index0 + 1 }}">
+                {#            <td>#}
+                {#                {{ loop.index0 + 1 }}#}
+                {#            </td>#}
                 <td>
-                    <div class="{{ text[loop.parent.loop.index0][1] }}">{{ text[loop.parent.loop.index0][0]|raw }}</div>
+                    <div class="{{ line[1] }}">{{ line[0]|raw }}</div>
                 </td>
-            {% endfor %}
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+                {% for text in data|slice(1) %}
+                    <td>
+                        <div class="{{ text[loop.parent.loop.index0][1] }}">{{ text[loop.parent.loop.index0][0]|raw }}</div>
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 
 <div id="loading-indicator" class="spinner-border d-none" role="status">

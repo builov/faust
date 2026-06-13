@@ -4,10 +4,15 @@ $font-family-base: Georgia, Cambria, "Times New Roman", Times, serif; //стан
 
 @import "~bootstrap/scss/bootstrap";
 
+body {
+    //padding-bottom: 2em;
+}
+
 .main-container {
     counter-reset: row-number;
     margin-left: 50px; /* Размер отступа равен ширине зоны номеров */
     position: relative;
+    margin-bottom: 4em;
 }
 
 .main-container tr {
@@ -17,21 +22,23 @@ $font-family-base: Georgia, Cambria, "Times New Roman", Times, serif; //стан
 }
 
 .main-container tbody tr {
-    height: 0;
+    //height: 0;
+    //
+    //&.default,
+    //&.title,
+    //&.subtitle,
+    //&.scene_title,
+    //&.character_list,
+    //&.stage_direction,
+    //&.entrance,
+    //&.slugline,
+    //&.stanza_end,
+    //&.speech_heading
+    //{
+    //    height: unset;
+    //}
 
-    &.default,
-    &.title,
-    &.subtitle,
-    &.scene_title,
-    &.character_list,
-    &.stage_direction,
-    &.entrance,
-    &.slugline,
-    &.stanza_end,
-    &.speech_heading
-    {
-        height: unset;
-    }
+    min-height: 1em;
 
     counter-increment: row-number;
     position: relative; /* База для позиционирования номера строки */
@@ -64,6 +71,10 @@ $font-family-base: Georgia, Cambria, "Times New Roman", Times, serif; //стан
         }
     }
 
+    //&:first-child {
+    //    min-height: 3em;
+    //}
+
 
 
     td div {
@@ -82,11 +93,12 @@ $font-family-base: Georgia, Cambria, "Times New Roman", Times, serif; //стан
         //color: #6c757d;     /* Серый цвет в стиле Bootstrap link-secondary */
         margin-bottom: .5em; /* Небольшой зазор между заголовком и текстом */
     }
+
+    td:first-child div.floating-title {
+        position: initial;
+        margin-top: 2em;
+    }
 }
-
-
-
-
 
 div.title {
     font-size: 2rem;
