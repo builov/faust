@@ -4,6 +4,8 @@ namespace Builov\Faust\Infrastructure\Storage;
 
 use Builov\Faust\Domain\Model\TextReaderInterface;
 use Builov\Faust\Domain\Model\TextMeta;
+use Builov\Faust\Domain\Model\Text;
+use Builov\Faust\Domain\Model\TextFragment;
 use Builov\Faust\Domain\Model\TextLine;
 
 class MarkupTextDecorator implements TextReaderInterface
@@ -13,18 +15,48 @@ class MarkupTextDecorator implements TextReaderInterface
         private readonly string $dataDir
     ) {}
 
-    public function readLines(TextMeta $meta): array
+    public function readText(TextMeta $meta): Text
     {
-        $lines = $this->wrapped->readLines($meta);
+        $textObject = $this->wrapped->readText($meta);
         $markupPaths = $meta->getMarkupPaths();
 
         if (empty($markupPaths)) {
-            return $lines;
+            return $textObject;
         }
 
 //        print_r($lines); exit;
 
-        $lineNumberToClassMap = [];
+        $lineNumberToClassMap = $this->buildMarkupMap($markupPaths);
+
+//        print_r($lineNumberToClassMap); exit;
+
+        $processedFragments = [];
+        $globalLineNumber = 1;
+
+        foreach ($textObject->getFragments() as $fragment) {
+            $updatedLines = [];
+
+            foreach ($fragment->getLines() as $lineObj) {
+                $text = $lineObj->getText();
+                $cssClass = 'default';
+
+                if (!empty($text)) {
+                    $cssClass = $lineNumberToClassMap[$globalLineNumber] ?? 'default';
+                }
+
+                $updatedLines[] = new TextLine($lineObj->getNumber(), $text, $cssClass);
+                $globalLineNumber++;
+            }
+
+            $processedFragments[] = new TextFragment($fragment->getTitle(), $updatedLines);
+        }
+
+        return new Text($textObject->getId(), $processedFragments);
+    }
+
+    private function buildMarkupMap(array $markupPaths): array
+    {
+        $map = [];
         foreach ($markupPaths as $markupPath) {
             $fullPath = $this->dataDir . '/' . $markupPath;
             if (!file_exists($fullPath)) {
@@ -32,7 +64,6 @@ class MarkupTextDecorator implements TextReaderInterface
             }
 
             $markupLines = file($fullPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-
             foreach ($markupLines as $markupLine) {
                 if (!str_contains($markupLine, '/')) {
                     continue;
@@ -45,28 +76,11 @@ class MarkupTextDecorator implements TextReaderInterface
                 foreach ($numbers as $numberStr) {
                     $num = (int)trim($numberStr);
                     if ($num > 0) {
-                        $lineNumberToClassMap[$num] = $cssClass;
+                        $map[$num] = $cssClass;
                     }
                 }
             }
         }
-
-//        print_r($lineNumberToClassMap); exit;
-
-        $processedLines = [];
-        foreach ($lines as $index => $text) {
-            $lineNumber = $index + 1;
-//            $text = $lineObj->getText();
-
-            $cssClass = 'default';
-            if (!empty($text)) {
-                $cssClass = $lineNumberToClassMap[$lineNumber] ?? 'default';
-            }
-
-            // создание объекта TextLine
-            $processedLines[] = new TextLine($index, $text, $cssClass);
-        }
-
-        return $processedLines;
+        return $map;
     }
 }

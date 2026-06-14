@@ -8,30 +8,47 @@ namespace Builov\Faust\Domain\Model;
 
 class Text
 {
-    /** @param TextLine[] $lines */
+    /** @param TextFragment[] $fragments */
     public function __construct(
         private string $id,
-        private array  $lines
-    )
-    {
-    }
+        private array  $fragments
+    ) {}
 
     public function getId(): string
     {
         return $this->id;
     }
 
+    /** @return TextFragment[] */
+    public function getFragments(): array
+    {
+        return $this->fragments;
+    }
+
     /** @return TextLine[] */
     public function getLines(): array
     {
-        return $this->lines;
+        $allLines = [];
+        $globalIndex = 0;
+
+        foreach ($this->fragments as $fragment) {
+
+//            print_r($fragment->getLines()); exit;
+
+            foreach ($fragment->getLines() as $line) {
+                $allLines[] = new TextLine($globalIndex, $line->getText(), $line->getCssClass());
+                $globalIndex++;
+            }
+        }
+
+        return $allLines;
     }
 
     // Пример доменной логики: проверка наличия строки в переводе
-    public function hasLine(int $lineNumber): bool
-    {
-        return isset($this->lines[$lineNumber]);
-    }
+//    public function hasLine(int $lineNumber): bool
+//    {
+//        return isset($this->lines[$lineNumber]);
+//    }
 
     /**
      * Возвращает массив номеров строк, входящих в строфу для заданной строки

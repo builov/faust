@@ -10,6 +10,8 @@
 
 namespace Builov\Faust\Infrastructure\Storage;
 
+use Builov\Faust\Domain\Model\Text;
+use Builov\Faust\Domain\Model\TextFragment;
 use Builov\Faust\Domain\Model\TextLine;
 use Builov\Faust\Domain\Model\TextMeta;
 use Builov\Faust\Domain\Model\TextReaderInterface;
@@ -24,7 +26,7 @@ class FileTextReader implements TextReaderInterface
      *
      * @return TextLine[]
      */
-    public function readLines(TextMeta $meta): array
+    public function readText(TextMeta $meta): Text
     {
         $textPath = $meta->getFilePath();
 //        $markupPaths = $meta->getMarkupPaths();
@@ -41,18 +43,21 @@ class FileTextReader implements TextReaderInterface
         // объекты TextLine
         $lines = [];
         foreach ($rawLines as $index => $text) {
-            $text = trim($text);
+//            $text = trim($text);
+//            if ($text === "") {
+//                continue;
+//            }
+//            $lines[] = $text;
 
-            if ($text === "") {
-                continue;
-            }
-
-            $lines[] = $text;
+            $lines[] = new TextLine(0, trim($text), '');
         }
 
 //        print_r($lines); exit;
 
-        return $lines;
+        $defaultFragment = new TextFragment('', $lines);
+//        print_r($defaultFragment); exit;
+
+        return new Text($meta->getId(), [$defaultFragment]);
 /*
 //        print_r($markupPaths); exit;
 //        print_r($textLines); exit;

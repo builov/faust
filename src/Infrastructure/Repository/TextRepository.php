@@ -32,9 +32,9 @@ class TextRepository implements TextRepositoryInterface
         }
 
         $meta = $metaList[$id];
-        $lines = $this->textReader->readLines($meta);
+        $text = $this->textReader->readText($meta);
 
-        return new Text($id, $lines);
+        return $text;
     }
 
     public function getAllMeta(): array

@@ -5,7 +5,8 @@ namespace Builov\Faust\Domain\Model;
 interface TextReaderInterface
 {
     /**
-     * @return TextLine[]|string[]
+     * @param TextMeta $meta
+     * @return Text
      */
-    public function readLines(TextMeta $meta): array;
+    public function readText(TextMeta $meta): Text;
 }

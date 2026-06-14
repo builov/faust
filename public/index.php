@@ -47,9 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && is_string($textId)) {
 } else {
     // параметры для дефолтной страницы
     $selected = [
-        'faust',
+//        'faust',
 //        'fet',
-//        'aksakov'
+        'aksakov'
     ];
 
     // Передаем управление контроллеру главной страницы
