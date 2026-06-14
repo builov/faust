@@ -12,8 +12,9 @@ namespace Builov\Faust\Infrastructure\Storage;
 
 use Builov\Faust\Domain\Model\TextLine;
 use Builov\Faust\Domain\Model\TextMeta;
+use Builov\Faust\Domain\Model\TextReaderInterface;
 
-class FileTextReader
+class FileTextReader implements TextReaderInterface
 {
     public function __construct(private string $dataDir)
     {
@@ -26,11 +27,33 @@ class FileTextReader
     public function readLines(TextMeta $meta): array
     {
         $textPath = $meta->getFilePath();
-        $markupPaths = $meta->getMarkupPaths();
+//        $markupPaths = $meta->getMarkupPaths();
+
+        $fullPath = $this->dataDir . '/' . $textPath;
+
+        if (!file_exists($fullPath)) {
+            return [];
+        }
 
         // 1. Читаем строки текста
-        $rawLines = file($this->dataDir . '/' . $textPath, FILE_IGNORE_NEW_LINES);
+        $rawLines = file($fullPath, FILE_IGNORE_NEW_LINES);
 
+        // объекты TextLine
+        $lines = [];
+        foreach ($rawLines as $index => $text) {
+            $text = trim($text);
+
+            if ($text === "") {
+                continue;
+            }
+
+            $lines[] = $text;
+        }
+
+//        print_r($lines); exit;
+
+        return $lines;
+/*
 //        print_r($markupPaths); exit;
 //        print_r($textLines); exit;
 
@@ -108,6 +131,7 @@ class FileTextReader
         }
 
         return $lines;
+*/
     }
 
     private function assembleFragments(array $textChunks, TextMeta $config): array

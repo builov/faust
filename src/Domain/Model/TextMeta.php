@@ -51,7 +51,7 @@ class TextMeta
         return $this->fragmentStarts;
     }
 
-    public function isFull(): bool
+    public function isComplete(): bool
     {
         return empty($this->fragmentStarts);
     }

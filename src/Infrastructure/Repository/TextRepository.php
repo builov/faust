@@ -8,10 +8,10 @@ namespace Builov\Faust\Infrastructure\Repository;
  * предоставляя приложению чистый интерфейс TranslationRepositoryInterface.
  */
 
+use Builov\Faust\Domain\Model\TextReaderInterface;
 use Builov\Faust\Domain\Repository\TextRepositoryInterface;
 use Builov\Faust\Domain\Model\Text;
 use Builov\Faust\Infrastructure\Storage\JsonConfigReader;
-use Builov\Faust\Infrastructure\Storage\FileTextReader;
 
 class TextRepository implements TextRepositoryInterface
 {
@@ -19,7 +19,7 @@ class TextRepository implements TextRepositoryInterface
 
     public function __construct(
         private JsonConfigReader $configReader,
-        private FileTextReader   $textReader
+        private TextReaderInterface $textReader
     )
     {
     }
