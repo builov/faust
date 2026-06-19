@@ -3,7 +3,7 @@
 namespace Builov\Faust\Infrastructure\Storage;
 
 use Builov\Faust\Domain\Model\TextMeta;
-use Builov\Faust\Domain\Model\TextReaderInterface;
+use Builov\Faust\Domain\TextReaderInterface;
 
 class FileTextReader implements TextReaderInterface
 {

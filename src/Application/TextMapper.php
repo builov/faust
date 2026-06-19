@@ -1,12 +1,11 @@
 <?php
 
-namespace Builov\Faust\Application\Mapper;
+namespace Builov\Faust\Application;
 
-use Builov\Faust\Application\DTO\TextFragmentDTO;
-use Builov\Faust\Domain\Model\Text;
-use Builov\Faust\Domain\Model\TextMeta;
 use Builov\Faust\Application\DTO\TextDTO;
+use Builov\Faust\Application\DTO\TextFragmentDTO;
 use Builov\Faust\Application\DTO\TextLineDTO;
+use Builov\Faust\Domain\Model\Text;
 
 class TextMapper
 {

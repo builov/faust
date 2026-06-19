@@ -1,20 +1,14 @@
 <?php
 
-/**
- * читает config.json и превращает его в доменные объекты метаданных.
- *
- * Читает config.json, парсит метаданные и возвращает доменные объекты конфигурации.
- */
-
 namespace Builov\Faust\Infrastructure\Storage;
 
 use Builov\Faust\Domain\Model\TextMeta;
 
 class JsonConfigReader
 {
-    public function __construct(private string $configPath)
-    {
-    }
+    public function __construct(
+        private string $configPath
+    ) {}
 
     /** @return TextMeta[] */
     public function read(): array

@@ -2,9 +2,9 @@
 
 namespace Builov\Faust\Infrastructure\Repository;
 
-use Builov\Faust\Domain\Model\TextBuilderInterface;
-use Builov\Faust\Domain\Repository\TextRepositoryInterface;
 use Builov\Faust\Domain\Model\Text;
+use Builov\Faust\Domain\Repository\TextRepositoryInterface;
+use Builov\Faust\Domain\TextBuilderInterface;
 use Builov\Faust\Infrastructure\Storage\JsonConfigReader;
 
 class TextRepository implements TextRepositoryInterface

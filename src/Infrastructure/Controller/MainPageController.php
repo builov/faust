@@ -25,22 +25,9 @@ class MainPageController
     /** @param string[] $selectedIds */
     public function handle(array $selectedIds): Response
     {
-        // Выполняем бизнес-логику и получаем безопасный DTO
         $pageData = $this->useCase->execute($selectedIds);
 
-//        print_r($pageData->texts); exit;
-
-
-//        foreach ($pageData->texts as $key => $textDTO) {
-//            $result[$key] = array_map(function ($fragmentDTO) {
-//                return [
-//                    $line->text,
-//                    $line->cssClass
-//                ];
-//            }, $textDTO->fragments);
-//        }
-
-        //конвертация из массива TextDTO в массив для шаблона
+        //конвертация из TextDTO[] в простой массив для шаблона
         $texts = [];
         foreach ($pageData->texts as $textId => $textDTO) {
             foreach ($textDTO->fragments as $fragment) {

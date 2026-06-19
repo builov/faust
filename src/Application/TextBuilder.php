@@ -3,11 +3,11 @@
 namespace Builov\Faust\Application;
 
 use Builov\Faust\Domain\Model\Text;
-use Builov\Faust\Domain\Model\TextBuilderInterface;
+use Builov\Faust\Domain\Model\TextFragment;
 use Builov\Faust\Domain\Model\TextLine;
 use Builov\Faust\Domain\Model\TextMeta;
-use Builov\Faust\Domain\Model\TextReaderInterface;
-use Builov\Faust\Domain\Model\TextFragment;
+use Builov\Faust\Domain\TextBuilderInterface;
+use Builov\Faust\Domain\TextReaderInterface;
 
 class TextBuilder implements TextBuilderInterface
 {

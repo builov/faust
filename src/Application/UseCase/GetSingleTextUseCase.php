@@ -2,10 +2,10 @@
 
 namespace Builov\Faust\Application\UseCase;
 
+use Builov\Faust\Application\DTO\TextDTO;
+use Builov\Faust\Application\TextMapper;
 use Builov\Faust\Application\TextMarkupService;
 use Builov\Faust\Domain\Repository\TextRepositoryInterface;
-use Builov\Faust\Application\DTO\TextDTO;
-use Builov\Faust\Application\Mapper\TextMapper;
 
 class GetSingleTextUseCase
 {

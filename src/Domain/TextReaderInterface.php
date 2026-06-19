@@ -1,6 +1,8 @@
 <?php
 
-namespace Builov\Faust\Domain\Model;
+namespace Builov\Faust\Domain;
+
+use Builov\Faust\Domain\Model\TextMeta;
 
 interface TextReaderInterface
 {

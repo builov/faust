@@ -18,8 +18,6 @@ class BuildCacheController
     {
         $result = $this->useCase->execute();
 
-//        print_r($pageData->meta); exit;
-
         $html = $result['success-message'];
 
         return new HtmlResponse($html);

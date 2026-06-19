@@ -6,11 +6,11 @@
 
 namespace Builov\Faust\Application\UseCase;
 
+use Builov\Faust\Application\DTO\MainPageResponseDTO;
 use Builov\Faust\Application\DTO\MetaDataDTO;
+use Builov\Faust\Application\TextMapper;
 use Builov\Faust\Application\TextMarkupService;
 use Builov\Faust\Domain\Repository\TextRepositoryInterface;
-use Builov\Faust\Application\DTO\MainPageResponseDTO;
-use Builov\Faust\Application\Mapper\TextMapper;
 
 class GetMainPageUseCase
 {

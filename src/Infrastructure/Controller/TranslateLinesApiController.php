@@ -15,7 +15,8 @@ class TranslateLinesApiController
     }
 
     /**
-     * @param string $id (номер строки)
+     * @param array $lineNumbers
+     * @param string $trMode
      * @return Response
      */
     public function handle(array $lineNumbers, string $trMode): Response

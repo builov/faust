@@ -15,9 +15,7 @@ class SingleTextApiController
 {
     public function __construct(
         private GetSingleTextUseCase $useCase
-    )
-    {
-    }
+    ) {}
 
     public function handle(string $id): Response
     {
@@ -26,16 +24,7 @@ class SingleTextApiController
         try {
             $textDTO = $this->useCase->execute($cleanId);
 
-            //конвертация из $textDTO в массив попроще (-1 уровень)
-//            $result = array_map(function ($line) {
-//                return [
-//                    $line->text,
-//                    $line->cssClass
-//                ];
-//            }, $textDTO->lines);
-
-
-
+            //конвертация из TextDTO в простой массив для шаблона
             foreach ($textDTO->fragments as $fragment) {
                 foreach ($fragment->lines as $line) {
                     if ($line) {
