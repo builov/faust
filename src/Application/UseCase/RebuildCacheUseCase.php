@@ -50,7 +50,7 @@ class RebuildCacheUseCase
             }
         }
 
-        print_r($cacheData); exit;
+//        print_r($cacheData); exit;
 
         // Записываем собранный массив в trans.php
         $this->cacheStorage->write($cacheData);

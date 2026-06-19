@@ -44,7 +44,10 @@ class TextMarkupService
 
         foreach ($meta->getFragmentStarts() as $fragmentKey => $startLine) { // обход массива 'starts_from'
 //            $emptyLinesArr = array_fill($startIndex, $startLine - ($startIndex + 1), new TextLineDTO(0, '', ''));
+            //массив с ключами, соотв. номерам строк
             $emptyLinesArr = array_fill($startIndex, $startLine - ($startIndex + 1), null);
+            //просто кол-во пустых строк
+//            $emptyLinesQuantity = $startLine - ($startIndex + 1);
 
             $text->fragments[$fragmentKey]->addEmptyLinesBefore($emptyLinesArr); //индекс в 'starts_from' ($fragmentKey) должен соответствовать индексу фрагмента в тексте
 

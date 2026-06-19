@@ -10,9 +10,7 @@ class TranslateLinesApiController
 {
     public function __construct(
         private TranslateLinesUseCase $useCase
-    )
-    {
-    }
+    ) {}
 
     /**
      * @param array $lineNumbers
