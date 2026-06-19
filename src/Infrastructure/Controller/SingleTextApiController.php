@@ -27,12 +27,32 @@ class SingleTextApiController
             $textDTO = $this->useCase->execute($cleanId);
 
             //конвертация из $textDTO в массив попроще (-1 уровень)
-            $result = array_map(function ($line) {
-                return [
-                    $line->text,
-                    $line->cssClass
-                ];
-            }, $textDTO->lines);
+//            $result = array_map(function ($line) {
+//                return [
+//                    $line->text,
+//                    $line->cssClass
+//                ];
+//            }, $textDTO->lines);
+
+
+
+            foreach ($textDTO->fragments as $fragment) {
+                foreach ($fragment->lines as $line) {
+                    if ($line) {
+                        $result[] = [
+                            $line->text,
+                            $line->semantics
+                        ];
+                    } else { // пустые строки
+                        $result[] = [
+                            '',
+                            ''
+                        ];
+                    }
+                }
+            }
+
+//            print_r($result); exit;
 
             return new JsonResponse($result);
         } catch (\InvalidArgumentException $e) {

@@ -6,7 +6,7 @@ interface TextReaderInterface
 {
     /**
      * @param TextMeta $meta
-     * @return Text
+     * @return string[]
      */
-    public function readText(TextMeta $meta): Text;
+    public function readText(TextMeta $meta): array;
 }

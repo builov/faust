@@ -12,7 +12,5 @@ class MainPageResponseDTO
         public array $texts,
         public array $meta,
         public int   $columnsCount
-    )
-    {
-    }
+    ) {}
 }

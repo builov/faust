@@ -11,12 +11,18 @@ class Text
     /** @param TextFragment[] $fragments */
     public function __construct(
         private string $id,
+        private string $title,
         private array  $fragments
     ) {}
 
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
     }
 
     /** @return TextFragment[] */
@@ -48,38 +54,6 @@ class Text
 //    public function hasLine(int $lineNumber): bool
 //    {
 //        return isset($this->lines[$lineNumber]);
-//    }
-
-    /**
-     * Возвращает массив номеров строк, входящих в строфу для заданной строки
-     * @param int $targetLine Номер строки, на которой вызвали меню
-     * @return int[] Список номеров строк, составляющих строфу
-     */
-//    public function getStanzaLineNumbers(int $targetLine): array
-//    {
-//        // 1. Собираем все номера строк, которые помечены как 'stanza_end'
-//        $endLines = [];
-//        foreach ($this->lines as $num => $line) {
-//            if ($line->getCssClass() === 'stanza_end') {
-//                $endLines[] = $num;
-//            }
-//        }
-//        sort($endLines);
-//
-//        // 2. Ищем границы строфы для нашей targetLine
-//        $startLine = 1;
-//        $endLine = count($this->lines);
-//
-//        foreach ($endLines as $index => $currentEnd) {
-//            if ($currentEnd >= $targetLine) {
-//                $endLine = $currentEnd;
-//                $startLine = ($index > 0) ? $endLines[$index - 1] + 1 : 1;
-//                break;
-//            }
-//        }
-//
-//        // 3. Возвращаем массив номеров строк от старта до конца строфы
-//        return range($startLine, $endLine);
 //    }
 }
 

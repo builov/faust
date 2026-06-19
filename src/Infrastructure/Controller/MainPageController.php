@@ -8,7 +8,7 @@
 
 namespace Builov\Faust\Infrastructure\Controller;
 
-use Builov\Faust\Application\UseCase\GetTextsUseCase;
+use Builov\Faust\Application\UseCase\GetMainPageUseCase;
 use Builov\Faust\Infrastructure\Http\HtmlResponse;
 use Builov\Faust\Infrastructure\Http\Response;
 use Twig\Environment;
@@ -16,8 +16,8 @@ use Twig\Environment;
 class MainPageController
 {
     public function __construct(
-        private GetTextsUseCase $useCase,
-        private Environment     $twig
+        private GetMainPageUseCase $useCase,
+        private Environment        $twig
     )
     {
     }
@@ -28,26 +28,44 @@ class MainPageController
         // Выполняем бизнес-логику и получаем безопасный DTO
         $pageData = $this->useCase->execute($selectedIds);
 
-        //конвертация из массива TextDTO в массив попроще (-1 уровень)
-        $result = [];
-        foreach ($pageData->texts as $key => $textDTO) {
-            $result[$key] = array_map(function ($line) {
-                return [
-                    $line->text,
-                    $line->cssClass
-                ];
-            }, $textDTO->lines);
+//        print_r($pageData->texts); exit;
+
+
+//        foreach ($pageData->texts as $key => $textDTO) {
+//            $result[$key] = array_map(function ($fragmentDTO) {
+//                return [
+//                    $line->text,
+//                    $line->cssClass
+//                ];
+//            }, $textDTO->fragments);
+//        }
+
+        //конвертация из массива TextDTO в массив для шаблона
+        $texts = [];
+        foreach ($pageData->texts as $textId => $textDTO) {
+            foreach ($textDTO->fragments as $fragment) {
+                foreach ($fragment->lines as $line) {
+                    if ($line) {
+                        $texts[$textId][] = [
+                            $line->text,
+                            $line->semantics
+                        ];
+                    } else { // пустые строки
+                        $texts[$textId][] = [
+                            '',
+                            ''
+                        ];
+                    }
+                }
+            }
         }
 
-        $pageData->texts = $result;
-        unset($result);
-
-//        print_r($pageData->meta); exit;
+//        print_r($texts); exit;
 
         $html = $this->twig->render('index.html.twig', [
             'title' => 'Фауст',
-            'data' => $pageData->texts,
-            'selected' => array_keys($pageData->texts),
+            'data' => $texts,
+            'selected' => array_keys($texts),
             'columns' => $pageData->columnsCount,
             'meta' => $pageData->meta,
         ]);

@@ -2,6 +2,7 @@
 
 namespace Builov\Faust\Application\Mapper;
 
+use Builov\Faust\Application\DTO\TextFragmentDTO;
 use Builov\Faust\Domain\Model\Text;
 use Builov\Faust\Domain\Model\TextMeta;
 use Builov\Faust\Application\DTO\TextDTO;
@@ -9,21 +10,27 @@ use Builov\Faust\Application\DTO\TextLineDTO;
 
 class TextMapper
 {
-    public static function toDTO(Text $text, TextMeta $meta): TextDTO
+    public static function toDTO(Text $text): TextDTO
     {
-        $lineDTOs = [];
-        foreach ($text->getLines() as $number => $line) {
-            $lineDTOs[$number] = new TextLineDTO(
-                $line->getNumber(),
-                $line->getText(),
-                $line->getCssClass()
+        $fragmentDTOs = [];
+
+        foreach ($text->getFragments() as $fragment) {
+            $lineDTOs = [];
+
+            foreach ($fragment->getLines() as $line) {
+                $lineDTOs[] = new TextLineDTO(
+                    $line->getNumber(),
+                    $line->getText(),
+                    $line->getCssClass() // Базовая семантика из домена
+                );
+            }
+
+            $fragmentDTOs[] = new TextFragmentDTO(
+                $fragment->getTitle(),
+                $lineDTOs
             );
         }
 
-        return new TextDTO(
-            $text->getId(),
-            $meta->getTitle(),
-            $lineDTOs
-        );
+        return new TextDTO($text->getId(), $text->getTitle(), $fragmentDTOs);
     }
 }

@@ -8,9 +8,7 @@ class TranslateLinesUseCase
 {
     public function __construct(
         private CacheStorageInterface $cacheStorage
-    )
-    {
-    }
+    ) {}
 
     public function execute(array $lineNumbers, string $mode): array|null
     {

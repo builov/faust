@@ -28,7 +28,7 @@
                 {% if id in selected %}
                     class="btn btn-secondary btn-sm"
                 {% else %}
-                   class="btn btn-outline-secondary btn-sm"
+                    class="btn btn-outline-secondary btn-sm"
                 {% endif %}
                 >{{ data.title }}</a>
             </li>
@@ -63,11 +63,18 @@
         </tr>
         </thead>
         <tbody>
+
+
+{#        {% for line in data %}#}
+{#            <p>{{ line[0][0] }}</p>#}
+{#        {% endfor %}#}
+
+
         {% for line in data|first %}
             <tr data-num="{{ loop.index0 }}" class="{{ line[1] }}" id="{{ loop.index0 + 1 }}">
-                {#            <td>#}
-                {#                {{ loop.index0 + 1 }}#}
-                {#            </td>#}
+{#                            <td>#}
+{#                                {{ loop.index0 + 1 }}#}
+{#                            </td>#}
                 <td>
                     <div class="{{ line[1] }}">{{ line[0]|raw }}</div>
                 </td>

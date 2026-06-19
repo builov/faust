@@ -8,6 +8,8 @@
 
 namespace Builov\Faust\Application\UseCase;
 
+use Builov\Faust\Application\DTO\TextFragmentDTO;
+use Builov\Faust\Application\DTO\TextLineDTO;
 use Builov\Faust\Domain\Repository\TextRepositoryInterface;
 use Builov\Faust\Infrastructure\Storage\PhpFileCacheStorage;
 
@@ -27,13 +29,28 @@ class RebuildCacheUseCase
         foreach ($allMeta as $id => $meta) {
             $text = $this->repository->getById($id);
 
-            foreach ($text->getLines() as $num => $line) {
-                // Сохраняем только непустые строки стихотворного текста
-                if (trim($line->getText()) !== '') {
-                    $cacheData[$id][$num] = $line->getText();
+//            print_r($text); exit;
+
+//            foreach ($text->getLines() as $num => $line) {
+//                // Сохраняем только непустые строки стихотворного текста
+//                if (trim($line->getText()) !== '') {
+//                    $cacheData[$id][$num] = $line->getText();
+//                }
+//            }
+
+            foreach ($text->getFragments() as $fragment) {
+                foreach ($fragment->getLines() as $line) {
+                    // Сохраняем только непустые строки стихотворного текста
+                    $text = trim($line->getText());
+                    $num = $line->getNumber();
+                    if (!empty($text)) {
+                        $cacheData[$id][$num] = $text;
+                    }
                 }
             }
         }
+
+        print_r($cacheData); exit;
 
         // Записываем собранный массив в trans.php
         $this->cacheStorage->write($cacheData);

@@ -73,6 +73,8 @@ export class TableManager {
     #insertDataCells(id, data) {
         const rows = this.#table.tBodies[0].rows;
 
+        console.log(data);
+
         Array.from(rows).forEach((row, i) => {
             const cell = row.insertCell(-1);
             const item = data[i];

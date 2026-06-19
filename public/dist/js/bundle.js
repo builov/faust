@@ -4148,12 +4148,10 @@ function _enableRender() {
 }
 function _insertDataCells(id, data) {
   var rows = _classPrivateFieldGet(_table, this).tBodies[0].rows;
+  console.log(data);
   Array.from(rows).forEach(function (row, i) {
     var cell = row.insertCell(-1);
     var item = data[i];
-
-    // console.log(item);
-
     if (item) {
       var _item = _slicedToArray(item, 2),
         text = _item[0],

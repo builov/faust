@@ -2,13 +2,12 @@
 
 namespace Builov\Faust\Application\DTO;
 
-class TextDTO
+class MetaDataDTO
 {
-
-    /** @param TextFragmentDTO[] $fragments */
+    /** @param int[] $startsFrom */
     public function __construct(
         public readonly string $id,
         public readonly string $title,
-        public readonly array  $fragments
+        public readonly array  $startsFrom
     ) {}
 }

@@ -2,13 +2,7 @@
 
 namespace Builov\Faust\Infrastructure\Repository;
 
-/**
- * Общий класс-фасад инфраструктуры, который комбинирует JsonConfigReader,
- * FileTextReader и PhpFileCacheStorage,
- * предоставляя приложению чистый интерфейс TranslationRepositoryInterface.
- */
-
-use Builov\Faust\Domain\Model\TextReaderInterface;
+use Builov\Faust\Domain\Model\TextBuilderInterface;
 use Builov\Faust\Domain\Repository\TextRepositoryInterface;
 use Builov\Faust\Domain\Model\Text;
 use Builov\Faust\Infrastructure\Storage\JsonConfigReader;
@@ -19,7 +13,7 @@ class TextRepository implements TextRepositoryInterface
 
     public function __construct(
         private JsonConfigReader $configReader,
-        private TextReaderInterface $textReader
+        private TextBuilderInterface $textBuilder
     )
     {
     }
@@ -31,10 +25,7 @@ class TextRepository implements TextRepositoryInterface
             throw new \RuntimeException("Metadata not found for ID: " . $id);
         }
 
-        $meta = $metaList[$id];
-        $text = $this->textReader->readText($meta);
-
-        return $text;
+        return $this->textBuilder->buildText($metaList[$id]);
     }
 
     public function getAllMeta(): array

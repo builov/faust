@@ -8,25 +8,14 @@ use Builov\Faust\Infrastructure\Controller\TranslateLinesApiController;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// Инициализируем зависимости один раз при старте
+// Инициализация зависимостей
 $DI = ContainerFactory::build();
 
 $textId = $_GET['show'] ?? null;
 $mode = $_GET['mode'] ?? null;
 
 // Минимальный роутинг
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && is_string($textId)) {
-
-    // Передаем управление API-контроллеру
-    $controller = $DI[SingleTextApiController::class];
-    $response = $controller->handle($textId);
-
-} elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && $mode === 'reindex') {
-
-    $controller = $DI[BuildCacheController::class];
-    $response = $controller->handle();
-
-} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
@@ -44,15 +33,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && is_string($textId)) {
     $response = $controller->handle($lines, $type);
 //    $response = $controller->handle(["3", "4", "5", "6", "7", "8", "9", "10"],'stanza');
 
+} elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && $mode === 'reindex') {
+
+    $controller = $DI[BuildCacheController::class];
+    $response = $controller->handle();
+
+} elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && is_string($textId)) {
+
+    $controller = $DI[SingleTextApiController::class];
+    $response = $controller->handle($textId);
+
 } else {
     // параметры для дефолтной страницы
     $selected = [
-//        'faust',
-//        'fet',
+        'faust',
+        'fet',
         'aksakov'
     ];
 
-    // Передаем управление контроллеру главной страницы
     $controller = $DI[MainPageController::class];
     $response = $controller->handle($selected);
 }
