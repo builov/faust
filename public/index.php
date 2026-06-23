@@ -48,7 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $selected = [
         'faust',
         'fet',
-        'aksakov'
+        'turgenev'
+//        'aksakov'
     ];
 
     $controller = $DI[MainPageController::class];

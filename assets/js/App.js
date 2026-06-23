@@ -136,7 +136,7 @@ export class App {
         // Конфигурация: разрешаем только безопасное форматирование текста и ссылки
         /** @type {import('dompurify').Config} */
         const purifyConfig = {
-            ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'a', 'br', 'span', 'p'],
+            ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'a', 'br', 'span', 'p', 'dialog'],
             ALLOWED_ATTR: ['href', 'target', 'title', 'class'], // Разрешаем ссылки и оформление, но блокируем onclick/onerror
             RETURN_TRUSTED_TYPE: false // Оставляем false для совместимости с innerHTML
         };
@@ -164,10 +164,6 @@ export class App {
                             const child = cell.firstElementChild;
 
                             const safeHtml = DOMPurify.sanitize(text, purifyConfig);
-                            // const safeHtml = DOMPurify.sanitize(text, {
-                            //     ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'a', 'br', 'span', 'p'],
-                            //     ALLOWED_ATTR: ['href', 'target', 'title', 'class']
-                            // });
 
                             if (child) {
                                 child.innerHTML = safeHtml;
@@ -176,6 +172,8 @@ export class App {
                             }
                         }
                     });
+
+                    this.initDynamicDialogs();
                 }
             }));
 

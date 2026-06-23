@@ -3155,6 +3155,7 @@ function _showTranslationsMenu(_x, _x2, _x3, _x4, _x5) {
 }
 function _showTranslationsMenu2() {
   _showTranslationsMenu2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(lineNums, type, x, y, td) {
+    var _this5 = this;
     var purifyConfig, translations, colIndex, items, _t2;
     return _regenerator().w(function (_context2) {
       while (1) switch (_context2.p = _context2.n) {
@@ -3162,7 +3163,7 @@ function _showTranslationsMenu2() {
           // Конфигурация: разрешаем только безопасное форматирование текста и ссылки
           /** @type {import('dompurify').Config} */
           purifyConfig = {
-            ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'a', 'br', 'span', 'p'],
+            ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'a', 'br', 'span', 'p', 'dialog'],
             ALLOWED_ATTR: ['href', 'target', 'title', 'class'],
             // Разрешаем ссылки и оформление, но блокируем onclick/onerror
             RETURN_TRUSTED_TYPE: false // Оставляем false для совместимости с innerHTML
@@ -3194,11 +3195,6 @@ function _showTranslationsMenu2() {
                     var cell = row.cells[colIndex];
                     var child = cell.firstElementChild;
                     var safeHtml = dompurify__WEBPACK_IMPORTED_MODULE_8__["default"].sanitize(text, purifyConfig);
-                    // const safeHtml = DOMPurify.sanitize(text, {
-                    //     ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'a', 'br', 'span', 'p'],
-                    //     ALLOWED_ATTR: ['href', 'target', 'title', 'class']
-                    // });
-
                     if (child) {
                       child.innerHTML = safeHtml;
                     } else {
@@ -3206,6 +3202,7 @@ function _showTranslationsMenu2() {
                     }
                   }
                 });
+                _this5.initDynamicDialogs();
               }
             };
           });
