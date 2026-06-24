@@ -3073,6 +3073,8 @@ function _initContextMenu() {
   var _this2 = this;
   var container = document.querySelector('.main-container');
   if (!container) return;
+
+  /* добавление события на вызов контекстного меню */
   container.addEventListener('contextmenu', function (event) {
     var td = event.target.closest('td');
     if (!td) return;
@@ -3085,6 +3087,7 @@ function _initContextMenu() {
     _assertClassBrand(_App_brand, _this2, _showContextMenu).call(_this2, lineNum, event.clientX, event.clientY, td);
   });
 }
+/* вызов первого контекстного меню */
 function _showContextMenu(lineNum, x, y, td) {
   var _this3 = this;
   var items = [{
@@ -3105,6 +3108,8 @@ function _showContextMenu(lineNum, x, y, td) {
   }
   // { label: 'Перевести всё', action: () => this.#handleTranslation(lineNum, 'all', x, y, td) },
   ];
+
+  /* вызов первого контекстного меню */
   new _ContextMenu_js__WEBPACK_IMPORTED_MODULE_7__.ContextMenu({
     items: items,
     x: x,
@@ -3150,82 +3155,120 @@ function _handleTranslation(lineNum, type, x, y, td) {
 //         this.#columnLoader.hide();
 //     }
 // }
+/* вызов второго контекстного меню */
 function _showTranslationsMenu(_x, _x2, _x3, _x4, _x5) {
   return _showTranslationsMenu2.apply(this, arguments);
 }
 function _showTranslationsMenu2() {
-  _showTranslationsMenu2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(lineNums, type, x, y, td) {
+  _showTranslationsMenu2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(lineNums, type, x, y, td) {
     var _this5 = this;
-    var purifyConfig, translations, colIndex, items, _t2;
-    return _regenerator().w(function (_context2) {
-      while (1) switch (_context2.p = _context2.n) {
+    var purifyConfig, translationList, colIndex, items, _t3;
+    return _regenerator().w(function (_context3) {
+      while (1) switch (_context3.p = _context3.n) {
         case 0:
-          // Конфигурация: разрешаем только безопасное форматирование текста и ссылки
           /** @type {import('dompurify').Config} */
           purifyConfig = {
             ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'a', 'br', 'span', 'p', 'dialog'],
             ALLOWED_ATTR: ['href', 'target', 'title', 'class'],
-            // Разрешаем ссылки и оформление, но блокируем onclick/onerror
-            RETURN_TRUSTED_TYPE: false // Оставляем false для совместимости с innerHTML
+            // Разрешаются ссылки и оформление, но блокируется onclick/onerror
+            RETURN_TRUSTED_TYPE: false // false для совместимости с innerHTML
           }; // console.log('td: ', td);
-          _context2.p = 1;
+          _context3.p = 1;
           _classPrivateFieldGet(_columnLoader, this).show();
-          _context2.n = 2;
-          return _classPrivateFieldGet(_fetcher, this).fetchTranslations(lineNums, type);
+          _context3.n = 2;
+          return _classPrivateFieldGet(_fetcher, this).fetchTranslationList(lineNums, type);
         case 2:
-          translations = _context2.v;
-          if (!(!translations || translations.length === 0)) {
-            _context2.n = 3;
+          translationList = _context3.v;
+          if (!(!translationList || translationList.length === 0)) {
+            _context3.n = 3;
             break;
           }
           alert('Нет доступных переводов');
-          return _context2.a(2);
+          return _context3.a(2);
         case 3:
-          colIndex = td.cellIndex;
-          items = translations.map(function (translations) {
+          colIndex = td.cellIndex; // Формирование пунктов меню
+          items = translationList.map(function (item) {
             return {
-              label: translations.label,
-              action: function action() {
-                Object.entries(translations.texts).forEach(function (_ref2) {
-                  var _ref3 = _slicedToArray(_ref2, 2),
-                    lineNum = _ref3[0],
-                    text = _ref3[1];
-                  var row = document.querySelector("tr[data-num=\"".concat(lineNum, "\"]"));
-                  if (row && row.cells[colIndex]) {
-                    var cell = row.cells[colIndex];
-                    var child = cell.firstElementChild;
-                    var safeHtml = dompurify__WEBPACK_IMPORTED_MODULE_8__["default"].sanitize(text, purifyConfig);
-                    if (child) {
-                      child.innerHTML = safeHtml;
-                    } else {
-                      cell.innerHTML = safeHtml;
+              label: item.title,
+              // Отображение title в контекстном меню
+              action: function () {
+                var _action = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+                  var data, texts, _t2;
+                  return _regenerator().w(function (_context2) {
+                    while (1) switch (_context2.p = _context2.n) {
+                      case 0:
+                        _context2.p = 0;
+                        _classPrivateFieldGet(_columnLoader, _this5).show(); // лоадер на время дозагрузки текста
+
+                        // ШАГ 2: Запрашиваем текст конкретного перевода по его label
+                        // Ожидается ответ вида: { "5616": "...", "5617": "..." } или объект с полем texts
+                        _context2.n = 1;
+                        return _classPrivateFieldGet(_fetcher, _this5).fetchTranslationText(lineNums, item.label);
+                      case 1:
+                        data = _context2.v;
+                        // Защита на случай, если сервер вернет объект с текстами внутри поля texts или напрямую
+                        texts = data.texts || data; // Вставляем полученный текст в DOM
+                        Object.entries(texts).forEach(function (_ref2) {
+                          var _ref3 = _slicedToArray(_ref2, 2),
+                            lineNum = _ref3[0],
+                            text = _ref3[1];
+                          var row = document.querySelector("tr[data-num=\"".concat(lineNum, "\"]"));
+                          if (row && row.cells[colIndex]) {
+                            var cell = row.cells[colIndex];
+                            var child = cell.firstElementChild;
+                            var safeHtml = dompurify__WEBPACK_IMPORTED_MODULE_8__["default"].sanitize(text, purifyConfig);
+                            if (child) {
+                              child.innerHTML = safeHtml;
+                            } else {
+                              cell.innerHTML = safeHtml;
+                            }
+                          }
+                        });
+                        _this5.initDynamicDialogs();
+                        _context2.n = 3;
+                        break;
+                      case 2:
+                        _context2.p = 2;
+                        _t2 = _context2.v;
+                        console.error('Ошибка загрузки текста перевода:', _t2);
+                        alert('Не удалось загрузить текст перевода');
+                      case 3:
+                        _context2.p = 3;
+                        _classPrivateFieldGet(_columnLoader, _this5).hide();
+                        return _context2.f(3);
+                      case 4:
+                        return _context2.a(2);
                     }
-                  }
-                });
-                _this5.initDynamicDialogs();
-              }
+                  }, _callee2, null, [[0, 2, 3, 4]]);
+                }));
+                function action() {
+                  return _action.apply(this, arguments);
+                }
+                return action;
+              }()
             };
           });
+          /* вызов второго контекстного меню */
           new _ContextMenu_js__WEBPACK_IMPORTED_MODULE_7__.ContextMenu({
             items: items,
-            x: x + 200,
+            x: x,
             y: y
           }).show();
-          _context2.n = 5;
+          _context3.n = 5;
           break;
         case 4:
-          _context2.p = 4;
-          _t2 = _context2.v;
-          console.error('Ошибка загрузки переводов:', _t2);
+          _context3.p = 4;
+          _t3 = _context3.v;
+          console.error('Ошибка загрузки переводов:', _t3);
           alert('Не удалось загрузить переводы');
         case 5:
-          _context2.p = 5;
+          _context3.p = 5;
           _classPrivateFieldGet(_columnLoader, this).hide();
-          return _context2.f(5);
+          return _context3.f(5);
         case 6:
-          return _context2.a(2);
+          return _context3.a(2);
       }
-    }, _callee2, this, [[1, 4, 5, 6]]);
+    }, _callee3, this, [[1, 4, 5, 6]]);
   }));
   return _showTranslationsMenu2.apply(this, arguments);
 }
@@ -3625,46 +3668,55 @@ var Fetcher = /*#__PURE__*/function () {
       return postJson;
     }()
     /**
-     * Получить переводы для группы строк (или одной строки)
+     * Получить список переводов для группы строк (или одной строки)
      * @param {string[]} lines - массив идентификаторов строк (data-num)
      * @param {string} type - 'line' | 'strophe' | 'replica'
-     * @returns {Promise<Array<{label: string, texts: Array<{rowId: string, text: string}>}>>}
+     * @returns {Promise<Array<{label: string, title: string}>>}
      */
   }, {
-    key: "fetchTranslations",
+    key: "fetchTranslationList",
     value: (function () {
-      var _fetchTranslations = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(lines, type) {
+      var _fetchTranslationList = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(lines, type) {
         return _regenerator().w(function (_context3) {
           while (1) switch (_context3.n) {
             case 0:
               return _context3.a(2, this.postJson('/', {
-                lines: lines,
-                type: type
+                lines: lines
               }));
           }
         }, _callee3, this);
       }));
-      function fetchTranslations(_x4, _x5) {
-        return _fetchTranslations.apply(this, arguments);
+      function fetchTranslationList(_x4, _x5) {
+        return _fetchTranslationList.apply(this, arguments);
       }
-      return fetchTranslations;
-    }() // async fetchTranslations(rowId, type) {
-    //     const url = `/translation.php?line=${encodeURIComponent(rowId)}&type=${encodeURIComponent(type)}`;
-    //     return this.getJson(url);
-    // }
-    /** заглушка */
-    // async fetchTranslations(rowId, type) {
-    //     // Пример заглушки (заменить на реальный запрос)
-    //     return new Promise(resolve => {
-    //         setTimeout(() => {
-    //             resolve([
-    //                 { label: 'Перевод 1 (строка)', text: '<span class="trans">Переведённая строка 1</span>' },
-    //                 { label: 'Перевод 2 (строка)', text: '<span class="trans">Переведённая строка 2</span>' }
-    //             ]);
-    //         }, 200);
-    //     });
-    // }
+      return fetchTranslationList;
+    }()
+    /**
+     * Получить список переводов для группы строк (или одной строки)
+     * @param {string[]} lines - массив идентификаторов строк (data-num)
+     * @param {string} textId
+     * @returns {Promise<Array<{rowId: string, text: string}>>}
+     */
     )
+  }, {
+    key: "fetchTranslationText",
+    value: (function () {
+      var _fetchTranslationText = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(lines, textId) {
+        return _regenerator().w(function (_context4) {
+          while (1) switch (_context4.n) {
+            case 0:
+              return _context4.a(2, this.postJson('/', {
+                lines: lines,
+                textId: textId
+              }));
+          }
+        }, _callee4, this);
+      }));
+      function fetchTranslationText(_x6, _x7) {
+        return _fetchTranslationText.apply(this, arguments);
+      }
+      return fetchTranslationText;
+    }())
   }]);
 }();
 

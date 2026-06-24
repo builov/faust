@@ -3,6 +3,7 @@
 namespace Builov\Faust\Infrastructure\Repository;
 
 use Builov\Faust\Domain\Model\Text;
+use Builov\Faust\Domain\Model\TextMeta;
 use Builov\Faust\Domain\Repository\TextRepositoryInterface;
 use Builov\Faust\Domain\TextBuilderInterface;
 use Builov\Faust\Infrastructure\Storage\JsonConfigReader;
@@ -14,9 +15,7 @@ class TextRepository implements TextRepositoryInterface
     public function __construct(
         private JsonConfigReader $configReader,
         private TextBuilderInterface $textBuilder
-    )
-    {
-    }
+    ) {}
 
     public function getById(string $id): Text
     {
@@ -34,5 +33,14 @@ class TextRepository implements TextRepositoryInterface
             $this->metaCache = $this->configReader->read();
         }
         return $this->metaCache;
+    }
+
+    public function getMetaById(string $id): TextMeta
+    {
+        if ($this->metaCache === null) {
+            $this->metaCache = $this->configReader->read();
+        }
+
+        return $this->metaCache[$id];
     }
 }

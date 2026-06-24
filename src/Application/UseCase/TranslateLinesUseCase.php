@@ -3,14 +3,16 @@
 namespace Builov\Faust\Application\UseCase;
 
 use Builov\Faust\Domain\Repository\CacheStorageInterface;
+use Builov\Faust\Domain\Repository\TextRepositoryInterface;
 
 class TranslateLinesUseCase
 {
     public function __construct(
-        private CacheStorageInterface $cacheStorage
+        private CacheStorageInterface $cacheStorage,
+        private TextRepositoryInterface $repository
     ) {}
 
-    public function execute(array $lineNumbers, string $mode): array|null
+    public function getTranslationList(array $lineNumbers): array|null
     {
 //        print_r($this->cacheStorage->read()); exit;
 
@@ -28,13 +30,25 @@ class TranslateLinesUseCase
             if (!empty($foundTexts)) {
                 $output[] = [
                     'label' => (string)$translationID,
-                    'texts' => $foundTexts
+//                    'texts' => $foundTexts,
+                    'title' => $this->repository->getMetaById($translationID)->getTitle()
                 ];
             }
         }
 
-//        var_dump($output); exit;
+//        print_r($output); exit;
 
         return empty($output) ? null : $output;
+    }
+
+    public function getTranslation(array $lineNumbers, string $textId): array|null
+    {
+        $textFull = $this->cacheStorage->read();
+
+        if (!array_key_exists($textId, $textFull)) {
+            return null;
+        }
+
+        return array_intersect_key($textFull[$textId], array_flip($lineNumbers));
     }
 }

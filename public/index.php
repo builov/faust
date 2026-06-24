@@ -1,6 +1,7 @@
 <?php
 
 use Builov\Faust\Infrastructure\Controller\BuildCacheController;
+use Builov\Faust\Infrastructure\Controller\TranslationListApiController;
 use Builov\Faust\Infrastructure\DI\ContainerFactory;
 use Builov\Faust\Infrastructure\Controller\MainPageController;
 use Builov\Faust\Infrastructure\Controller\SingleTextApiController;
@@ -21,17 +22,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode($json, true);
 
     $lines = $data['lines'] ?? null;
-    $type = $data['type'] ?? null;
+    $textId = $data['textId'] ?? null;
 
-    if (!is_array($lines) || !is_string($type)) {
+    if (!$lines || !is_array($lines)) {
         http_response_code(422);
         echo json_encode(['error' => 'Invalid parameters']);
         exit;
     }
 
-    $controller = $DI[TranslateLinesApiController::class];
-    $response = $controller->handle($lines, $type);
+    if (!$textId) {
+        $controller = $DI[TranslationListApiController::class];
+        $response = $controller->handle($lines);
 //    $response = $controller->handle(["3", "4", "5", "6", "7", "8", "9", "10"],'stanza');
+    } else {
+        $controller = $DI[TranslateLinesApiController::class];
+        $response = $controller->handle($lines, $textId);
+    }
 
 } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && $mode === 'reindex') {
 

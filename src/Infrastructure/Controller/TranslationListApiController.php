@@ -6,7 +6,7 @@ use Builov\Faust\Application\UseCase\TranslateLinesUseCase;
 use Builov\Faust\Infrastructure\Http\JsonResponse;
 use Builov\Faust\Infrastructure\Http\Response;
 
-class TranslateLinesApiController
+class TranslationListApiController
 {
     public function __construct(
         private TranslateLinesUseCase $useCase
@@ -14,10 +14,9 @@ class TranslateLinesApiController
 
     /**
      * @param array $lineNumbers
-     * @param string $textId
      * @return Response
      */
-    public function handle(array $lineNumbers, string $textId): Response
+    public function handle(array $lineNumbers): Response
     {
         // Очищаем входящий массив: оставляем только целые числа
         // array_filter без второго аргумента удалит нули (если ID строки равен 0),
@@ -33,10 +32,8 @@ class TranslateLinesApiController
             return new JsonResponse(['error' => 'Incorrect line numbers'], 400);
         }
 
-        $textId = htmlspecialchars(trim($textId), ENT_QUOTES, 'UTF-8');
-
         try {
-            $result = $this->useCase->getTranslation($lines, $textId);
+            $result = $this->useCase->getTranslationList($lines);
 
             return new JsonResponse($result);
         } catch (\InvalidArgumentException $e) {

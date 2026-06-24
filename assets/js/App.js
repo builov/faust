@@ -66,6 +66,7 @@ export class App {
         const container = document.querySelector('.main-container');
         if (!container) return;
 
+        /* добавление события на вызов контекстного меню */
         container.addEventListener('contextmenu', (event) => {
             const td = event.target.closest('td');
             if (!td) return;
@@ -80,6 +81,7 @@ export class App {
         });
     }
 
+    /* вызов первого контекстного меню */
     #showContextMenu(lineNum, x, y, td) {
         const items = [
             { label: 'Перевести строку', action: () => this.#handleTranslation(lineNum, 'line', x, y, td) },
@@ -87,6 +89,8 @@ export class App {
             { label: 'Перевести реплику', action: () => this.#handleTranslation(lineNum, 'speech', x, y, td) },
             // { label: 'Перевести всё', action: () => this.#handleTranslation(lineNum, 'all', x, y, td) },
         ];
+
+        /* вызов первого контекстного меню */
         new ContextMenu({ items, x, y }).show();
     }
 
@@ -132,52 +136,72 @@ export class App {
     //     }
     // }
 
+    /* вызов второго контекстного меню */
     async #showTranslationsMenu(lineNums, type, x, y, td) {
-        // Конфигурация: разрешаем только безопасное форматирование текста и ссылки
         /** @type {import('dompurify').Config} */
         const purifyConfig = {
             ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'a', 'br', 'span', 'p', 'dialog'],
-            ALLOWED_ATTR: ['href', 'target', 'title', 'class'], // Разрешаем ссылки и оформление, но блокируем onclick/onerror
-            RETURN_TRUSTED_TYPE: false // Оставляем false для совместимости с innerHTML
+            ALLOWED_ATTR: ['href', 'target', 'title', 'class'], // Разрешаются ссылки и оформление, но блокируется onclick/onerror
+            RETURN_TRUSTED_TYPE: false // false для совместимости с innerHTML
         };
 
         // console.log('td: ', td);
         try {
             this.#columnLoader.show();
-            const translations = await this.#fetcher.fetchTranslations(lineNums, type);
+            const translationList = await this.#fetcher.fetchTranslationList(lineNums, type);
 
-            if (!translations || translations.length === 0) {
+            if (!translationList || translationList.length === 0) {
                 alert('Нет доступных переводов');
                 return;
             }
 
             const colIndex = td.cellIndex;
 
-            const items = translations.map(translations => ({
-                label: translations.label,
-                action: () => {
-                    Object.entries(translations.texts).forEach(([lineNum, text]) => {
-                        const row = document.querySelector(`tr[data-num="${lineNum}"]`);
+            // Формирование пунктов меню
+            const items = translationList.map(item => ({
+                label: item.title, // Отображение title в контекстном меню
+                action: async () => { // Делаем экшен асинхронным
+                    try {
+                        this.#columnLoader.show(); // лоадер на время дозагрузки текста
 
-                        if (row && row.cells[colIndex]) {
-                            const cell = row.cells[colIndex];
-                            const child = cell.firstElementChild;
+                        // ШАГ 2: Запрашиваем текст конкретного перевода по его label
+                        // Ожидается ответ вида: { "5616": "...", "5617": "..." } или объект с полем texts
+                        const data = await this.#fetcher.fetchTranslationText(lineNums, item.label);
 
-                            const safeHtml = DOMPurify.sanitize(text, purifyConfig);
+                        // Защита на случай, если сервер вернет объект с текстами внутри поля texts или напрямую
+                        const texts = data.texts || data;
 
-                            if (child) {
-                                child.innerHTML = safeHtml;
-                            } else {
-                                cell.innerHTML = safeHtml;
+                        // Вставляем полученный текст в DOM
+                        Object.entries(texts).forEach(([lineNum, text]) => {
+                            const row = document.querySelector(`tr[data-num="${lineNum}"]`);
+
+                            if (row && row.cells[colIndex]) {
+                                const cell = row.cells[colIndex];
+                                const child = cell.firstElementChild;
+
+                                const safeHtml = DOMPurify.sanitize(text, purifyConfig);
+
+                                if (child) {
+                                    child.innerHTML = safeHtml;
+                                } else {
+                                    cell.innerHTML = safeHtml;
+                                }
                             }
-                        }
-                    });
+                        });
 
-                    this.initDynamicDialogs();
+                        this.initDynamicDialogs();
+
+                    } catch (clickErr) {
+                        console.error('Ошибка загрузки текста перевода:', clickErr);
+                        alert('Не удалось загрузить текст перевода');
+                    } finally {
+                        this.#columnLoader.hide();
+                    }
                 }
             }));
 
-            new ContextMenu({ items, x: x + 200, y }).show();
+            /* вызов второго контекстного меню */
+            new ContextMenu({ items, x: x, y }).show();
         } catch (err) {
             console.error('Ошибка загрузки переводов:', err);
             alert('Не удалось загрузить переводы');

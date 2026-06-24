@@ -15,4 +15,6 @@ interface TextRepositoryInterface
 
     /** @return TextMeta[] */
     public function getAllMeta(): array;
+
+    public function getMetaById(string $id): TextMeta;
 }
