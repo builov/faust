@@ -12166,4 +12166,35 @@ body.app-loading .app-loader {
   background: #f0f0f0;
 }
 
+/* стиль для подсвеченных ячеек */
+.highlighted {
+  background-color: rgba(13, 110, 253, 0.12) !important; /* Нежно-синий цвет Bootstrap Primary с прозрачностью */
+  color: inherit; /* Сохраняем исходный цвет текста */
+  transition: background-color 0.2s ease-in-out; /* Плавное включение подсветки при тапе */
+}
+
+/* Отключаем дефолтный ховер Bootstrap на сенсорных экранах */
+/* Применяем эффекты наведения ТОЛЬКО для устройств, которые поддерживают настоящий hover (мышь) */
+@media (hover: none) {
+  /* 1. Стандартные кнопки (.btn-primary, .btn-secondary и т.д.) */
+  .btn:hover {
+    /* Возвращаем цвета к исходному состоянию кнопки, отменяя ховер */
+    background-color: var(--bs-btn-bg);
+    border-color: var(--bs-btn-border-color);
+    color: var(--bs-btn-color);
+  }
+  /* 2. Контурные кнопки (.btn-outline-primary, .btn-outline-secondary и т.д.) */
+  .btn[class*=btn-outline-]:hover {
+    /* На мобильных при ховере они не должны закрашиваться */
+    background-color: transparent;
+    border-color: var(--bs-btn-border-color);
+    color: var(--bs-btn-color);
+  }
+  /* 3. Кнопки-ссылки (.btn-link) */
+  .btn-link:hover {
+    text-decoration: none;
+    color: var(--bs-btn-color);
+  }
+}
+
 /*# sourceMappingURL=main.css.map*/

@@ -3086,6 +3086,58 @@ function _initContextMenu() {
     // Передаём td в первое меню
     _assertClassBrand(_App_brand, _this2, _showContextMenu).call(_this2, lineNum, event.clientX, event.clientY, td);
   });
+
+  // Переменные для отслеживания движения пальца
+  var startX = 0;
+  var startY = 0;
+  var MOVE_THRESHOLD = 10; // Порог в пикселях, отличающий тап от скролла
+
+  // 1. Фиксируем начальную точку касания
+  container.addEventListener('touchstart', function (e) {
+    var td = e.target.closest('td');
+    if (!td) return;
+    var row = td.closest('tr');
+    if (!row) return;
+    var lineNum = row.dataset.num;
+    if (!lineNum) return;
+    var touch = e.touches[0];
+    startX = touch.clientX;
+    startY = touch.clientY;
+  }, {
+    passive: true
+  }); // passive повышает плавность скролла на мобильных
+
+  // 2. Проверяем завершение касания
+  container.addEventListener('touchend', function (e) {
+    var td = e.target.closest('td');
+    if (!td) return;
+    var row = td.closest('tr');
+    if (!row) return;
+    var lineNum = row.dataset.num;
+    if (!lineNum) return;
+    console.log('touchend ', lineNum);
+    var touch = e.changedTouches[0];
+    var diffX = Math.abs(touch.clientX - startX);
+    var diffY = Math.abs(touch.clientY - startY);
+
+    // Если пользователь сдвинул палец во время касания — это скролл
+    if (diffX > MOVE_THRESHOLD || diffY > MOVE_THRESHOLD) {
+      return;
+    }
+
+    // Если это был чистый короткий тап — обрабатываем действие
+    e.preventDefault();
+    // Передаём td в первое меню
+    _assertClassBrand(_App_brand, _this2, _showContextMenu).call(_this2, lineNum, touch.clientX, touch.clientY, td);
+  });
+
+  // снятие подсветки с диапазона строк
+  var events = ['click', 'contextmenu', 'touchstart'];
+  events.forEach(function (eventType) {
+    document.addEventListener(eventType, function (e) {
+      _assertClassBrand(_App_brand, _this2, _removeHighlight).call(_this2);
+    });
+  });
 }
 /* вызов первого контекстного меню */
 function _showContextMenu(lineNum, x, y, td) {
@@ -3111,10 +3163,8 @@ function _showContextMenu(lineNum, x, y, td) {
 
   /* вызов первого контекстного меню */
   new _ContextMenu_js__WEBPACK_IMPORTED_MODULE_7__.ContextMenu({
-    items: items,
-    x: x,
-    y: y
-  }).show();
+    items: items
+  }).show(x, y);
 }
 /** Определяет массив строк для перевода и вызывает соответствующий метод. */
 function _handleTranslation(lineNum, type, x, y, td) {
@@ -3123,38 +3173,11 @@ function _handleTranslation(lineNum, type, x, y, td) {
 
   // console.log(ids); return;
 
+  _assertClassBrand(_App_brand, this, _highlightRange).call(this, ids, td.cellIndex);
   _assertClassBrand(_App_brand, this, _showTranslationsMenu).call(this, ids, type, x, y, td).then(function (r) {
     console.log('переведены строки: ', ids);
   });
 }
-// async #showTranslationsMenu(lineNum, type, x, y, td) {
-//     try {
-//         this.#columnLoader.show();
-//         const translations = await this.#fetcher.fetchTranslations([lineNum], type);
-//
-//         if (!translations || translations.length === 0) {
-//             alert('Нет доступных переводов');
-//             return;
-//         }
-//
-//         const items = translations.map(translation => {
-//             return {
-//                 label: translation.label,
-//                 action: () => {
-//                     td.innerHTML = translation.texts[0];
-//                 }
-//             };
-//         });
-//
-//         // Показываем второе меню справа от первого
-//         new ContextMenu({ items, x: x + 200, y }).show();
-//     } catch (err) {
-//         console.error('Ошибка загрузки переводов:', err);
-//         alert('Не удалось загрузить переводы');
-//     } finally {
-//         this.#columnLoader.hide();
-//     }
-// }
 /* вызов второго контекстного меню */
 function _showTranslationsMenu(_x, _x2, _x3, _x4, _x5) {
   return _showTranslationsMenu2.apply(this, arguments);
@@ -3224,6 +3247,7 @@ function _showTranslationsMenu2() {
                             }
                           }
                         });
+                        _assertClassBrand(_App_brand, _this5, _removeHighlight).call(_this5);
                         _this5.initDynamicDialogs();
                         _context2.n = 3;
                         break;
@@ -3250,10 +3274,8 @@ function _showTranslationsMenu2() {
           });
           /* вызов второго контекстного меню */
           new _ContextMenu_js__WEBPACK_IMPORTED_MODULE_7__.ContextMenu({
-            items: items,
-            x: x,
-            y: y
-          }).show();
+            items: items
+          }).show(x, y);
           _context3.n = 5;
           break;
         case 4:
@@ -3356,6 +3378,10 @@ function _getRelatedlineNums(lineNum, type) {
 
   // Функция проверки: является ли строка границей контекста
   var isBoundary = function isBoundary(line) {
+    // Если у элемента нет классов вообще — он является границей диапазона
+    if (!line.classList || line.classList.length === 0) {
+      return true;
+    }
     var _iterator = _createForOfIteratorHelper(line.classList),
       _step;
     try {
@@ -3393,7 +3419,8 @@ function _getRelatedlineNums(lineNum, type) {
   current = startRow.nextElementSibling;
   while (current) {
     if (isBoundary(current)) {
-      if (type === 'stanza' && current.classList.contains('stanza_end')) {
+      var _current$classList;
+      if (type === 'stanza' && (_current$classList = current.classList) !== null && _current$classList !== void 0 && _current$classList.contains('stanza_end')) {
         endRow = current; // включить строку с классом stanza_end
       } else {
         endRow = current.previousElementSibling; // закончить перед границей
@@ -3417,6 +3444,26 @@ function _getRelatedlineNums(lineNum, type) {
     row = row.nextElementSibling;
   }
   return ids;
+}
+function _highlightRange(ids, cellIndex) {
+  var table = _classPrivateFieldGet(_tableManager, this).element;
+  if (!table) return;
+  _assertClassBrand(_App_brand, this, _removeHighlight).call(this);
+  ids.forEach(function (id) {
+    var row = table.querySelector("tr[data-num=\"".concat(id, "\"]"));
+    if (row) {
+      var cell = row.cells[cellIndex];
+      cell.classList.add('highlighted');
+    }
+  });
+}
+function _removeHighlight() {
+  var table = _classPrivateFieldGet(_tableManager, this).element;
+  if (table) {
+    table.querySelectorAll('td.highlighted').forEach(function (cell) {
+      cell.classList.remove('highlighted');
+    });
+  }
 }
 
 /***/ },
@@ -3458,6 +3505,9 @@ var ButtonToggleManager = /*#__PURE__*/function () {
       } else {
         button.classList.replace('btn-secondary', 'btn-outline-secondary');
       }
+
+      // Снимаем фокус, чтобы мобильный браузер сразу обновил стили
+      button.blur();
     }
   }]);
 }();
@@ -3517,21 +3567,24 @@ var ContextMenu = /*#__PURE__*/function () {
       }
     });
     _classPrivateFieldSet(_items, this, items);
-    _classPrivateFieldSet(_x, this, x);
-    _classPrivateFieldSet(_y, this, y);
     _classPrivateFieldSet(_onHide, this, onHide);
   }
+
+  /**
+   * @param {number} x
+   * @param {number} y
+   */
   return _createClass(ContextMenu, [{
     key: "show",
-    value: function show() {
+    value: function show(x, y) {
       var _current$_,
         _this2 = this;
       // Закрываем предыдущее меню, если есть
       (_current$_ = _current._) === null || _current$_ === void 0 || _current$_.hide();
+      _classPrivateFieldSet(_x, this, x);
+      _classPrivateFieldSet(_y, this, y);
       _classPrivateFieldSet(_element, this, document.createElement('ul'));
       _classPrivateFieldGet(_element, this).className = 'context-menu';
-      _classPrivateFieldGet(_element, this).style.left = "".concat(_classPrivateFieldGet(_x, this), "px");
-      _classPrivateFieldGet(_element, this).style.top = "".concat(_classPrivateFieldGet(_y, this), "px");
       _classPrivateFieldGet(_items, this).forEach(function (item) {
         var li = document.createElement('li');
         li.textContent = item.label;
@@ -3543,7 +3596,37 @@ var ContextMenu = /*#__PURE__*/function () {
         });
         _classPrivateFieldGet(_element, _this2).appendChild(li);
       });
+
+      // 1. Сначала добавляем элемент в body, чтобы браузер смог рассчитать его реальные размеры
       document.body.appendChild(_classPrivateFieldGet(_element, this));
+
+      // 2. Получаем размеры самого меню (ширину и высоту)
+      var menuWidth = _classPrivateFieldGet(_element, this).offsetWidth;
+      var menuHeight = _classPrivateFieldGet(_element, this).offsetHeight;
+
+      // 3. Получаем размеры видимой области экрана (окна браузера)
+      var windowWidth = window.innerWidth;
+      var windowHeight = window.innerHeight;
+
+      // 4. Проверяем правый край: если меню выходит за рамки, сдвигаем его влево на свою ширину
+      var finalX = x;
+      if (x + menuWidth > windowWidth) {
+        finalX = x - menuWidth;
+        // Защита на случай, если экран смартфона слишком узкий (меньше ширины меню)
+        if (finalX < 0) finalX = 0;
+      }
+
+      // 5. Проверяем нижний край относительно видимого окна (y — это координата относительно вьюпорта)
+      var finalY = y;
+      if (y + menuHeight > windowHeight) {
+        finalY = y - menuHeight;
+        // Защита на случай, если меню длиннее, чем высота экрана
+        if (finalY < 0) finalY = 0;
+      }
+
+      // 6. Применяем финальные скорректированные координаты
+      _classPrivateFieldGet(_element, this).style.left = "".concat(finalX, "px");
+      _classPrivateFieldGet(_element, this).style.top = "".concat(finalY, "px");
       _current._ = this;
 
       // Закрытие при клике вне
@@ -3552,6 +3635,10 @@ var ContextMenu = /*#__PURE__*/function () {
           capture: true
         });
         document.addEventListener('contextmenu', _classPrivateFieldGet(_handleOutsideClick, _this2), {
+          capture: true
+        });
+        // Добавляем touchstart для быстрой обработки тапа мимо меню на смартфонах
+        document.addEventListener('touchstart', _classPrivateFieldGet(_handleOutsideClick, _this2), {
           capture: true
         });
       }, 0);
@@ -3568,6 +3655,9 @@ var ContextMenu = /*#__PURE__*/function () {
         capture: true
       });
       document.removeEventListener('contextmenu', _classPrivateFieldGet(_handleOutsideClick, this), {
+        capture: true
+      });
+      document.removeEventListener('touchstart', _classPrivateFieldGet(_handleOutsideClick, this), {
         capture: true
       });
       if (_current._ === this) {

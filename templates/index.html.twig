@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>{{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <!-- Подключаем скомпилированные стили (Bootstrap включен сюда) -->
     <link rel="stylesheet" href="/dist/css/main.css">
     <style>
@@ -20,7 +21,7 @@
 {#    {% endfor %}#}
 {#</ol>#}
 
-<header class="container-fluid mt-2">
+<header class="container-fluid px-safe mt-2">
     <ul id="buttons" class="list-inline">
         {% for id, data in meta %}
             <li class="list-inline-item m-1">
@@ -52,7 +53,7 @@
 {#</div>#}
 
 {#{{ data|length }}#}
-<div class="container-fluid">
+<div class="container-fluid table-responsive px-safe">
     <table class="main-container">
         <thead>
         <tr>
@@ -71,12 +72,12 @@
 
 
         {% for line in data|first %}
-            <tr data-num="{{ loop.index0 + 1 }}" class="{{ line[1] }}" id="{{ loop.index0 + 1 }}">
+            <tr data-num="{{ loop.index0 + 1 }}" {% if line[1] %}class="{{ line[1] }}"{% endif %} id="{{ loop.index0 + 1 }}">
 {#                            <td>#}
 {#                                {{ loop.index0 + 1 }}#}
 {#                            </td>#}
                 <td>
-                    <div class="{{ line[1] }}">{{ line[0]|raw }}</div>
+                    <div {% if line[1] %}class="{{ line[1] }}"{% endif %}>{{ line[0]|raw }}</div>
                 </td>
                 {% for text in data|slice(1) %}
                     <td>
@@ -88,6 +89,10 @@
         </tbody>
     </table>
 </div>
+
+<footer class="container-fluid px-safe">
+
+</footer>
 
 
 <div id="loading-indicator" class="spinner-border d-none" role="status">
