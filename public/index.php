@@ -53,8 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // параметры для дефолтной страницы
     $selected = [
         'faust',
-        'fet',
-        'turgenev'
+//        'fet',
+//        'turgenev'
 //        'aksakov'
     ];
 

@@ -27,6 +27,17 @@ class TextRepository implements TextRepositoryInterface
         return $this->textBuilder->buildText($metaList[$id]);
     }
 
+    public function getPaginatedById(string $id, int $from, int $count): Text
+    {
+        $metaList = $this->getAllMeta();
+        if (!isset($metaList[$id])) {
+            throw new \RuntimeException("Metadata not found for ID: " . $id);
+        }
+
+        // Передаем параметры пагинации в специализированный метод билдера
+        return $this->textBuilder->buildPaginatedText($metaList[$id], $from, $count);
+    }
+
     public function getAllMeta(): array
     {
         if ($this->metaCache === null) {

@@ -11,9 +11,7 @@ class TextFragment
     public function __construct(
         private string $title,
         private array  $lines
-    )
-    {
-    }
+    ) {}
 
     public function getTitle(): string
     {

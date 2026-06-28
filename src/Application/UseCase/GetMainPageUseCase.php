@@ -20,14 +20,16 @@ class GetMainPageUseCase
     ) {}
 
     /** @param string[] $textIds */
-    public function execute(array $textIds): MainPageResponseDTO
+    public function execute(array $textIds, int $from = 0, int $count = 50): MainPageResponseDTO
     {
         $allMeta = $this->repository->getAllMeta();
         $textDTOs = [];
 
         foreach ($textIds as $id) {
             if (isset($allMeta[$id])) {
-                $text = $this->repository->getById($id);
+//                $text = $this->repository->getById($id);
+                // 2. Вызываем специализированный метод репозитория для пагинации
+                $text = $this->repository->getPaginatedById($id, $from, $count);
                 // DTO с разметкой
                 $textDTOs[$id] = $this->markupService->applyMarkup(TextMapper::toDTO($text), $allMeta[$id]);
                 // без разметки
@@ -36,14 +38,6 @@ class GetMainPageUseCase
         }
 
 //        print_r($textDTOs); exit;
-
-//        $markedUp = [];
-//        foreach ($textDTOs as $text) {
-//            if (isset($allMeta[$id])) {
-//                $markedUp[] = $this->markupService->applyMarkup($text, $allMeta[$id]);
-//            }
-//        }
-//        print_r($markedUp); exit;
 
         // Преобразуем доменную коллекцию метаданных в простой массив для UI
         $metaData = [];

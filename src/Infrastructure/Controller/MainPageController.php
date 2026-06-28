@@ -18,14 +18,23 @@ class MainPageController
     public function __construct(
         private GetMainPageUseCase $useCase,
         private Environment        $twig
-    )
-    {
-    }
+    ) {}
 
     /** @param string[] $selectedIds */
     public function handle(array $selectedIds): Response
     {
-        $pageData = $this->useCase->execute($selectedIds);
+        $lineFrom = null;
+        $lineTo = null;
+        if (isset($_GET['lines'])) {
+            if (preg_match('/^(\d+)-(\d+)$/', trim($_GET['lines']), $matches)) {
+                $lineFrom = (int)$matches[1];
+                $lineTo = (int)$matches[2];
+            }
+        }
+
+//        echo $lineTo; exit;
+
+        $pageData = $this->useCase->execute($selectedIds, $lineFrom, $lineTo - $lineFrom);
 
         //конвертация из TextDTO[] в простой массив для шаблона
         $texts = [];
