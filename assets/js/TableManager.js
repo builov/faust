@@ -73,15 +73,24 @@ export class TableManager {
     #insertDataCells(id, data) {
         const rows = this.#table.tBodies[0].rows;
 
+        console.log(data);
+
         Array.from(rows).forEach((row, i) => {
             const cell = row.insertCell(-1);
             const item = data[i];
             if (item) {
                 const [text, className] = item;
-                const div = document.createElement('div');
-                div.className = className;
-                div.innerHTML = text;
-                cell.appendChild(div);
+
+                if (text.trim().length > 0) {
+                    // console.log(text);
+
+                    const div = document.createElement('div');
+                    div.className = className;
+                    div.innerHTML = text;
+                    cell.appendChild(div);
+
+                    cell.closest('tr').classList.add(className);
+                }
             }
         });
     }

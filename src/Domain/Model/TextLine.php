@@ -1,0 +1,19 @@
+<?php
+/**
+ * Объект строки. Содержит номер строки (ID), текст строки и CSS-класс для визуализации.
+ */
+
+namespace Builov\Faust\Domain\Model;
+
+class TextLine
+{
+    public function __construct(
+        private int $number,
+        private string $text,
+        private string $semantics
+    ) {}
+
+    public function getNumber(): int { return $this->number; }
+    public function getText(): string { return $this->text; }
+    public function getCssClass(): string { return $this->semantics; }
+}

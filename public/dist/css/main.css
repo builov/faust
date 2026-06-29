@@ -11866,6 +11866,7 @@ textarea.form-control-lg {
   counter-reset: row-number;
   margin-left: 50px; /* Размер отступа равен ширине зоны номеров */
   position: relative;
+  margin-bottom: 4em;
 }
 
 .main-container tr {
@@ -11875,11 +11876,14 @@ textarea.form-control-lg {
 }
 
 .main-container tbody tr {
+  min-height: 1em;
   counter-increment: row-number;
   position: relative; /* База для позиционирования номера строки */
+}
+.main-container tbody tr.default, .main-container tbody tr.title, .main-container tbody tr.subtitle, .main-container tbody tr.scene_title, .main-container tbody tr.character_list, .main-container tbody tr.stage_direction, .main-container tbody tr.entrance, .main-container tbody tr.slugline, .main-container tbody tr.stanza_end, .main-container tbody tr.speech_heading {
   /* Выносим номер влево за пределы строки */
 }
-.main-container tbody tr td:first-child::before {
+.main-container tbody tr.default td:first-child::before, .main-container tbody tr.title td:first-child::before, .main-container tbody tr.subtitle td:first-child::before, .main-container tbody tr.scene_title td:first-child::before, .main-container tbody tr.character_list td:first-child::before, .main-container tbody tr.stage_direction td:first-child::before, .main-container tbody tr.entrance td:first-child::before, .main-container tbody tr.slugline td:first-child::before, .main-container tbody tr.stanza_end td:first-child::before, .main-container tbody tr.speech_heading td:first-child::before {
   content: counter(row-number);
   position: absolute;
   left: -45px; /* Выталкиваем номер влево на поля */
@@ -11902,6 +11906,10 @@ textarea.form-control-lg {
   font-style: normal;
   /* Дополнительные стили для красоты (шрифт, размер, отступ) */
   margin-bottom: 0.5em; /* Небольшой зазор между заголовком и текстом */
+}
+.main-container tbody tr td:first-child div.floating-title {
+  position: initial;
+  margin-top: 2em;
 }
 
 div.title {
@@ -12156,6 +12164,37 @@ body.app-loading .app-loader {
 }
 .context-menu li:hover {
   background: #f0f0f0;
+}
+
+/* стиль для подсвеченных ячеек */
+.highlighted {
+  background-color: rgba(13, 110, 253, 0.12) !important; /* Нежно-синий цвет Bootstrap Primary с прозрачностью */
+  color: inherit; /* Сохраняем исходный цвет текста */
+  transition: background-color 0.2s ease-in-out; /* Плавное включение подсветки при тапе */
+}
+
+/* Отключаем дефолтный ховер Bootstrap на сенсорных экранах */
+/* Применяем эффекты наведения ТОЛЬКО для устройств, которые поддерживают настоящий hover (мышь) */
+@media (hover: none) {
+  /* 1. Стандартные кнопки (.btn-primary, .btn-secondary и т.д.) */
+  .btn:hover {
+    /* Возвращаем цвета к исходному состоянию кнопки, отменяя ховер */
+    background-color: var(--bs-btn-bg);
+    border-color: var(--bs-btn-border-color);
+    color: var(--bs-btn-color);
+  }
+  /* 2. Контурные кнопки (.btn-outline-primary, .btn-outline-secondary и т.д.) */
+  .btn[class*=btn-outline-]:hover {
+    /* На мобильных при ховере они не должны закрашиваться */
+    background-color: transparent;
+    border-color: var(--bs-btn-border-color);
+    color: var(--bs-btn-color);
+  }
+  /* 3. Кнопки-ссылки (.btn-link) */
+  .btn-link:hover {
+    text-decoration: none;
+    color: var(--bs-btn-color);
+  }
 }
 
 /*# sourceMappingURL=main.css.map*/

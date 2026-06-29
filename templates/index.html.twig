@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>{{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <!-- Подключаем скомпилированные стили (Bootstrap включен сюда) -->
     <link rel="stylesheet" href="/dist/css/main.css">
     <style>
@@ -20,7 +21,7 @@
 {#    {% endfor %}#}
 {#</ol>#}
 
-<header>
+<header class="container-fluid px-safe mt-2">
     <ul id="buttons" class="list-inline">
         {% for id, data in meta %}
             <li class="list-inline-item m-1">
@@ -28,7 +29,7 @@
                 {% if id in selected %}
                     class="btn btn-secondary btn-sm"
                 {% else %}
-                   class="btn btn-outline-secondary btn-sm"
+                    class="btn btn-outline-secondary btn-sm"
                 {% endif %}
                 >{{ data.title }}</a>
             </li>
@@ -52,34 +53,46 @@
 {#</div>#}
 
 {#{{ data|length }}#}
-
-<table class="main-container">
-    <thead>
+<div class="container-fluid table-responsive px-safe">
+    <table class="main-container">
+        <thead>
         <tr>
-{#            <th></th>#}
+            {#            <th></th>#}
             {% for id, text in data %}
                 <th data-text-id="{{ id }}"></th>
             {% endfor %}
         </tr>
-    </thead>
-    <tbody>
-    {% for line in data|first %}
-        <tr data-num="{{ loop.index0 }}" class="{{ line[1] }}" id="{{ loop.index0 + 1 }}">
-{#            <td>#}
-{#                {{ loop.index0 + 1 }}#}
-{#            </td>#}
-            <td>
-                <div class="{{ line[1] }}">{{ line[0]|raw }}</div>
-            </td>
-            {% for text in data|slice(1) %}
+        </thead>
+        <tbody>
+
+
+{#        {% for line in data %}#}
+{#            <p>{{ line[0][0] }}</p>#}
+{#        {% endfor %}#}
+
+
+        {% for line in data|first %}
+            <tr data-num="{{ loop.index0 + 1 }}" {% if line[1] %}class="{{ line[1] }}"{% endif %} id="{{ loop.index0 + 1 }}">
+{#                            <td>#}
+{#                                {{ loop.index0 + 1 }}#}
+{#                            </td>#}
                 <td>
-                    <div class="{{ text[loop.parent.loop.index0][1] }}">{{ text[loop.parent.loop.index0][0]|raw }}</div>
+                    <div {% if line[1] %}class="{{ line[1] }}"{% endif %}>{{ line[0]|raw }}</div>
                 </td>
-            {% endfor %}
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+                {% for text in data|slice(1) %}
+                    <td>
+                        <div class="{{ text[loop.parent.loop.index0][1] }}">{{ text[loop.parent.loop.index0][0]|raw }}</div>
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<footer class="container-fluid px-safe">
+
+</footer>
 
 
 <div id="loading-indicator" class="spinner-border d-none" role="status">

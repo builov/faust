@@ -66,6 +66,7 @@ export class App {
         const container = document.querySelector('.main-container');
         if (!container) return;
 
+        /* добавление события на вызов контекстного меню */
         container.addEventListener('contextmenu', (event) => {
             const td = event.target.closest('td');
             if (!td) return;
@@ -78,8 +79,62 @@ export class App {
             // Передаём td в первое меню
             this.#showContextMenu(lineNum, event.clientX, event.clientY, td);
         });
+
+        // Переменные для отслеживания движения пальца
+        let startX = 0;
+        let startY = 0;
+        const MOVE_THRESHOLD = 10; // Порог в пикселях, отличающий тап от скролла
+
+        // 1. Фиксируем начальную точку касания
+        container.addEventListener('touchstart', (e) => {
+            const td = e.target.closest('td');
+            if (!td) return;
+            const row = td.closest('tr');
+            if (!row) return;
+            const lineNum = row.dataset.num;
+            if (!lineNum) return;
+
+            const touch = e.touches[0];
+            startX = touch.clientX;
+            startY = touch.clientY;
+        }, { passive: true }); // passive повышает плавность скролла на мобильных
+
+        // 2. Проверяем завершение касания
+        container.addEventListener('touchend', (e) => {
+            const td = e.target.closest('td');
+            if (!td) return;
+            const row = td.closest('tr');
+            if (!row) return;
+            const lineNum = row.dataset.num;
+            if (!lineNum) return;
+
+            console.log('touchend ', lineNum);
+
+            const touch = e.changedTouches[0];
+            const diffX = Math.abs(touch.clientX - startX);
+            const diffY = Math.abs(touch.clientY - startY);
+
+            // Если пользователь сдвинул палец во время касания — это скролл
+            if (diffX > MOVE_THRESHOLD || diffY > MOVE_THRESHOLD) {
+                return;
+            }
+
+            // Если это был чистый короткий тап — обрабатываем действие
+            e.preventDefault();
+            // Передаём td в первое меню
+            this.#showContextMenu(lineNum, touch.clientX, touch.clientY, td);
+        });
+
+        // снятие подсветки с диапазона строк
+        const events = ['click', 'contextmenu', 'touchstart'];
+        events.forEach(eventType => {
+            document.addEventListener(eventType, (e) => {
+                this.#removeHighlight();
+            });
+        });
     }
 
+    /* вызов первого контекстного меню */
     #showContextMenu(lineNum, x, y, td) {
         const items = [
             { label: 'Перевести строку', action: () => this.#handleTranslation(lineNum, 'line', x, y, td) },
@@ -87,7 +142,9 @@ export class App {
             { label: 'Перевести реплику', action: () => this.#handleTranslation(lineNum, 'speech', x, y, td) },
             // { label: 'Перевести всё', action: () => this.#handleTranslation(lineNum, 'all', x, y, td) },
         ];
-        new ContextMenu({ items, x, y }).show();
+
+        /* вызов первого контекстного меню */
+        new ContextMenu({ items }).show(x, y);
     }
 
     /** Определяет массив строк для перевода и вызывает соответствующий метод. */
@@ -97,89 +154,81 @@ export class App {
 
         // console.log(ids); return;
 
+        this.#highlightRange(ids, td.cellIndex);
+
         this.#showTranslationsMenu(ids, type, x, y, td).then(r => {
             console.log('переведены строки: ', ids);
         });
 
     }
 
-    // async #showTranslationsMenu(lineNum, type, x, y, td) {
-    //     try {
-    //         this.#columnLoader.show();
-    //         const translations = await this.#fetcher.fetchTranslations([lineNum], type);
-    //
-    //         if (!translations || translations.length === 0) {
-    //             alert('Нет доступных переводов');
-    //             return;
-    //         }
-    //
-    //         const items = translations.map(translation => {
-    //             return {
-    //                 label: translation.label,
-    //                 action: () => {
-    //                     td.innerHTML = translation.texts[0];
-    //                 }
-    //             };
-    //         });
-    //
-    //         // Показываем второе меню справа от первого
-    //         new ContextMenu({ items, x: x + 200, y }).show();
-    //     } catch (err) {
-    //         console.error('Ошибка загрузки переводов:', err);
-    //         alert('Не удалось загрузить переводы');
-    //     } finally {
-    //         this.#columnLoader.hide();
-    //     }
-    // }
-
+    /* вызов второго контекстного меню */
     async #showTranslationsMenu(lineNums, type, x, y, td) {
-        // Конфигурация: разрешаем только безопасное форматирование текста и ссылки
         /** @type {import('dompurify').Config} */
         const purifyConfig = {
-            ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'a', 'br', 'span', 'p'],
-            ALLOWED_ATTR: ['href', 'target', 'title', 'class'], // Разрешаем ссылки и оформление, но блокируем onclick/onerror
-            RETURN_TRUSTED_TYPE: false // Оставляем false для совместимости с innerHTML
+            ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'a', 'br', 'span', 'p', 'dialog'],
+            ALLOWED_ATTR: ['href', 'target', 'title', 'class'], // Разрешаются ссылки и оформление, но блокируется onclick/onerror
+            RETURN_TRUSTED_TYPE: false // false для совместимости с innerHTML
         };
 
         // console.log('td: ', td);
         try {
             this.#columnLoader.show();
-            const translations = await this.#fetcher.fetchTranslations(lineNums, type);
+            const translationList = await this.#fetcher.fetchTranslationList(lineNums, type);
 
-            if (!translations || translations.length === 0) {
+            if (!translationList || translationList.length === 0) {
                 alert('Нет доступных переводов');
                 return;
             }
 
             const colIndex = td.cellIndex;
 
-            const items = translations.map(translations => ({
-                label: translations.label,
-                action: () => {
-                    Object.entries(translations.texts).forEach(([lineNum, text]) => {
-                        const row = document.querySelector(`tr[data-num="${lineNum}"]`);
+            // Формирование пунктов меню
+            const items = translationList.map(item => ({
+                label: item.title, // Отображение title в контекстном меню
+                action: async () => { // Делаем экшен асинхронным
+                    try {
+                        this.#columnLoader.show(); // лоадер на время дозагрузки текста
 
-                        if (row && row.cells[colIndex]) {
-                            const cell = row.cells[colIndex];
-                            const child = cell.firstElementChild;
+                        // ШАГ 2: Запрашиваем текст конкретного перевода по его label
+                        // Ожидается ответ вида: { "5616": "...", "5617": "..." } или объект с полем texts
+                        const data = await this.#fetcher.fetchTranslationText(lineNums, item.label);
 
-                            const safeHtml = DOMPurify.sanitize(text, purifyConfig);
-                            // const safeHtml = DOMPurify.sanitize(text, {
-                            //     ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'a', 'br', 'span', 'p'],
-                            //     ALLOWED_ATTR: ['href', 'target', 'title', 'class']
-                            // });
+                        // Защита на случай, если сервер вернет объект с текстами внутри поля texts или напрямую
+                        const texts = data.texts || data;
 
-                            if (child) {
-                                child.innerHTML = safeHtml;
-                            } else {
-                                cell.innerHTML = safeHtml;
+                        // Вставляем полученный текст в DOM
+                        Object.entries(texts).forEach(([lineNum, text]) => {
+                            const row = document.querySelector(`tr[data-num="${lineNum}"]`);
+
+                            if (row && row.cells[colIndex]) {
+                                const cell = row.cells[colIndex];
+                                const child = cell.firstElementChild;
+
+                                const safeHtml = DOMPurify.sanitize(text, purifyConfig);
+
+                                if (child) {
+                                    child.innerHTML = safeHtml;
+                                } else {
+                                    cell.innerHTML = safeHtml;
+                                }
                             }
-                        }
-                    });
+                        });
+
+                        this.#removeHighlight();
+                        this.initDynamicDialogs();
+
+                    } catch (clickErr) {
+                        console.error('Ошибка загрузки текста перевода:', clickErr);
+                        alert('Не удалось загрузить текст перевода');
+                    } finally {
+                        this.#columnLoader.hide();
+                    }
                 }
             }));
 
-            new ContextMenu({ items, x: x + 200, y }).show();
+            /* вызов второго контекстного меню */
+            new ContextMenu({ items }).show(x, y);
         } catch (err) {
             console.error('Ошибка загрузки переводов:', err);
             alert('Не удалось загрузить переводы');
@@ -260,6 +309,11 @@ export class App {
 
         // Функция проверки: является ли строка границей контекста
         const isBoundary = (line) => {
+            // Если у элемента нет классов вообще — он является границей диапазона
+            if (!line.classList || line.classList.length === 0) {
+                return true;
+            }
+
             for (const cls of line.classList) {
                 if (cls === 'default') {
                     continue;
@@ -293,7 +347,7 @@ export class App {
 
         while (current) {
             if (isBoundary(current)) {
-                if (type === 'stanza' && current.classList.contains('stanza_end')) {
+                if (type === 'stanza' && current.classList?.contains('stanza_end')) {
                     endRow = current; // включить строку с классом stanza_end
                 } else {
                     endRow = current.previousElementSibling; // закончить перед границей
@@ -322,5 +376,29 @@ export class App {
         }
 
         return ids;
+    }
+
+    #highlightRange(ids, cellIndex) {
+        const table = this.#tableManager.element;
+        if (!table) return;
+
+        this.#removeHighlight();
+
+        ids.forEach(id => {
+            const row = table.querySelector(`tr[data-num="${id}"]`);
+            if (row) {
+                const cell = row.cells[cellIndex];
+                cell.classList.add('highlighted');
+            }
+        });
+    }
+
+    #removeHighlight() {
+        const table = this.#tableManager.element;
+        if (table) {
+            table.querySelectorAll('td.highlighted').forEach(cell => {
+                cell.classList.remove('highlighted');
+            });
+        }
     }
 }

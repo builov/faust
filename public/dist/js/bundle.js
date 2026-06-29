@@ -3073,6 +3073,8 @@ function _initContextMenu() {
   var _this2 = this;
   var container = document.querySelector('.main-container');
   if (!container) return;
+
+  /* добавление события на вызов контекстного меню */
   container.addEventListener('contextmenu', function (event) {
     var td = event.target.closest('td');
     if (!td) return;
@@ -3084,7 +3086,60 @@ function _initContextMenu() {
     // Передаём td в первое меню
     _assertClassBrand(_App_brand, _this2, _showContextMenu).call(_this2, lineNum, event.clientX, event.clientY, td);
   });
+
+  // Переменные для отслеживания движения пальца
+  var startX = 0;
+  var startY = 0;
+  var MOVE_THRESHOLD = 10; // Порог в пикселях, отличающий тап от скролла
+
+  // 1. Фиксируем начальную точку касания
+  container.addEventListener('touchstart', function (e) {
+    var td = e.target.closest('td');
+    if (!td) return;
+    var row = td.closest('tr');
+    if (!row) return;
+    var lineNum = row.dataset.num;
+    if (!lineNum) return;
+    var touch = e.touches[0];
+    startX = touch.clientX;
+    startY = touch.clientY;
+  }, {
+    passive: true
+  }); // passive повышает плавность скролла на мобильных
+
+  // 2. Проверяем завершение касания
+  container.addEventListener('touchend', function (e) {
+    var td = e.target.closest('td');
+    if (!td) return;
+    var row = td.closest('tr');
+    if (!row) return;
+    var lineNum = row.dataset.num;
+    if (!lineNum) return;
+    console.log('touchend ', lineNum);
+    var touch = e.changedTouches[0];
+    var diffX = Math.abs(touch.clientX - startX);
+    var diffY = Math.abs(touch.clientY - startY);
+
+    // Если пользователь сдвинул палец во время касания — это скролл
+    if (diffX > MOVE_THRESHOLD || diffY > MOVE_THRESHOLD) {
+      return;
+    }
+
+    // Если это был чистый короткий тап — обрабатываем действие
+    e.preventDefault();
+    // Передаём td в первое меню
+    _assertClassBrand(_App_brand, _this2, _showContextMenu).call(_this2, lineNum, touch.clientX, touch.clientY, td);
+  });
+
+  // снятие подсветки с диапазона строк
+  var events = ['click', 'contextmenu', 'touchstart'];
+  events.forEach(function (eventType) {
+    document.addEventListener(eventType, function (e) {
+      _assertClassBrand(_App_brand, _this2, _removeHighlight).call(_this2);
+    });
+  });
 }
+/* вызов первого контекстного меню */
 function _showContextMenu(lineNum, x, y, td) {
   var _this3 = this;
   var items = [{
@@ -3105,11 +3160,11 @@ function _showContextMenu(lineNum, x, y, td) {
   }
   // { label: 'Перевести всё', action: () => this.#handleTranslation(lineNum, 'all', x, y, td) },
   ];
+
+  /* вызов первого контекстного меню */
   new _ContextMenu_js__WEBPACK_IMPORTED_MODULE_7__.ContextMenu({
-    items: items,
-    x: x,
-    y: y
-  }).show();
+    items: items
+  }).show(x, y);
 }
 /** Определяет массив строк для перевода и вызывает соответствующий метод. */
 function _handleTranslation(lineNum, type, x, y, td) {
@@ -3118,117 +3173,124 @@ function _handleTranslation(lineNum, type, x, y, td) {
 
   // console.log(ids); return;
 
+  _assertClassBrand(_App_brand, this, _highlightRange).call(this, ids, td.cellIndex);
   _assertClassBrand(_App_brand, this, _showTranslationsMenu).call(this, ids, type, x, y, td).then(function (r) {
     console.log('переведены строки: ', ids);
   });
 }
-// async #showTranslationsMenu(lineNum, type, x, y, td) {
-//     try {
-//         this.#columnLoader.show();
-//         const translations = await this.#fetcher.fetchTranslations([lineNum], type);
-//
-//         if (!translations || translations.length === 0) {
-//             alert('Нет доступных переводов');
-//             return;
-//         }
-//
-//         const items = translations.map(translation => {
-//             return {
-//                 label: translation.label,
-//                 action: () => {
-//                     td.innerHTML = translation.texts[0];
-//                 }
-//             };
-//         });
-//
-//         // Показываем второе меню справа от первого
-//         new ContextMenu({ items, x: x + 200, y }).show();
-//     } catch (err) {
-//         console.error('Ошибка загрузки переводов:', err);
-//         alert('Не удалось загрузить переводы');
-//     } finally {
-//         this.#columnLoader.hide();
-//     }
-// }
+/* вызов второго контекстного меню */
 function _showTranslationsMenu(_x, _x2, _x3, _x4, _x5) {
   return _showTranslationsMenu2.apply(this, arguments);
 }
 function _showTranslationsMenu2() {
-  _showTranslationsMenu2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(lineNums, type, x, y, td) {
-    var purifyConfig, translations, colIndex, items, _t2;
-    return _regenerator().w(function (_context2) {
-      while (1) switch (_context2.p = _context2.n) {
+  _showTranslationsMenu2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(lineNums, type, x, y, td) {
+    var _this5 = this;
+    var purifyConfig, translationList, colIndex, items, _t3;
+    return _regenerator().w(function (_context3) {
+      while (1) switch (_context3.p = _context3.n) {
         case 0:
-          // Конфигурация: разрешаем только безопасное форматирование текста и ссылки
           /** @type {import('dompurify').Config} */
           purifyConfig = {
-            ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'a', 'br', 'span', 'p'],
+            ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'a', 'br', 'span', 'p', 'dialog'],
             ALLOWED_ATTR: ['href', 'target', 'title', 'class'],
-            // Разрешаем ссылки и оформление, но блокируем onclick/onerror
-            RETURN_TRUSTED_TYPE: false // Оставляем false для совместимости с innerHTML
+            // Разрешаются ссылки и оформление, но блокируется onclick/onerror
+            RETURN_TRUSTED_TYPE: false // false для совместимости с innerHTML
           }; // console.log('td: ', td);
-          _context2.p = 1;
+          _context3.p = 1;
           _classPrivateFieldGet(_columnLoader, this).show();
-          _context2.n = 2;
-          return _classPrivateFieldGet(_fetcher, this).fetchTranslations(lineNums, type);
+          _context3.n = 2;
+          return _classPrivateFieldGet(_fetcher, this).fetchTranslationList(lineNums, type);
         case 2:
-          translations = _context2.v;
-          if (!(!translations || translations.length === 0)) {
-            _context2.n = 3;
+          translationList = _context3.v;
+          if (!(!translationList || translationList.length === 0)) {
+            _context3.n = 3;
             break;
           }
           alert('Нет доступных переводов');
-          return _context2.a(2);
+          return _context3.a(2);
         case 3:
-          colIndex = td.cellIndex;
-          items = translations.map(function (translations) {
+          colIndex = td.cellIndex; // Формирование пунктов меню
+          items = translationList.map(function (item) {
             return {
-              label: translations.label,
-              action: function action() {
-                Object.entries(translations.texts).forEach(function (_ref2) {
-                  var _ref3 = _slicedToArray(_ref2, 2),
-                    lineNum = _ref3[0],
-                    text = _ref3[1];
-                  var row = document.querySelector("tr[data-num=\"".concat(lineNum, "\"]"));
-                  if (row && row.cells[colIndex]) {
-                    var cell = row.cells[colIndex];
-                    var child = cell.firstElementChild;
-                    var safeHtml = dompurify__WEBPACK_IMPORTED_MODULE_8__["default"].sanitize(text, purifyConfig);
-                    // const safeHtml = DOMPurify.sanitize(text, {
-                    //     ALLOWED_TAGS: ['b', 'i', 'strong', 'em', 'a', 'br', 'span', 'p'],
-                    //     ALLOWED_ATTR: ['href', 'target', 'title', 'class']
-                    // });
+              label: item.title,
+              // Отображение title в контекстном меню
+              action: function () {
+                var _action = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+                  var data, texts, _t2;
+                  return _regenerator().w(function (_context2) {
+                    while (1) switch (_context2.p = _context2.n) {
+                      case 0:
+                        _context2.p = 0;
+                        _classPrivateFieldGet(_columnLoader, _this5).show(); // лоадер на время дозагрузки текста
 
-                    if (child) {
-                      child.innerHTML = safeHtml;
-                    } else {
-                      cell.innerHTML = safeHtml;
+                        // ШАГ 2: Запрашиваем текст конкретного перевода по его label
+                        // Ожидается ответ вида: { "5616": "...", "5617": "..." } или объект с полем texts
+                        _context2.n = 1;
+                        return _classPrivateFieldGet(_fetcher, _this5).fetchTranslationText(lineNums, item.label);
+                      case 1:
+                        data = _context2.v;
+                        // Защита на случай, если сервер вернет объект с текстами внутри поля texts или напрямую
+                        texts = data.texts || data; // Вставляем полученный текст в DOM
+                        Object.entries(texts).forEach(function (_ref2) {
+                          var _ref3 = _slicedToArray(_ref2, 2),
+                            lineNum = _ref3[0],
+                            text = _ref3[1];
+                          var row = document.querySelector("tr[data-num=\"".concat(lineNum, "\"]"));
+                          if (row && row.cells[colIndex]) {
+                            var cell = row.cells[colIndex];
+                            var child = cell.firstElementChild;
+                            var safeHtml = dompurify__WEBPACK_IMPORTED_MODULE_8__["default"].sanitize(text, purifyConfig);
+                            if (child) {
+                              child.innerHTML = safeHtml;
+                            } else {
+                              cell.innerHTML = safeHtml;
+                            }
+                          }
+                        });
+                        _assertClassBrand(_App_brand, _this5, _removeHighlight).call(_this5);
+                        _this5.initDynamicDialogs();
+                        _context2.n = 3;
+                        break;
+                      case 2:
+                        _context2.p = 2;
+                        _t2 = _context2.v;
+                        console.error('Ошибка загрузки текста перевода:', _t2);
+                        alert('Не удалось загрузить текст перевода');
+                      case 3:
+                        _context2.p = 3;
+                        _classPrivateFieldGet(_columnLoader, _this5).hide();
+                        return _context2.f(3);
+                      case 4:
+                        return _context2.a(2);
                     }
-                  }
-                });
-              }
+                  }, _callee2, null, [[0, 2, 3, 4]]);
+                }));
+                function action() {
+                  return _action.apply(this, arguments);
+                }
+                return action;
+              }()
             };
           });
+          /* вызов второго контекстного меню */
           new _ContextMenu_js__WEBPACK_IMPORTED_MODULE_7__.ContextMenu({
-            items: items,
-            x: x + 200,
-            y: y
-          }).show();
-          _context2.n = 5;
+            items: items
+          }).show(x, y);
+          _context3.n = 5;
           break;
         case 4:
-          _context2.p = 4;
-          _t2 = _context2.v;
-          console.error('Ошибка загрузки переводов:', _t2);
+          _context3.p = 4;
+          _t3 = _context3.v;
+          console.error('Ошибка загрузки переводов:', _t3);
           alert('Не удалось загрузить переводы');
         case 5:
-          _context2.p = 5;
+          _context3.p = 5;
           _classPrivateFieldGet(_columnLoader, this).hide();
-          return _context2.f(5);
+          return _context3.f(5);
         case 6:
-          return _context2.a(2);
+          return _context3.a(2);
       }
-    }, _callee2, this, [[1, 4, 5, 6]]);
+    }, _callee3, this, [[1, 4, 5, 6]]);
   }));
   return _showTranslationsMenu2.apply(this, arguments);
 }
@@ -3316,6 +3378,10 @@ function _getRelatedlineNums(lineNum, type) {
 
   // Функция проверки: является ли строка границей контекста
   var isBoundary = function isBoundary(line) {
+    // Если у элемента нет классов вообще — он является границей диапазона
+    if (!line.classList || line.classList.length === 0) {
+      return true;
+    }
     var _iterator = _createForOfIteratorHelper(line.classList),
       _step;
     try {
@@ -3353,7 +3419,8 @@ function _getRelatedlineNums(lineNum, type) {
   current = startRow.nextElementSibling;
   while (current) {
     if (isBoundary(current)) {
-      if (type === 'stanza' && current.classList.contains('stanza_end')) {
+      var _current$classList;
+      if (type === 'stanza' && (_current$classList = current.classList) !== null && _current$classList !== void 0 && _current$classList.contains('stanza_end')) {
         endRow = current; // включить строку с классом stanza_end
       } else {
         endRow = current.previousElementSibling; // закончить перед границей
@@ -3377,6 +3444,26 @@ function _getRelatedlineNums(lineNum, type) {
     row = row.nextElementSibling;
   }
   return ids;
+}
+function _highlightRange(ids, cellIndex) {
+  var table = _classPrivateFieldGet(_tableManager, this).element;
+  if (!table) return;
+  _assertClassBrand(_App_brand, this, _removeHighlight).call(this);
+  ids.forEach(function (id) {
+    var row = table.querySelector("tr[data-num=\"".concat(id, "\"]"));
+    if (row) {
+      var cell = row.cells[cellIndex];
+      cell.classList.add('highlighted');
+    }
+  });
+}
+function _removeHighlight() {
+  var table = _classPrivateFieldGet(_tableManager, this).element;
+  if (table) {
+    table.querySelectorAll('td.highlighted').forEach(function (cell) {
+      cell.classList.remove('highlighted');
+    });
+  }
 }
 
 /***/ },
@@ -3418,6 +3505,9 @@ var ButtonToggleManager = /*#__PURE__*/function () {
       } else {
         button.classList.replace('btn-secondary', 'btn-outline-secondary');
       }
+
+      // Снимаем фокус, чтобы мобильный браузер сразу обновил стили
+      button.blur();
     }
   }]);
 }();
@@ -3477,21 +3567,24 @@ var ContextMenu = /*#__PURE__*/function () {
       }
     });
     _classPrivateFieldSet(_items, this, items);
-    _classPrivateFieldSet(_x, this, x);
-    _classPrivateFieldSet(_y, this, y);
     _classPrivateFieldSet(_onHide, this, onHide);
   }
+
+  /**
+   * @param {number} x
+   * @param {number} y
+   */
   return _createClass(ContextMenu, [{
     key: "show",
-    value: function show() {
+    value: function show(x, y) {
       var _current$_,
         _this2 = this;
       // Закрываем предыдущее меню, если есть
       (_current$_ = _current._) === null || _current$_ === void 0 || _current$_.hide();
+      _classPrivateFieldSet(_x, this, x);
+      _classPrivateFieldSet(_y, this, y);
       _classPrivateFieldSet(_element, this, document.createElement('ul'));
       _classPrivateFieldGet(_element, this).className = 'context-menu';
-      _classPrivateFieldGet(_element, this).style.left = "".concat(_classPrivateFieldGet(_x, this), "px");
-      _classPrivateFieldGet(_element, this).style.top = "".concat(_classPrivateFieldGet(_y, this), "px");
       _classPrivateFieldGet(_items, this).forEach(function (item) {
         var li = document.createElement('li');
         li.textContent = item.label;
@@ -3503,7 +3596,37 @@ var ContextMenu = /*#__PURE__*/function () {
         });
         _classPrivateFieldGet(_element, _this2).appendChild(li);
       });
+
+      // 1. Сначала добавляем элемент в body, чтобы браузер смог рассчитать его реальные размеры
       document.body.appendChild(_classPrivateFieldGet(_element, this));
+
+      // 2. Получаем размеры самого меню (ширину и высоту)
+      var menuWidth = _classPrivateFieldGet(_element, this).offsetWidth;
+      var menuHeight = _classPrivateFieldGet(_element, this).offsetHeight;
+
+      // 3. Получаем размеры видимой области экрана (окна браузера)
+      var windowWidth = window.innerWidth;
+      var windowHeight = window.innerHeight;
+
+      // 4. Проверяем правый край: если меню выходит за рамки, сдвигаем его влево на свою ширину
+      var finalX = x;
+      if (x + menuWidth > windowWidth) {
+        finalX = x - menuWidth;
+        // Защита на случай, если экран смартфона слишком узкий (меньше ширины меню)
+        if (finalX < 0) finalX = 0;
+      }
+
+      // 5. Проверяем нижний край относительно видимого окна (y — это координата относительно вьюпорта)
+      var finalY = y;
+      if (y + menuHeight > windowHeight) {
+        finalY = y - menuHeight;
+        // Защита на случай, если меню длиннее, чем высота экрана
+        if (finalY < 0) finalY = 0;
+      }
+
+      // 6. Применяем финальные скорректированные координаты
+      _classPrivateFieldGet(_element, this).style.left = "".concat(finalX, "px");
+      _classPrivateFieldGet(_element, this).style.top = "".concat(finalY, "px");
       _current._ = this;
 
       // Закрытие при клике вне
@@ -3512,6 +3635,10 @@ var ContextMenu = /*#__PURE__*/function () {
           capture: true
         });
         document.addEventListener('contextmenu', _classPrivateFieldGet(_handleOutsideClick, _this2), {
+          capture: true
+        });
+        // Добавляем touchstart для быстрой обработки тапа мимо меню на смартфонах
+        document.addEventListener('touchstart', _classPrivateFieldGet(_handleOutsideClick, _this2), {
           capture: true
         });
       }, 0);
@@ -3528,6 +3655,9 @@ var ContextMenu = /*#__PURE__*/function () {
         capture: true
       });
       document.removeEventListener('contextmenu', _classPrivateFieldGet(_handleOutsideClick, this), {
+        capture: true
+      });
+      document.removeEventListener('touchstart', _classPrivateFieldGet(_handleOutsideClick, this), {
         capture: true
       });
       if (_current._ === this) {
@@ -3628,46 +3758,55 @@ var Fetcher = /*#__PURE__*/function () {
       return postJson;
     }()
     /**
-     * Получить переводы для группы строк (или одной строки)
+     * Получить список переводов для группы строк (или одной строки)
      * @param {string[]} lines - массив идентификаторов строк (data-num)
      * @param {string} type - 'line' | 'strophe' | 'replica'
-     * @returns {Promise<Array<{label: string, texts: Array<{rowId: string, text: string}>}>>}
+     * @returns {Promise<Array<{label: string, title: string}>>}
      */
   }, {
-    key: "fetchTranslations",
+    key: "fetchTranslationList",
     value: (function () {
-      var _fetchTranslations = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(lines, type) {
+      var _fetchTranslationList = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(lines, type) {
         return _regenerator().w(function (_context3) {
           while (1) switch (_context3.n) {
             case 0:
-              return _context3.a(2, this.postJson('/translation.php', {
-                lines: lines,
-                type: type
+              return _context3.a(2, this.postJson('/', {
+                lines: lines
               }));
           }
         }, _callee3, this);
       }));
-      function fetchTranslations(_x4, _x5) {
-        return _fetchTranslations.apply(this, arguments);
+      function fetchTranslationList(_x4, _x5) {
+        return _fetchTranslationList.apply(this, arguments);
       }
-      return fetchTranslations;
-    }() // async fetchTranslations(rowId, type) {
-    //     const url = `/translation.php?line=${encodeURIComponent(rowId)}&type=${encodeURIComponent(type)}`;
-    //     return this.getJson(url);
-    // }
-    /** заглушка */
-    // async fetchTranslations(rowId, type) {
-    //     // Пример заглушки (заменить на реальный запрос)
-    //     return new Promise(resolve => {
-    //         setTimeout(() => {
-    //             resolve([
-    //                 { label: 'Перевод 1 (строка)', text: '<span class="trans">Переведённая строка 1</span>' },
-    //                 { label: 'Перевод 2 (строка)', text: '<span class="trans">Переведённая строка 2</span>' }
-    //             ]);
-    //         }, 200);
-    //     });
-    // }
+      return fetchTranslationList;
+    }()
+    /**
+     * Получить список переводов для группы строк (или одной строки)
+     * @param {string[]} lines - массив идентификаторов строк (data-num)
+     * @param {string} textId
+     * @returns {Promise<Array<{rowId: string, text: string}>>}
+     */
     )
+  }, {
+    key: "fetchTranslationText",
+    value: (function () {
+      var _fetchTranslationText = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(lines, textId) {
+        return _regenerator().w(function (_context4) {
+          while (1) switch (_context4.n) {
+            case 0:
+              return _context4.a(2, this.postJson('/', {
+                lines: lines,
+                textId: textId
+              }));
+          }
+        }, _callee4, this);
+      }));
+      function fetchTranslationText(_x6, _x7) {
+        return _fetchTranslationText.apply(this, arguments);
+      }
+      return fetchTranslationText;
+    }())
   }]);
 }();
 
@@ -4148,6 +4287,7 @@ function _enableRender() {
 }
 function _insertDataCells(id, data) {
   var rows = _classPrivateFieldGet(_table, this).tBodies[0].rows;
+  console.log(data);
   Array.from(rows).forEach(function (row, i) {
     var cell = row.insertCell(-1);
     var item = data[i];
@@ -4155,10 +4295,15 @@ function _insertDataCells(id, data) {
       var _item = _slicedToArray(item, 2),
         text = _item[0],
         className = _item[1];
-      var div = document.createElement('div');
-      div.className = className;
-      div.innerHTML = text;
-      cell.appendChild(div);
+      if (text.trim().length > 0) {
+        // console.log(text);
+
+        var div = document.createElement('div');
+        div.className = className;
+        div.innerHTML = text;
+        cell.appendChild(div);
+        cell.closest('tr').classList.add(className);
+      }
     }
   });
 }

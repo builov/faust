@@ -16,30 +16,22 @@ export class Fetcher {
     }
 
     /**
-     * Получить переводы для группы строк (или одной строки)
+     * Получить список переводов для группы строк (или одной строки)
      * @param {string[]} lines - массив идентификаторов строк (data-num)
      * @param {string} type - 'line' | 'strophe' | 'replica'
-     * @returns {Promise<Array<{label: string, texts: Array<{rowId: string, text: string}>}>>}
+     * @returns {Promise<Array<{label: string, title: string}>>}
      */
-    async fetchTranslations(lines, type) {
-        return this.postJson('/translation.php', { lines, type });
+    async fetchTranslationList(lines, type) {
+        return this.postJson('/', { lines });
     }
 
-    // async fetchTranslations(rowId, type) {
-    //     const url = `/translation.php?line=${encodeURIComponent(rowId)}&type=${encodeURIComponent(type)}`;
-    //     return this.getJson(url);
-    // }
-
-    /** заглушка */
-    // async fetchTranslations(rowId, type) {
-    //     // Пример заглушки (заменить на реальный запрос)
-    //     return new Promise(resolve => {
-    //         setTimeout(() => {
-    //             resolve([
-    //                 { label: 'Перевод 1 (строка)', text: '<span class="trans">Переведённая строка 1</span>' },
-    //                 { label: 'Перевод 2 (строка)', text: '<span class="trans">Переведённая строка 2</span>' }
-    //             ]);
-    //         }, 200);
-    //     });
-    // }
+    /**
+     * Получить список переводов для группы строк (или одной строки)
+     * @param {string[]} lines - массив идентификаторов строк (data-num)
+     * @param {string} textId
+     * @returns {Promise<Array<{rowId: string, text: string}>>}
+     */
+    async fetchTranslationText(lines, textId) {
+        return this.postJson('/', { lines, textId });
+    }
 }
