@@ -54,6 +54,7 @@ export class App {
         console.log('app init start');
 
         this.#initFilterButtons();
+        this.#initNavLinks();
         this.initDynamicDialogs();
 
         // Снятие блокировки кнопок
@@ -253,6 +254,41 @@ export class App {
             } finally {
                 this.#columnLoader.hide();
             }
+        });
+    }
+
+    #initNavLinks() {
+        const nav = document.querySelector('nav');
+        if (!nav) return;
+
+        nav.addEventListener('click', async (event) => {
+            const link = event.target.closest('a');
+            if (!link) return;
+
+            event.preventDefault();
+
+            const href = link.getAttribute('href');
+
+            const elements = document.querySelectorAll('[data-text-id]');
+            const textIds = Array.from(elements).map(el => el.dataset.textId);
+
+            // console.log(href);
+
+            const json = await this.#fetcher.postJson(href, textIds);
+
+            // console.log(json);
+
+
+            const match = href.match(/[?&]lines=(\d+)/);
+            if (match) {
+                const firstLine = match[1];
+                const target = document.getElementById(firstLine);
+                if (target) {
+                    target.scrollIntoView({behavior: 'smooth', block: 'start'});
+                }
+            }
+
+            history.pushState(null, '', href);
         });
     }
 

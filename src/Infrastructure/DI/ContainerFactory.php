@@ -9,10 +9,12 @@ use Builov\Faust\Application\TextBuilder;
 use Builov\Faust\Application\TextMarkupService;
 use Builov\Faust\Application\UseCase\GetMainPageUseCase;
 use Builov\Faust\Application\UseCase\GetSingleTextUseCase;
+use Builov\Faust\Application\UseCase\GetTextsByRangeUseCase;
 use Builov\Faust\Application\UseCase\RebuildCacheUseCase;
 use Builov\Faust\Application\UseCase\TranslateLinesUseCase;
 use Builov\Faust\Infrastructure\Controller\BuildCacheController;
 use Builov\Faust\Infrastructure\Controller\MainPageController;
+use Builov\Faust\Infrastructure\Controller\MainPageUpdateApiController;
 use Builov\Faust\Infrastructure\Controller\SingleTextApiController;
 use Builov\Faust\Infrastructure\Controller\TranslateLinesApiController;
 use Builov\Faust\Infrastructure\Controller\TranslationListApiController;
@@ -55,13 +57,15 @@ class ContainerFactory
         $getSingleTextUseCase = new GetSingleTextUseCase($repository, $markupService);
         $translateLinesUseCase = new TranslateLinesUseCase($cacheStorage, $repository);
         $rebuildCacheUseCase = new RebuildCacheUseCase($repository, $cacheStorage);
+        $getTextsByRangeUseCase = new GetTextsByRangeUseCase($repository, $markupService);
 
         return [
             MainPageController::class => new MainPageController($getMainPageUseCase, $twig),
             SingleTextApiController::class => new SingleTextApiController($getSingleTextUseCase),
             TranslateLinesApiController::class => new TranslateLinesApiController($translateLinesUseCase),
             BuildCacheController::class => new BuildCacheController($rebuildCacheUseCase),
-            TranslationListApiController::class => new TranslationListApiController($translateLinesUseCase)
+            TranslationListApiController::class => new TranslationListApiController($translateLinesUseCase),
+            MainPageUpdateApiController::class => new MainPageUpdateApiController($getTextsByRangeUseCase)
         ];
     }
 }
