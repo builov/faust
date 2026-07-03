@@ -9,16 +9,18 @@ body {
 }
 
 .main-container {
-    counter-reset: row-number;
-    margin-left: 50px; /* Размер отступа равен ширине зоны номеров */
+    //counter-reset: row-number;
+    //margin-left: 50px; /* Размер отступа равен ширине зоны номеров */
     position: relative;
     margin-bottom: 4em;
+    width: 100%;
 }
 
 .main-container tr {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: 1fr;
+    //grid-auto-columns: 1fr;
+    grid-template-columns: 50px repeat(auto-fit, minmax(0, 1fr));
 }
 
 .main-container tbody tr {
@@ -40,42 +42,52 @@ body {
 
     min-height: 1em;
 
-    counter-increment: row-number;
-    position: relative; /* База для позиционирования номера строки */
+    //counter-increment: row-number;
+    position: relative; /* База для позиционирования абосютно позиционированных элементов */
 
 
-    &.default,
-    &.title,
-    &.subtitle,
-    &.scene_title,
-    &.character_list,
-    &.stage_direction,
-    &.entrance,
-    &.slugline,
-    &.stanza_end,
-    &.speech_heading
-    {
-        /* Выносим номер влево за пределы строки */
-        td:first-child::before {
-            content: counter(row-number);
-            position: absolute;
-            left: -45px; /* Выталкиваем номер влево на поля */
-            top: 50%;
-            transform: translateY(-50%); /* Центрируем по вертикали */
-
-            width: 35px;
-            text-align: right; /* Выравниваем разряды (1, 10, 100) по правому краю */
-            color: #a0a0a0;
-            font-size: 0.9em;
-            font-family: monospace; /* Моноширинный шрифт идеален для цифр */
-        }
-    }
+    //&.default,
+    //&.title,
+    //&.subtitle,
+    //&.scene_title,
+    //&.character_list,
+    //&.stage_direction,
+    //&.entrance,
+    //&.slugline,
+    //&.stanza_end,
+    //&.speech_heading
+    //{
+    //    /* Выносим номер влево за пределы строки */
+    //    td:first-child::before {
+    //        content: counter(row-number);
+    //        position: absolute;
+    //        left: -45px; /* Выталкиваем номер влево на поля */
+    //        top: 50%;
+    //        transform: translateY(-50%); /* Центрируем по вертикали */
+    //
+    //        width: 35px;
+    //        text-align: right; /* Выравниваем разряды (1, 10, 100) по правому краю */
+    //        color: #a0a0a0;
+    //        font-size: 0.9em;
+    //        font-family: monospace; /* Моноширинный шрифт идеален для цифр */
+    //    }
+    //}
 
     //&:first-child {
     //    min-height: 3em;
     //}
 
+    td {
+        width: 100%;
+    }
 
+    td:first-child {
+        width: 35px;
+        text-align: right; /* Выравниваем разряды (1, 10, 100) по правому краю */
+        color: #a0a0a0;
+        font-size: 0.6em;
+        font-family: monospace; /* Моноширинный шрифт идеален для цифр */
+    }
 
     td div {
         position: relative;

@@ -8,6 +8,7 @@
 namespace Builov\Faust\Infrastructure\Controller;
 
 use Builov\Faust\Application\UseCase\GetSingleTextUseCase;
+use Builov\Faust\Domain\VO\LineRange;
 use Builov\Faust\Infrastructure\Http\JsonResponse;
 use Builov\Faust\Infrastructure\Http\Response;
 
@@ -19,10 +20,12 @@ class SingleTextApiController
 
     public function handle(string $id): Response
     {
-        $cleanId = htmlspecialchars(trim($id), ENT_QUOTES, 'UTF-8');
+        $id = htmlspecialchars(trim($id), ENT_QUOTES, 'UTF-8');
+
+        $lineRange = LineRange::fromQueryParams($_GET);
 
         try {
-            $textDTO = $this->useCase->execute($cleanId);
+            $textDTO = $this->useCase->execute($id, $lineRange);
 
             //конвертация из TextDTO в простой массив для шаблона
             foreach ($textDTO->fragments as $fragment) {

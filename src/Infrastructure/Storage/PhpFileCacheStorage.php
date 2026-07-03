@@ -35,4 +35,12 @@ class PhpFileCacheStorage implements CacheStorageInterface
         }
         return [];
     }
+
+    public function getTextLinesQuantity($textId): int
+    {
+        $cache = $this->read();
+
+        //последний индекс соотв. номеру строки и длине массива (1-based indexing)
+        return array_key_last($cache[$textId]);
+    }
 }

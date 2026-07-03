@@ -51,7 +51,7 @@ class ContainerFactory
 //        $rawRepository  = new TextRepository($configReader, $readerWithStructure);
 //        print_r($fullRepository->getById('aksakov')); exit;
 
-        $getMainPageUseCase = new GetMainPageUseCase($repository, $markupService);
+        $getMainPageUseCase = new GetMainPageUseCase($repository, $markupService, $cacheStorage);
         $getSingleTextUseCase = new GetSingleTextUseCase($repository, $markupService);
         $translateLinesUseCase = new TranslateLinesUseCase($cacheStorage, $repository);
         $rebuildCacheUseCase = new RebuildCacheUseCase($repository, $cacheStorage);

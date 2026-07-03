@@ -9,6 +9,7 @@
 namespace Builov\Faust\Infrastructure\Controller;
 
 use Builov\Faust\Application\UseCase\GetMainPageUseCase;
+use Builov\Faust\Domain\VO\LineRange;
 use Builov\Faust\Infrastructure\Http\HtmlResponse;
 use Builov\Faust\Infrastructure\Http\Response;
 use Twig\Environment;
@@ -23,18 +24,22 @@ class MainPageController
     /** @param string[] $selectedIds */
     public function handle(array $selectedIds): Response
     {
-        $lineFrom = null;
-        $lineTo = null;
-        if (isset($_GET['lines'])) {
-            if (preg_match('/^(\d+)-(\d+)$/', trim($_GET['lines']), $matches)) {
-                $lineFrom = (int)$matches[1];
-                $lineTo = (int)$matches[2];
-            }
-        }
+        $lineRange = LineRange::fromQueryParams($_GET);
 
-//        echo $lineTo; exit;
+//        if (isset($_GET['lines'])) {
+//            if (preg_match('/^(\d+)-(\d+)$/', trim($_GET['lines']), $matches)) {
+//                $lineFrom = (int)$matches[1];
+//                $lineTo = (int)$matches[2];
+//
+//                try {
+//                    $lineRange = new LineRange($lineFrom, $lineTo);
+//                } catch (\InvalidArgumentException $e) {
+//                    $lineRange = LineRange::all();
+//                }
+//            }
+//        }
 
-        $pageData = $this->useCase->execute($selectedIds, $lineFrom, $lineTo - $lineFrom);
+        $pageData = $this->useCase->execute($selectedIds, $lineRange);
 
         //конвертация из TextDTO[] в простой массив для шаблона
         $texts = [];
@@ -44,10 +49,12 @@ class MainPageController
                     if ($line) {
                         $texts[$textId][] = [
                             $line->text,
-                            $line->semantics
+                            $line->semantics,
+                            $line->number
                         ];
                     } else { // пустые строки
                         $texts[$textId][] = [
+                            '',
                             '',
                             ''
                         ];

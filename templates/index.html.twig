@@ -36,27 +36,48 @@
     </ul>
 </header>
 
-{#<div class="grid-container" >#}
 
-{#    {% for line in data %}#}
-{#        <div class="line-num {{ item[0][1] }}">{{ loop.index }}</div>#}
+<nav>
+    <ul>
+        <li><a href="/?lines=1-35">Посвящение</a></li>
+        <li><a href="/?lines=36-258">Пролог в театре</a></li>
+        <li><a href="/?lines=259-394">Пролог на небесах</a></li>
+        <li><a href="/?lines=395-897">Сцена 1. Ночь</a></li>
+        <li><a href="/?lines=898-1329">Сцена 2. За городскими воротами</a></li>
+        <li><a href="/?lines=1330-1723">Сцена 3. Кабинет Фауста</a></li>
+        <li><a href="/?lines=1734-2372">Сцена 4. Кабинет Фауста</a></li>
+        <li><a href="/?lines=2373-2795">Сцена 5. Погреб Ауэрбаха в Лейпциге</a></li>
+        <li><a href="/?lines=2796-3156">Сцена 6. Кухня ведьмы</a></li>
+        <li><a href="/?lines=3157-3261">Сцена 7. Улица</a></li>
+        <li><a href="/?lines=3262-3415">Сцена 8. Вечер</a></li>
+        <li><a href="/?lines=3416-3494">Сцена 9. Гулянье</a></li>
+        <li><a href="/?lines=3495-3731">Сцена 10. Дом соседки</a></li>
+        <li><a href="/?lines=3732-3801">Сцена 11. Улица</a></li>
+        <li><a href="/?lines=3802-4011">Сцена 12. Сад Марты</a></li>
+        <li><a href="/?lines=4012-4053">Сцена 13. Беседка</a></li>
+        <li><a href="/?lines=4054-4234">Сцена 14. Лес и пещера</a></li>
+        <li><a href="/?lines=4235-4277">Сцена 15. Комната Гретхен</a></li>
+        <li><a href="/?lines=4278-4463">Сцена 16. Сад Марты</a></li>
+        <li><a href="/?lines=4464-4529">Сцена 17. У колодца</a></li>
+        <li><a href="/?lines=4530-4566">Сцена 18. У городской стены</a></li>
+        <li><a href="/?lines=4567-4771">Сцена 19. Hочь. Улица перед домом Гретхен</a></li>
+        <li><a href="/?lines=4772-4847">Сцена 20. Собор</a></li>
+        <li><a href="/?lines=4848-5332">Сцена 21. Вальпургиева ночь</a></li>
+        <li><a href="/?lines=5333-5558">Сцена 22. Сон в Вальпургиеву ночь</a></li>
+        <li><a href="/?lines=5559-5590">Сцена 23. Пасмурный день. Поле</a></li>
+        <li><a href="/?lines=5591-5604">Сцена 24. Ночь. Открытое поле</a></li>
+        <li><a href="/?lines=5605-5883">Сцена 25. Тюрьма</a></li>
+    </ul>
+</nav>
 
-{#        {% for cell in line %}#}
-{#            <div class="{{ cell[1] }}">{{ cell[0]|raw }}</div>#}
-{#        {% endfor %}#}
-{#        #}
-{#    {% else %}#}
-{#        <div>Список пуст</div>#}
-{#    {% endfor %}#}
 
-{#</div>#}
 
 {#{{ data|length }}#}
 <div class="container-fluid">
     <table class="main-container">
         <thead>
         <tr>
-            {#            <th></th>#}
+            <th></th>
             {% for id, text in data %}
                 <th data-text-id="{{ id }}"></th>
             {% endfor %}
@@ -71,10 +92,14 @@
 
 
         {% for line in data|first %}
-            <tr data-num="{{ loop.index0 + 1 }}" class="{{ line[1] }}" id="{{ loop.index0 + 1 }}">
+{#            <tr data-num="{{ loop.index0 + 1 }}" class="{{ line[1] }}" id="{{ loop.index0 + 1 }}">#}
 {#                            <td>#}
 {#                                {{ loop.index0 + 1 }}#}
 {#                            </td>#}
+            <tr data-num="{{ line[2] }}" class="{{ line[1] }}" id="{{ line[2] }}">
+                <td>
+                    {{ line[2] }}
+                </td>
                 <td>
                     <div class="{{ line[1] }}">{{ line[0]|raw }}</div>
                 </td>

@@ -10,6 +10,13 @@ class TextFragmentDTO
         public array $lines //todo подумать как вернуть иммутабельность, нарушенную ради возможности добавления пустых строк
     ) {}
 
+    public function __clone()
+    {
+        foreach ($this->lines as $key => $line) {
+            $this->lines[$key] = clone $line;
+        }
+    }
+
     public function addEmptyLinesBefore($emptyLines): void
     {
         $this->lines = array_merge($emptyLines, $this->lines);

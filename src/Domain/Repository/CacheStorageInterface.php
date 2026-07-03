@@ -7,4 +7,6 @@ interface CacheStorageInterface
     public function write(array $data): void;
 
     public function read(): array;
+
+    public function getTextLinesQuantity($textId): int;
 }
