@@ -108,26 +108,27 @@ class TextMarkupService
 
     private function fillWithEmptyLines(TextDTO $text, TextMeta $meta, LineRange $lineRange): TextDTO
     {
-        $startIndex = $lineRange->getStart(); // 0 by default
-        $endIndex = $lineRange->getEnd(); // PHP_INT_MAX by default
+        $rangeStartLine = max(1, $lineRange->getStart()); // 0 by default, для корректного добавления пустых строк минимальный $rangeStartLine = 1
+        $rangeEndLine = $lineRange->getEnd(); // PHP_INT_MAX by default
 
-        foreach ($meta->getFragmentStarts() as $fragmentKey => $startLine) { // обход массива 'starts_from'
-            if ($startLine > $endIndex) { // $startLine - номер первой строки фрагмента (из конфига)
+        /** в этот цикл заходят только переводы, у которых есть 'starts_from'. Обход массива 'starts_from' */
+        foreach ($meta->getFragmentStarts() as $fragmentKey => $fragmentStartLine) {
+            if ($fragmentStartLine > $rangeEndLine) { // $fragmentStartLine - номер первой строки фрагмента (из конфига)
                 continue;
             }
 
-//            $emptyLinesArr = array_fill($startIndex, $startLine - ($startIndex + 1), new TextLineDTO(0, '', ''));
-//            $emptyLinesArr = array_fill($startIndex, $startLine - ($startIndex + 1), null);
+//            $emptyLinesArr = array_fill($rangeStartLine, $fragmentStartLine - ($rangeStartLine + 1), new TextLineDTO(0, '', ''));
+//            $emptyLinesArr = array_fill($rangeStartLine, $fragmentStartLine - ($rangeStartLine + 1), null);
 
             //массив с ключами, соотв. номерам строк
             $emptyLinesArr = [];
-            if ($startIndex < $startLine) {
-                $emptyLinesArr = array_fill($startIndex, $startLine - $startIndex, null);
+            if ($rangeStartLine < $fragmentStartLine) { //считаем с первой строки, не с 0
+                $emptyLinesArr = array_fill($rangeStartLine, $fragmentStartLine - $rangeStartLine, null);
             }
 
             $text->fragments[$fragmentKey]->addEmptyLinesBefore($emptyLinesArr); //индекс в 'starts_from' ($fragmentKey) должен соответствовать индексу фрагмента в тексте
 
-            $startIndex += count($text->fragments[$fragmentKey]->lines);
+            $rangeStartLine += count($text->fragments[$fragmentKey]->lines);
         }
 
         return $text;

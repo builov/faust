@@ -26,19 +26,6 @@ class MainPageController
     {
         $lineRange = LineRange::fromQueryParams($_GET);
 
-//        if (isset($_GET['lines'])) {
-//            if (preg_match('/^(\d+)-(\d+)$/', trim($_GET['lines']), $matches)) {
-//                $lineFrom = (int)$matches[1];
-//                $lineTo = (int)$matches[2];
-//
-//                try {
-//                    $lineRange = new LineRange($lineFrom, $lineTo);
-//                } catch (\InvalidArgumentException $e) {
-//                    $lineRange = LineRange::all();
-//                }
-//            }
-//        }
-
         $pageData = $this->useCase->execute($selectedIds, $lineRange);
 
         //конвертация из TextDTO[] в простой массив для шаблона

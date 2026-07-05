@@ -33,7 +33,7 @@ final class LineRange
      */
     public static function fromQueryParams(array $params): self
     {
-        $rawLines = $params['lines'] ?? '';
+        $rawLines = $params['range'] ?? '';
 
         if (is_string($rawLines) && preg_match('/^(\d+)-(\d+)$/', trim($rawLines), $matches)) {
             try {

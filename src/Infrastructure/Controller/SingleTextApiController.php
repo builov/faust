@@ -24,6 +24,8 @@ class SingleTextApiController
 
         $lineRange = LineRange::fromQueryParams($_GET);
 
+        $result = [];
+
         try {
             $textDTO = $this->useCase->execute($id, $lineRange);
 

@@ -7,6 +7,8 @@ import { Loader } from './Loader.js';
 import { ScrollToTopButton } from './ScrollToTopButton.js';
 import { ContextMenu } from './ContextMenu.js';
 import DOMPurify from 'dompurify';
+// import { NotificationModal } from './NotificationModal.js';
+import { ToastNotification } from './ToastNotification.js';
 
 export class App {
     #metaData;
@@ -247,8 +249,31 @@ export class App {
                 this.#columnLoader.show();
 
                 const json = await this.#fetcher.getJson(btn.href);
-                this.#tableManager.addColumn(id, json);
-                this.#buttonToggleManager.syncButtonState(btn, id);
+
+                // console.log(json);
+
+                if (json && json.length > 0) {
+                    this.#tableManager.addColumn(id, json);
+                    this.#buttonToggleManager.syncButtonState(btn, id);
+                } else {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const range = urlParams.get('range'); // Вернет "alex"
+
+                    let message = '';
+
+                    if (range === null) {
+                        message = 'В этом переводе нет соответствующих строк.';
+                    } else {
+                        message = `В этом переводе нет строк ${range}.`;
+                    }
+
+                    // Передаем текст, заголовок и 5000 миллисекунд (5 секунд)
+                    // NotificationModal.show('Данные отсутствуют или пустые.', 'Внимание', 5000);
+
+                    ToastNotification.show(message);
+                }
+
+
             } catch (err) {
                 alert(err.message);
             } finally {
@@ -274,7 +299,7 @@ export class App {
 
             // console.log(href);
 
-            const json = await this.#fetcher.postJson(href, textIds);
+            const json = await this.#fetcher.postJson(href, { textIds });
 
             // console.log(json);
 
