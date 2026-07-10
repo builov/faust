@@ -282,17 +282,17 @@ export class App {
     }
 
     #updateTable(inputData) {
-// 1. список всех текстов
+        // 1. список всех текстов
         const keys = Object.keys(inputData);
 
         if (keys.length === 0) {
             return '';
         }
 
-// 2. Берем первый текст за эталон для прохода по строкам
+        // 2. Берем первый текст за эталон для прохода по строкам
         const baseSource = inputData[keys[0]];
 
-// 3. Собираем HTML-строки
+        // 3. Собираем HTML-строки
         const tableRowsHtml = baseSource.map((_, index) => {
             // Получаем ID и класс из текущей строки первого текста
             const [,, id] = baseSource[index];
@@ -310,11 +310,12 @@ export class App {
 
             // Собираем итоговую строку <tr>
             return `
-        <tr data-num="${id}" class="${className}" id="${id}">
-            <td>${id}</td>
-            ${cellsHtml}
-        </tr>
-    `.trim();
+            <tr data-num="${id}" class="${className}" id="${id}">
+                <td>${id}</td>
+                ${cellsHtml}
+            </tr>
+            `.trim();
+
         }).join('\n');
 
         // Обновляем тело таблицы
@@ -332,12 +333,6 @@ export class App {
             // Находим самую первую ячейку (номер строки), которую нельзя удалять
             const firstTh = theadRow.querySelector('th:not([data-text-id])') || document.createElement('th');
 
-            // Собираем существующие ячейки в карту (id -> элемент), чтобы сохранить их ссылки/текст
-            const existingThs = {};
-            theadRow.querySelectorAll('th[data-text-id]').forEach(th => {
-                existingThs[th.getAttribute('data-text-id')] = th;
-            });
-
             // Очищаем строку заголовка
             theadRow.innerHTML = '';
 
@@ -345,16 +340,17 @@ export class App {
             theadRow.appendChild(firstTh);
 
             // Проходим по ключам из JSON и добавляем их в шапку в правильном порядке
-            keys.forEach(key => {
-                if (existingThs[key]) {
-                    // Если ячейка уже была в HTML, возвращаем её со всем содержимым
-                    theadRow.appendChild(existingThs[key]);
-                } else {
-                    // Если ячейки не было, создаем новую
-                    const newTh = document.createElement('th');
-                    newTh.setAttribute('data-text-id', key);
-                    newTh.textContent = key; // В качестве текста пишем название ключа (например, "guber")
-                    theadRow.appendChild(newTh);
+            keys.forEach(textId => {
+                // обновление заголовка
+                const newTh = document.createElement('th');
+                newTh.setAttribute('data-text-id', textId);
+                newTh.textContent = this.#metaData.getTitle(textId);
+                theadRow.appendChild(newTh);
+
+                const startsFrom = this.#metaData.getStartsFrom(textId);
+
+                if (startsFrom.length) {
+                    this.#tableManager.addLinksToHeader(newTh, startsFrom);
                 }
             });
         }

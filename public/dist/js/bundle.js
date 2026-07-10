@@ -3137,7 +3137,7 @@ function _showTranslationsMenu(_x, _x2, _x3, _x4, _x5) {
 }
 function _showTranslationsMenu2() {
   _showTranslationsMenu2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(lineNums, type, x, y, td) {
-    var _this6 = this;
+    var _this7 = this;
     var purifyConfig, translationList, colIndex, items, _t3;
     return _regenerator().w(function (_context4) {
       while (1) switch (_context4.p = _context4.n) {
@@ -3174,12 +3174,12 @@ function _showTranslationsMenu2() {
                     while (1) switch (_context3.p = _context3.n) {
                       case 0:
                         _context3.p = 0;
-                        _classPrivateFieldGet(_columnLoader, _this6).show(); // лоадер на время дозагрузки текста
+                        _classPrivateFieldGet(_columnLoader, _this7).show(); // лоадер на время дозагрузки текста
 
                         // ШАГ 2: Запрашиваем текст конкретного перевода по его label
                         // Ожидается ответ вида: { "5616": "...", "5617": "..." } или объект с полем texts
                         _context3.n = 1;
-                        return _classPrivateFieldGet(_fetcher, _this6).fetchTranslationText(lineNums, item.label);
+                        return _classPrivateFieldGet(_fetcher, _this7).fetchTranslationText(lineNums, item.label);
                       case 1:
                         data = _context3.v;
                         // Защита на случай, если сервер вернет объект с текстами внутри поля texts или напрямую
@@ -3200,7 +3200,7 @@ function _showTranslationsMenu2() {
                             }
                           }
                         });
-                        _this6.initDynamicDialogs();
+                        _this7.initDynamicDialogs();
                         _context3.n = 3;
                         break;
                       case 2:
@@ -3210,7 +3210,7 @@ function _showTranslationsMenu2() {
                         alert('Не удалось загрузить текст перевода');
                       case 3:
                         _context3.p = 3;
-                        _classPrivateFieldGet(_columnLoader, _this6).hide();
+                        _classPrivateFieldGet(_columnLoader, _this7).hide();
                         return _context3.f(3);
                       case 4:
                         return _context3.a(2);
@@ -3376,6 +3376,7 @@ function _initNavLinks() {
   }());
 }
 function _updateTable(inputData) {
+  var _this6 = this;
   // 1. список всех текстов
   var keys = Object.keys(inputData);
   if (keys.length === 0) {
@@ -3404,7 +3405,7 @@ function _updateTable(inputData) {
     }).join('');
 
     // Собираем итоговую строку <tr>
-    return "\n        <tr data-num=\"".concat(id, "\" class=\"").concat(className, "\" id=\"").concat(id, "\">\n            <td>").concat(id, "</td>\n            ").concat(cellsHtml, "\n        </tr>\n    ").trim();
+    return "\n            <tr data-num=\"".concat(id, "\" class=\"").concat(className, "\" id=\"").concat(id, "\">\n                <td>").concat(id, "</td>\n                ").concat(cellsHtml, "\n            </tr>\n            ").trim();
   }).join('\n');
 
   // Обновляем тело таблицы
@@ -3421,12 +3422,6 @@ function _updateTable(inputData) {
     // Находим самую первую ячейку (номер строки), которую нельзя удалять
     var firstTh = theadRow.querySelector('th:not([data-text-id])') || document.createElement('th');
 
-    // Собираем существующие ячейки в карту (id -> элемент), чтобы сохранить их ссылки/текст
-    var existingThs = {};
-    theadRow.querySelectorAll('th[data-text-id]').forEach(function (th) {
-      existingThs[th.getAttribute('data-text-id')] = th;
-    });
-
     // Очищаем строку заголовка
     theadRow.innerHTML = '';
 
@@ -3434,16 +3429,15 @@ function _updateTable(inputData) {
     theadRow.appendChild(firstTh);
 
     // Проходим по ключам из JSON и добавляем их в шапку в правильном порядке
-    keys.forEach(function (key) {
-      if (existingThs[key]) {
-        // Если ячейка уже была в HTML, возвращаем её со всем содержимым
-        theadRow.appendChild(existingThs[key]);
-      } else {
-        // Если ячейки не было, создаем новую
-        var newTh = document.createElement('th');
-        newTh.setAttribute('data-text-id', key);
-        newTh.textContent = key; // В качестве текста пишем название ключа (например, "guber")
-        theadRow.appendChild(newTh);
+    keys.forEach(function (textId) {
+      // обновление заголовка
+      var newTh = document.createElement('th');
+      newTh.setAttribute('data-text-id', textId);
+      newTh.textContent = _classPrivateFieldGet(_metaData, _this6).getTitle(textId);
+      theadRow.appendChild(newTh);
+      var startsFrom = _classPrivateFieldGet(_metaData, _this6).getStartsFrom(textId);
+      if (startsFrom.length) {
+        _classPrivateFieldGet(_tableManager, _this6).addLinksToHeader(newTh, startsFrom);
       }
     });
   }
@@ -4389,6 +4383,30 @@ var TableManager = /*#__PURE__*/function () {
     value: function hasColumn(id) {
       return !!_classPrivateFieldGet(_table, this).querySelector("th[data-text-id=\"".concat(id, "\"]"));
     }
+  }, {
+    key: "addLinksToHeader",
+    value: function addLinksToHeader(headerCell, startsFrom) {
+      // Для одного фрагмента – просто ссылка вокруг заголовка
+      if (startsFrom.length === 1) {
+        headerCell.innerHTML = "<a href=\"#".concat(startsFrom[0], "\" class=\"link-secondary\">").concat(headerCell.textContent, "</a>");
+      }
+
+      // для нескольких фрагментов добавляются ссылки на фрагменты
+      else {
+        var colIndex = headerCell.cellIndex;
+        var listItems = startsFrom.flatMap(function (path) {
+          var _ref, _cellContent$querySel, _cellContent$querySel2;
+          var row = document.getElementById(path);
+          if (!row) {
+            return [];
+          }
+          var cellContent = row === null || row === void 0 ? void 0 : row.children[colIndex];
+          var text = (_ref = (_cellContent$querySel = cellContent === null || cellContent === void 0 || (_cellContent$querySel2 = cellContent.querySelector('.floating-title')) === null || _cellContent$querySel2 === void 0 ? void 0 : _cellContent$querySel2.innerText) !== null && _cellContent$querySel !== void 0 ? _cellContent$querySel : "\xAB".concat(cellContent === null || cellContent === void 0 ? void 0 : cellContent.innerText, "\xBB")) !== null && _ref !== void 0 ? _ref : '';
+          return "<li><a href=\"#".concat(path, "\" class=\"link-secondary\">").concat(text, "</a></li>");
+        }).join('');
+        headerCell.insertAdjacentHTML('beforeend', "<ul>".concat(listItems, "</ul>"));
+      }
+    }
   }]);
 }();
 function _disableRender() {
@@ -4434,32 +4452,10 @@ function _setColumnTitle(id) {
   headerCell.textContent = title;
   var startsFrom = _classPrivateFieldGet(_metaData, this).getStartsFrom(id);
   if (startsFrom.length) {
-    _assertClassBrand(_TableManager_brand, this, _addLinksToHeader).call(this, headerCell, startsFrom);
+    this.addLinksToHeader(headerCell, startsFrom);
   }
 
   // console.log('#setColumnTitle: ', headerCell);
-}
-function _addLinksToHeader(headerCell, startsFrom) {
-  // Для одного фрагмента – просто ссылка вокруг заголовка
-  if (startsFrom.length === 1) {
-    headerCell.innerHTML = "<a href=\"#".concat(startsFrom[0], "\" class=\"link-secondary\">").concat(headerCell.textContent, "</a>");
-  }
-
-  // для нескольких фрагментов добавляются ссылки на фрагменты
-  else {
-    var colIndex = headerCell.cellIndex;
-    var listItems = startsFrom.flatMap(function (path) {
-      var _ref, _cellContent$querySel, _cellContent$querySel2;
-      var row = document.getElementById(path);
-      if (!row) {
-        return [];
-      }
-      var cellContent = row === null || row === void 0 ? void 0 : row.children[colIndex];
-      var text = (_ref = (_cellContent$querySel = cellContent === null || cellContent === void 0 || (_cellContent$querySel2 = cellContent.querySelector('.floating-title')) === null || _cellContent$querySel2 === void 0 ? void 0 : _cellContent$querySel2.innerText) !== null && _cellContent$querySel !== void 0 ? _cellContent$querySel : "\xAB".concat(cellContent === null || cellContent === void 0 ? void 0 : cellContent.innerText, "\xBB")) !== null && _ref !== void 0 ? _ref : '';
-      return "<li><a href=\"#".concat(path, "\" class=\"link-secondary\">").concat(text, "</a></li>");
-    }).join('');
-    headerCell.insertAdjacentHTML('beforeend', "<ul>".concat(listItems, "</ul>"));
-  }
 }
 
 /***/ },

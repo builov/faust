@@ -112,13 +112,13 @@ export class TableManager {
 
         const startsFrom = this.#metaData.getStartsFrom(id);
         if (startsFrom.length) {
-            this.#addLinksToHeader(headerCell, startsFrom);
+            this.addLinksToHeader(headerCell, startsFrom);
         }
 
         // console.log('#setColumnTitle: ', headerCell);
     }
 
-    #addLinksToHeader(headerCell, startsFrom) {
+    addLinksToHeader(headerCell, startsFrom) {
         // Для одного фрагмента – просто ссылка вокруг заголовка
         if (startsFrom.length === 1) {
             headerCell.innerHTML = `<a href="#${startsFrom[0]}" class="link-secondary">${headerCell.textContent}</a>`;
