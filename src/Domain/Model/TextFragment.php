@@ -25,4 +25,9 @@ class TextFragment
     {
         return $this->lines;
     }
+
+    public function getLinesCount(): int
+    {
+        return count($this->lines);
+    }
 }

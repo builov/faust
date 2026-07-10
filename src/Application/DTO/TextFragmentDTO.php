@@ -17,6 +17,16 @@ class TextFragmentDTO
         }
     }
 
+    public function getFirstLineNumber() {
+        $line  = $this->lines[array_key_first($this->lines)];
+        return $line->number;
+    }
+
+    public function getLastLineNumber() {
+        $line  = end($this->lines);
+        return $line->number;
+    }
+
     public function addEmptyLinesBefore($emptyLines): void
     {
         $this->lines = array_merge($emptyLines, $this->lines);

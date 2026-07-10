@@ -11,6 +11,8 @@ class MainPageResponseDTO
     public function __construct(
         public array $texts,
         public array $meta,
+        public array $navLinks,
+        public int   $maxTextLength,
         public int   $columnsCount
     ) {}
 }

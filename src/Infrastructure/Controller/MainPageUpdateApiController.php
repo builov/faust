@@ -19,31 +19,30 @@ class MainPageUpdateApiController
 
         $textDTOs = $this->useCase->execute($selectedIds, $lineRange);
 
-        print_r($textDTOs); exit;
-
         try {
-            $textDTO = $this->useCase->execute($selectedIds, $lineRange);
 
-            //конвертация из TextDTO в простой массив для шаблона
-            foreach ($textDTO->fragments as $fragment) {
-                foreach ($fragment->lines as $line) {
-                    if ($line) {
-                        $result[] = [
-                            $line->text,
-                            $line->semantics
-                        ];
-                    } else { // пустые строки
-                        $result[] = [
-                            '',
-                            ''
-                        ];
+            $texts = [];
+            foreach ($textDTOs as $textId => $textDTO) {
+                foreach ($textDTO->fragments as $fragment) {
+                    foreach ($fragment->lines as $line) {
+                        if ($line) {
+                            $texts[$textId][] = [
+                                $line->text,
+                                $line->semantics,
+                                $line->number
+                            ];
+                        } else { // пустые строки
+                            $texts[$textId][] = [
+                                '',
+                                '',
+                                ''
+                            ];
+                        }
                     }
                 }
             }
 
-//            print_r($result); exit;
-
-            return new JsonResponse($result);
+            return new JsonResponse($texts);
         } catch (\InvalidArgumentException $e) {
             return new JsonResponse(['error' => $e->getMessage()], 404);
         } catch (\Exception $e) {

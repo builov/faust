@@ -15,12 +15,8 @@ class TextMarkupService
 
     public function applyMarkup(TextDTO $text, TextMeta $meta, LineRange $lineRange): TextDTO
     {
-//        print_r($text); exit;
-
 //        $text = $this->filterTextByRange($text, $lineRange->getStart(), $lineRange->getEnd());
         $this->filterTextByRange($text, $lineRange);
-
-//        print_r($text); exit;
 
         $text = $this->addStyle($text, $meta);
 
@@ -28,11 +24,11 @@ class TextMarkupService
         if (!$meta->isComplete()) {
             $text = $this->addTitle($text);
 
-            //todo не надо дополнять пустыми строками, если это единственный текст на странице
-            $text = $this->fillWithEmptyLines($text, $meta, $lineRange);
+            if (!empty($text->fragments)) { //вызывается если фрагмент попадает в диапазон $lineRange
+                $text = $this->fillWithEmptyLines2($text, $meta, $lineRange);
+            }
         }
 
-//        print_r($text); exit;
         return $text;
     }
 
@@ -62,41 +58,6 @@ class TextMarkupService
         $text->fragments = array_values($text->fragments);
     }
 
-
-    /**
-     * Фильтрует структуру TextDTO по диапазону номеров строк, сохраняя вложенность.
-     *
-     * @param TextDTO $dto Исходный объект DTO
-     * @param int $start Начало диапазона
-     * @param int $end Конец диапазона
-     * @return TextDTO Новый объект со строго отфильтрованной иерархией
-     */
-    /*function filterTextByRange(TextDTO $dto, int $start, int $end): TextDTO
-    {
-        $newDto = clone $dto;
-
-        // Фильтруем фрагменты
-        $newDto->fragments = array_filter($newDto->fragments, function ($fragment) use ($start, $end) {
-            // Фильтруем строки внутри фрагмента
-            $fragment->lines = array_filter($fragment->lines, function ($line) use ($start, $end) {
-                return $line->number >= $start && $line->number <= $end;
-            });
-
-            // Оставляем фрагмент только если в нем остались строки
-            return !empty($fragment->lines);
-        });
-
-        // Сбрасываем индексы массивов, чтобы они шли от 0, а не сохраняли старые ключи
-        $newDto->fragments = array_values($newDto->fragments);
-        foreach ($newDto->fragments as $fragment) {
-            $fragment->lines = array_values($fragment->lines);
-        }
-
-        return $newDto;
-    }*/
-
-
-
     private function addTitle(TextDTO $text): TextDTO
     {
         foreach ($text->fragments as $fragment) {
@@ -106,30 +67,128 @@ class TextMarkupService
         return $text;
     }
 
+    private function fillWithEmptyLines2(TextDTO $text, TextMeta $meta, LineRange $lineRange): TextDTO
+    {
+//        print_r($text); exit;
+
+        $rangeStartLine = max(1, $lineRange->getStart()); // 0 by default, для корректного добавления пустых строк минимальный $rangeStartLine = 1
+        $rangeEndLine = $lineRange->getEnd(); // PHP_INT_MAX by default
+        $localStartLine = $rangeStartLine;
+
+//        echo '$rangeStartLine: ' . $rangeStartLine . PHP_EOL;
+//        echo '$rangeEndLine: ' . $rangeEndLine . PHP_EOL;
+
+        $previousFragment = null;
+
+        foreach ($text->fragments as $fragment) {
+//            echo $fragment->getFirstLineNumber() . PHP_EOL;
+//            echo $fragment->getLastLineNumber() . PHP_EOL;
+
+            $fragmentStartLine = $fragment->getFirstLineNumber();
+//            $fragmentEndLine = $fragment->getLastLineNumber();
+
+            if ($fragmentStartLine > $rangeEndLine) { // $fragmentStartLine - номер первой строки фрагмента (из конфига)
+                continue;
+            }
+
+//            echo '$fragment->lines BEFORE: ' . count($fragment->lines) . PHP_EOL;
+
+            $emptyLinesArr = [];
+            if ($fragmentStartLine > $rangeStartLine) {
+
+                if (!empty($previousFragmentEndLine)) {
+//                    $previousFragmentEndLine = $previousFragment->getLastLineNumber();
+
+                    $emptyLinesArr = array_fill($previousFragmentEndLine + 1, $fragmentStartLine - ($previousFragmentEndLine + 1), null);
+
+//                    echo '$previousFragmentEndLine: ' . $previousFragmentEndLine . PHP_EOL;
+//                    echo '$fragmentStartLine: ' . $fragmentStartLine . PHP_EOL;
+//                    echo '$emptyLinesArr: ' . count($emptyLinesArr) . PHP_EOL;
+                } else {
+                    $emptyLinesArr = array_fill($rangeStartLine, $fragmentStartLine - $rangeStartLine, null);
+
+//                    echo '$previousFragmentEndLine: 1' . PHP_EOL;
+//                    echo '$fragmentStartLine: ' . $fragmentStartLine . PHP_EOL;
+//                    echo '$emptyLinesArr: ' . count($emptyLinesArr) . PHP_EOL;
+                }
+            }
+
+            $fragment->addEmptyLinesBefore($emptyLinesArr);
+
+//            print_r(count($fragment->lines)); exit;
+
+//            echo '$fragment->lines AFTER: ' . count($fragment->lines) . PHP_EOL;
+
+//            $previousFragment = $fragment;
+            $previousFragmentEndLine = $fragment->getLastLineNumber();
+
+//            echo PHP_EOL . PHP_EOL;
+        }
+
+//        print_r($text);
+//        exit;
+
+        return $text;
+    }
+
     private function fillWithEmptyLines(TextDTO $text, TextMeta $meta, LineRange $lineRange): TextDTO
     {
         $rangeStartLine = max(1, $lineRange->getStart()); // 0 by default, для корректного добавления пустых строк минимальный $rangeStartLine = 1
         $rangeEndLine = $lineRange->getEnd(); // PHP_INT_MAX by default
+        $linesArrayIndex = $rangeStartLine; //0 based array, номера строк в свойствах
 
-        /** в этот цикл заходят только переводы, у которых есть 'starts_from'. Обход массива 'starts_from' */
+
+        // в этот цикл заходят только переводы, у которых есть 'starts_from'. Обход массива 'starts_from'
         foreach ($meta->getFragmentStarts() as $fragmentKey => $fragmentStartLine) {
             if ($fragmentStartLine > $rangeEndLine) { // $fragmentStartLine - номер первой строки фрагмента (из конфига)
                 continue;
             }
+
+
+//todo            если $fragmentStartLine = $rangeStartLine в начало ничего добавлять не надо
+//todo            если $fragmentStartLine < $rangeStartLine то же самое
+//todo            если $fragmentStartLine > $rangeStartLine добавить строк: $fragmentStartLine - $rangeStartLine
+
 
 //            $emptyLinesArr = array_fill($rangeStartLine, $fragmentStartLine - ($rangeStartLine + 1), new TextLineDTO(0, '', ''));
 //            $emptyLinesArr = array_fill($rangeStartLine, $fragmentStartLine - ($rangeStartLine + 1), null);
 
             //массив с ключами, соотв. номерам строк
             $emptyLinesArr = [];
-            if ($rangeStartLine < $fragmentStartLine) { //считаем с первой строки, не с 0
+            if ($fragmentStartLine > $rangeStartLine) {
+
+                echo '$fragmentKey ' . $fragmentKey . PHP_EOL;
+                echo '$rangeStartLine ' . $rangeStartLine . PHP_EOL;
+                echo '$fragmentStartLine ' . $fragmentStartLine . PHP_EOL;
+
                 $emptyLinesArr = array_fill($rangeStartLine, $fragmentStartLine - $rangeStartLine, null);
+
+//                print_r($text->fragments);
+
+                if (isset($text->fragments[$fragmentKey])) {
+                    $text->fragments[$fragmentKey]->addEmptyLinesBefore($emptyLinesArr);
+                }
             }
 
-            $text->fragments[$fragmentKey]->addEmptyLinesBefore($emptyLinesArr); //индекс в 'starts_from' ($fragmentKey) должен соответствовать индексу фрагмента в тексте
-
-            $rangeStartLine += count($text->fragments[$fragmentKey]->lines);
+            //индекс в 'starts_from' ($fragmentKey) должен соответствовать индексу фрагмента в тексте
+//            if (isset($text->fragments[$fragmentKey])) {
+//
+//                echo '$fragmentKey 2 ' . $fragmentKey . PHP_EOL;
+//                echo '$rangeStartLine 2 ' . $rangeStartLine . PHP_EOL;
+//                echo '$fragmentStartLine 2 ' . $fragmentStartLine . PHP_EOL;
+//                echo 'ok' . PHP_EOL;
+//
+//                $text->fragments[$fragmentKey]->addEmptyLinesBefore($emptyLinesArr);
+//
+////                $linesArrayIndex += count($text->fragments[$fragmentKey]->lines);
+//            }
+//
+//            echo '_ ' . PHP_EOL;
         }
+
+//        exit;
+
+//        print_r($text); exit;
 
         return $text;
     }

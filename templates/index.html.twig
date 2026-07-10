@@ -37,40 +37,21 @@
 </header>
 
 
-<nav class="container-fluid mb-3">
-    <details>
-        <summary>Оглавление</summary>
-        <ul>
-        <li><a href="/?range=1-35">Посвящение</a></li>
-        <li><a href="/?range=36-258">Пролог в театре</a></li>
-        <li><a href="/?range=259-394">Пролог на небесах</a></li>
-        <li><a href="/?range=395-897">Сцена 1. Ночь</a></li>
-        <li><a href="/?range=898-1329">Сцена 2. За городскими воротами</a></li>
-        <li><a href="/?range=1330-1723">Сцена 3. Кабинет Фауста</a></li>
-        <li><a href="/?range=1734-2372">Сцена 4. Кабинет Фауста</a></li>
-        <li><a href="/?range=2373-2795">Сцена 5. Погреб Ауэрбаха в Лейпциге</a></li>
-        <li><a href="/?range=2796-3156">Сцена 6. Кухня ведьмы</a></li>
-        <li><a href="/?range=3157-3261">Сцена 7. Улица</a></li>
-        <li><a href="/?range=3262-3415">Сцена 8. Вечер</a></li>
-        <li><a href="/?range=3416-3494">Сцена 9. Гулянье</a></li>
-        <li><a href="/?range=3495-3731">Сцена 10. Дом соседки</a></li>
-        <li><a href="/?range=3732-3801">Сцена 11. Улица</a></li>
-        <li><a href="/?range=3802-4011">Сцена 12. Сад Марты</a></li>
-        <li><a href="/?range=4012-4053">Сцена 13. Беседка</a></li>
-        <li><a href="/?range=4054-4234">Сцена 14. Лес и пещера</a></li>
-        <li><a href="/?range=4235-4277">Сцена 15. Комната Гретхен</a></li>
-        <li><a href="/?range=4278-4463">Сцена 16. Сад Марты</a></li>
-        <li><a href="/?range=4464-4529">Сцена 17. У колодца</a></li>
-        <li><a href="/?range=4530-4566">Сцена 18. У городской стены</a></li>
-        <li><a href="/?range=4567-4771">Сцена 19. Hочь. Улица перед домом Гретхен</a></li>
-        <li><a href="/?range=4772-4847">Сцена 20. Собор</a></li>
-        <li><a href="/?range=4848-5332">Сцена 21. Вальпургиева ночь</a></li>
-        <li><a href="/?range=5333-5558">Сцена 22. Сон в Вальпургиеву ночь</a></li>
-        <li><a href="/?range=5559-5590">Сцена 23. Пасмурный день. Поле</a></li>
-        <li><a href="/?range=5591-5604">Сцена 24. Ночь. Открытое поле</a></li>
-        <li><a href="/?range=5605-5883">Сцена 25. Тюрьма</a></li>
-        </ul>
-    </details>
+<nav class="container-fluid mb-4">
+    <div id="table-of-contents">
+        <details class="border border-secondary rounded">
+            <summary class="fw-normal text-secondary style-pointer" style="cursor: pointer;">Оглавление</summary>
+            <ul class="border-top list-unstyled small">
+                {% for item in navLinks.table_of_contents %}
+                    <li><a href="/?range={{ item[0] }}" class="link-body-emphasis text-decoration-none">{{ item[1] }}</a></li>
+                {% endfor %}
+            </ul>
+        </details>
+    </div>
+
+    <div>
+        <a href="/?range=1-{{ maxTextLength }}" class="link-body-emphasis text-decoration-none small">Показать все</a>
+    </div>
 </nav>
 
 
@@ -121,12 +102,6 @@
 <div id="loading-indicator" class="spinner-border d-none" role="status">
     <span class="visually-hidden">Загрузка...</span>
 </div>
-
-{#<div class="app-loader">#}
-{#    <div class="spinner-border text-primary" role="status">#}
-{#        <span class="visually-hidden">Загрузка...</span>#}
-{#    </div>#}
-{#</div>#}
 
 <script id="meta-data" type="application/json">
     {{ meta|json_encode(constant('JSON_UNESCAPED_UNICODE'))|raw }}

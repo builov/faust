@@ -35,7 +35,7 @@ class GetSingleTextUseCase
 //                $textDTOs[] = TextMapper::toDTO($text);
         }
 
-//        print_r(TextMapper::toDTO($text)); exit;
+//        print_r($textDTO); exit;
 
         return $textDTO;
     }

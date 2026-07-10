@@ -2974,14 +2974,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ScrollToTopButton_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./ScrollToTopButton.js */ "./assets/js/ScrollToTopButton.js");
 /* harmony import */ var _ContextMenu_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./ContextMenu.js */ "./assets/js/ContextMenu.js");
 /* harmony import */ var dompurify__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! dompurify */ "./node_modules/dompurify/dist/purify.es.mjs");
+/* harmony import */ var _ToastNotification_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./ToastNotification.js */ "./assets/js/ToastNotification.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
@@ -3005,6 +3006,8 @@ function _assertClassBrand(e, t, n) { if ("function" == typeof e ? e === t : e.h
 
 
 
+
+// import { NotificationModal } from './NotificationModal.js';
 
 var _metaData = /*#__PURE__*/new WeakMap();
 var _fetcher = /*#__PURE__*/new WeakMap();
@@ -3128,34 +3131,6 @@ function _handleTranslation(lineNum, type, x, y, td) {
     console.log('переведены строки: ', ids);
   });
 }
-// async #showTranslationsMenu(lineNum, type, x, y, td) {
-//     try {
-//         this.#columnLoader.show();
-//         const translations = await this.#fetcher.fetchTranslations([lineNum], type);
-//
-//         if (!translations || translations.length === 0) {
-//             alert('Нет доступных переводов');
-//             return;
-//         }
-//
-//         const items = translations.map(translation => {
-//             return {
-//                 label: translation.label,
-//                 action: () => {
-//                     td.innerHTML = translation.texts[0];
-//                 }
-//             };
-//         });
-//
-//         // Показываем второе меню справа от первого
-//         new ContextMenu({ items, x: x + 200, y }).show();
-//     } catch (err) {
-//         console.error('Ошибка загрузки переводов:', err);
-//         alert('Не удалось загрузить переводы');
-//     } finally {
-//         this.#columnLoader.hide();
-//     }
-// }
 /* вызов второго контекстного меню */
 function _showTranslationsMenu(_x, _x2, _x3, _x4, _x5) {
   return _showTranslationsMenu2.apply(this, arguments);
@@ -3249,7 +3224,7 @@ function _showTranslationsMenu2() {
               }()
             };
           });
-          /* вызов второго контекстного меню */
+          /* непосредственно вызов второго контекстного меню */
           new _ContextMenu_js__WEBPACK_IMPORTED_MODULE_7__.ContextMenu({
             items: items,
             x: x,
@@ -3278,7 +3253,7 @@ function _initFilterButtons() {
   var buttonsContainer = document.querySelector('#buttons');
   buttonsContainer.addEventListener('click', /*#__PURE__*/function () {
     var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(event) {
-      var btn, id, json, _t;
+      var btn, id, json, urlParams, range, message, _t;
       return _regenerator().w(function (_context) {
         while (1) switch (_context.p = _context.n) {
           case 0:
@@ -3312,8 +3287,20 @@ function _initFilterButtons() {
             return _classPrivateFieldGet(_fetcher, _this4).getJson(btn.href);
           case 4:
             json = _context.v;
-            _classPrivateFieldGet(_tableManager, _this4).addColumn(id, json);
-            _classPrivateFieldGet(_buttonToggleManager, _this4).syncButtonState(btn, id);
+            if (json && json.length > 0) {
+              _classPrivateFieldGet(_tableManager, _this4).addColumn(id, json);
+              _classPrivateFieldGet(_buttonToggleManager, _this4).syncButtonState(btn, id);
+            } else {
+              urlParams = new URLSearchParams(window.location.search);
+              range = urlParams.get('range'); // Вернет "alex"
+              message = '';
+              if (range === null) {
+                message = 'В этом переводе нет соответствующих строк.';
+              } else {
+                message = "\u0412 \u044D\u0442\u043E\u043C \u043F\u0435\u0440\u0435\u0432\u043E\u0434\u0435 \u043D\u0435\u0442 \u0441\u0442\u0440\u043E\u043A ".concat(range, ".");
+              }
+              _ToastNotification_js__WEBPACK_IMPORTED_MODULE_9__.ToastNotification.show(message);
+            }
             _context.n = 6;
             break;
           case 5:
@@ -3340,7 +3327,7 @@ function _initNavLinks() {
   if (!nav) return;
   nav.addEventListener('click', /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(event) {
-      var link, href, elements, textIds, json, match, firstLine, target;
+      var link, href, elements, textIds, json;
       return _regenerator().w(function (_context2) {
         while (1) switch (_context2.n) {
           case 0:
@@ -3356,23 +3343,27 @@ function _initNavLinks() {
             elements = document.querySelectorAll('[data-text-id]');
             textIds = Array.from(elements).map(function (el) {
               return el.dataset.textId;
-            }); // console.log(href);
+            });
             _context2.n = 2;
-            return _classPrivateFieldGet(_fetcher, _this5).postJson(href, textIds);
+            return _classPrivateFieldGet(_fetcher, _this5).postJson(href, {
+              textIds: textIds
+            });
           case 2:
             json = _context2.v;
             // console.log(json);
-            match = href.match(/[?&]lines=(\d+)/);
-            if (match) {
-              firstLine = match[1];
-              target = document.getElementById(firstLine);
-              if (target) {
-                target.scrollIntoView({
-                  behavior: 'smooth',
-                  block: 'start'
-                });
-              }
-            }
+
+            _assertClassBrand(_App_brand, _this5, _updateTable).call(_this5, json);
+
+            // прокрутка к выбранному в оглавлении пункту
+            // const match = href.match(/[?&]lines=(\d+)/);
+            // if (match) {
+            //     const firstLine = match[1];
+            //     const target = document.getElementById(firstLine);
+            //     if (target) {
+            //         target.scrollIntoView({behavior: 'smooth', block: 'start'});
+            //     }
+            // }
+
             history.pushState(null, '', href);
           case 3:
             return _context2.a(2);
@@ -3383,6 +3374,98 @@ function _initNavLinks() {
       return _ref2.apply(this, arguments);
     };
   }());
+}
+function _updateTable(inputData) {
+  // 1. список всех текстов
+  var keys = Object.keys(inputData);
+  if (keys.length === 0) {
+    return '';
+  }
+
+  // 2. Берем первый текст за эталон для прохода по строкам
+  var baseSource = inputData[keys[0]];
+
+  // 3. Собираем HTML-строки
+  var tableRowsHtml = baseSource.map(function (_, index) {
+    // Получаем ID и класс из текущей строки первого текста
+    var _baseSource$index = _slicedToArray(baseSource[index], 3),
+      id = _baseSource$index[2];
+    var _baseSource$index2 = _slicedToArray(baseSource[index], 2),
+      className = _baseSource$index2[1];
+
+    // Генерируем ячейки <td> для каждого текста по текущему индексу строки
+    var cellsHtml = keys.map(function (key) {
+      if (inputData && inputData[key] && inputData[key][index]) {
+        var text = inputData[key][index][0]; // Берем текст [0] из соответствующего массива
+        return "<td><div class=\"".concat(className, "\">").concat(text, "</div></td>");
+      } else {
+        return "<td><div></div></td>";
+      }
+    }).join('');
+
+    // Собираем итоговую строку <tr>
+    return "\n        <tr data-num=\"".concat(id, "\" class=\"").concat(className, "\" id=\"").concat(id, "\">\n            <td>").concat(id, "</td>\n            ").concat(cellsHtml, "\n        </tr>\n    ").trim();
+  }).join('\n');
+
+  // Обновляем тело таблицы
+  var tbody = document.querySelector('.main-container tbody');
+  if (tbody) {
+    tbody.innerHTML = tableRowsHtml;
+  } else {
+    console.error('Элемент tbody внутри .main-container не найден');
+  }
+
+  // 3. СИНХРОНИЗАЦИЯ ШАПКИ ТАБЛИЦЫ (<thead>)
+  var theadRow = document.querySelector('.main-container thead tr');
+  if (theadRow) {
+    // Находим самую первую ячейку (номер строки), которую нельзя удалять
+    var firstTh = theadRow.querySelector('th:not([data-text-id])') || document.createElement('th');
+
+    // Собираем существующие ячейки в карту (id -> элемент), чтобы сохранить их ссылки/текст
+    var existingThs = {};
+    theadRow.querySelectorAll('th[data-text-id]').forEach(function (th) {
+      existingThs[th.getAttribute('data-text-id')] = th;
+    });
+
+    // Очищаем строку заголовка
+    theadRow.innerHTML = '';
+
+    // Возвращаем на место первую колонку номеров
+    theadRow.appendChild(firstTh);
+
+    // Проходим по ключам из JSON и добавляем их в шапку в правильном порядке
+    keys.forEach(function (key) {
+      if (existingThs[key]) {
+        // Если ячейка уже была в HTML, возвращаем её со всем содержимым
+        theadRow.appendChild(existingThs[key]);
+      } else {
+        // Если ячейки не было, создаем новую
+        var newTh = document.createElement('th');
+        newTh.setAttribute('data-text-id', key);
+        newTh.textContent = key; // В качестве текста пишем название ключа (например, "guber")
+        theadRow.appendChild(newTh);
+      }
+    });
+  }
+
+  // 4. Обновляем CSS-классы кнопок фильтров/переводов
+  var buttons = document.querySelectorAll('#buttons a[data-id]');
+  buttons.forEach(function (btn) {
+    var btnId = btn.getAttribute('data-id');
+    if (keys.includes(btnId)) {
+      btn.classList.add('btn-secondary');
+      btn.classList.remove('btn-outline-secondary');
+    } else {
+      btn.classList.add('btn-outline-secondary');
+      btn.classList.remove('btn-secondary');
+    }
+  });
+
+  // 5. ЗАКРЫВАЕМ ОГЛАВЛЕНИЕ
+  var details = document.getElementById('table-of-contents').firstElementChild;
+  if (details) {
+    details.removeAttribute('open');
+  }
 }
 /**
  * Возвращает массив data-num строк для заданного типа контекста.
@@ -4316,7 +4399,9 @@ function _enableRender() {
 }
 function _insertDataCells(id, data) {
   var rows = _classPrivateFieldGet(_table, this).tBodies[0].rows;
-  console.log(data);
+
+  // console.log(data);
+
   Array.from(rows).forEach(function (row, i) {
     var cell = row.insertCell(-1);
     var item = data[i];
@@ -4363,9 +4448,12 @@ function _addLinksToHeader(headerCell, startsFrom) {
   // для нескольких фрагментов добавляются ссылки на фрагменты
   else {
     var colIndex = headerCell.cellIndex;
-    var listItems = startsFrom.map(function (path) {
+    var listItems = startsFrom.flatMap(function (path) {
       var _ref, _cellContent$querySel, _cellContent$querySel2;
       var row = document.getElementById(path);
+      if (!row) {
+        return [];
+      }
       var cellContent = row === null || row === void 0 ? void 0 : row.children[colIndex];
       var text = (_ref = (_cellContent$querySel = cellContent === null || cellContent === void 0 || (_cellContent$querySel2 = cellContent.querySelector('.floating-title')) === null || _cellContent$querySel2 === void 0 ? void 0 : _cellContent$querySel2.innerText) !== null && _cellContent$querySel !== void 0 ? _cellContent$querySel : "\xAB".concat(cellContent === null || cellContent === void 0 ? void 0 : cellContent.innerText, "\xBB")) !== null && _ref !== void 0 ? _ref : '';
       return "<li><a href=\"#".concat(path, "\" class=\"link-secondary\">").concat(text, "</a></li>");
@@ -4373,6 +4461,85 @@ function _addLinksToHeader(headerCell, startsFrom) {
     headerCell.insertAdjacentHTML('beforeend', "<ul>".concat(listItems, "</ul>"));
   }
 }
+
+/***/ },
+
+/***/ "./assets/js/ToastNotification.js"
+/*!****************************************!*\
+  !*** ./assets/js/ToastNotification.js ***!
+  \****************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ToastNotification: () => (/* binding */ ToastNotification)
+/* harmony export */ });
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+var _ToastNotification;
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _assertClassBrand(e, t, n) { if ("function" == typeof e ? e === t : e.has(t)) return arguments.length < 3 ? t : n; throw new TypeError("Private element is not present on this object"); }
+var ToastNotification = /*#__PURE__*/function () {
+  function ToastNotification() {
+    _classCallCheck(this, ToastNotification);
+  }
+  return _createClass(ToastNotification, null, [{
+    key: "show",
+    value:
+    /**
+     * Показывает всплывающее уведомление
+     * @param {string} message - Текст сообщения
+     * @param {number} duration - Время показа в мс (0 — не закрывать автоматически)
+     */
+    function show(message) {
+      var duration = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 4000;
+      var container = _assertClassBrand(ToastNotification, this, _getContainer).call(this);
+      var toast = document.createElement('div');
+      toast.className = 'toast-item';
+      toast.innerHTML = "\n            <div class=\"toast-content\">".concat(message, "</div>\n            <button class=\"toast-close-btn\" aria-label=\"\u0417\u0430\u043A\u0440\u044B\u0442\u044C\">&times;</button>\n            ").concat(duration > 0 ? "<div class=\"toast-progress\" style=\"animation-duration: ".concat(duration, "ms\"></div>") : '', "\n        ");
+      container.appendChild(toast);
+      var autoCloseTimeout;
+
+      // Функция плавного удаления
+      var closeToast = function closeToast() {
+        clearTimeout(autoCloseTimeout);
+        toast.classList.add('toast-hiding');
+        // Ждем окончания CSS-анимации исчезновения перед удалением из DOM
+        toast.addEventListener('animationend', function () {
+          return toast.remove();
+        }, {
+          once: true
+        });
+      };
+
+      // Закрытие по клику на крестик
+      toast.querySelector('.toast-close-btn').addEventListener('click', closeToast);
+
+      // Автозакрытие
+      if (duration > 0) {
+        autoCloseTimeout = setTimeout(closeToast, duration);
+      }
+    }
+  }]);
+}();
+_ToastNotification = ToastNotification;
+/**
+ * Создает контейнер для тостов, если он еще не существует
+ */
+function _getContainer() {
+  if (!_assertClassBrand(_ToastNotification, this, _container)._) {
+    _container._ = _assertClassBrand(_ToastNotification, this, document.createElement('div'));
+    _assertClassBrand(_ToastNotification, this, _container)._.className = 'toast-container';
+    document.body.appendChild(_assertClassBrand(_ToastNotification, this, _container)._);
+  }
+  return _assertClassBrand(_ToastNotification, this, _container)._;
+}
+var _container = {
+  _: null
+};
 
 /***/ },
 

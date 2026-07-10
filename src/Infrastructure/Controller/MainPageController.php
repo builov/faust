@@ -50,7 +50,7 @@ class MainPageController
             }
         }
 
-//        print_r($texts); exit;
+//        print_r($pageData->navLinks['table_of_contents']); exit;
 
         $html = $this->twig->render('index.html.twig', [
             'title' => 'Фауст',
@@ -58,6 +58,8 @@ class MainPageController
             'selected' => array_keys($texts),
             'columns' => $pageData->columnsCount,
             'meta' => $pageData->meta,
+            'navLinks' => $pageData->navLinks,
+            'maxTextLength' => $pageData->maxTextLength
         ]);
 
         return new HtmlResponse($html);

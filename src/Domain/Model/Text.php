@@ -50,6 +50,13 @@ class Text
         return $allLines;
     }
 
+    public function getLinesCount(): int
+    {
+        return array_reduce($this->fragments, function (int $carry, TextFragment $fragment) {
+            return $carry + $fragment->getLinesCount();
+        }, 0);
+    }
+
     // Пример доменной логики: проверка наличия строки в переводе
 //    public function hasLine(int $lineNumber): bool
 //    {

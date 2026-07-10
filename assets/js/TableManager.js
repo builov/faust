@@ -73,7 +73,7 @@ export class TableManager {
     #insertDataCells(id, data) {
         const rows = this.#table.tBodies[0].rows;
 
-        console.log(data);
+        // console.log(data);
 
         Array.from(rows).forEach((row, i) => {
             const cell = row.insertCell(-1);
@@ -128,12 +128,18 @@ export class TableManager {
         else {
             const colIndex = headerCell.cellIndex;
 
-            const listItems = startsFrom.map(path => {
+            const listItems = startsFrom.flatMap(path => {
                 const row = document.getElementById(path);
+
+                if (!row) {
+                    return [];
+                }
+
                 const cellContent = row?.children[colIndex];
                 const text = cellContent?.querySelector('.floating-title')?.innerText
                     ?? `«${cellContent?.innerText}»`
                     ?? '';
+
                 return `<li><a href="#${path}" class="link-secondary">${text}</a></li>`;
             }).join('');
 

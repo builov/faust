@@ -35,18 +35,18 @@ class SingleTextApiController
                     if ($line) {
                         $result[] = [
                             $line->text,
-                            $line->semantics
+                            $line->semantics,
+                            $line->number
                         ];
                     } else { // пустые строки
                         $result[] = [
+                            '',
                             '',
                             ''
                         ];
                     }
                 }
             }
-
-//            print_r($result); exit;
 
             return new JsonResponse($result);
         } catch (\InvalidArgumentException $e) {

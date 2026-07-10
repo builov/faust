@@ -110,35 +110,6 @@ export class App {
 
     }
 
-    // async #showTranslationsMenu(lineNum, type, x, y, td) {
-    //     try {
-    //         this.#columnLoader.show();
-    //         const translations = await this.#fetcher.fetchTranslations([lineNum], type);
-    //
-    //         if (!translations || translations.length === 0) {
-    //             alert('Нет доступных переводов');
-    //             return;
-    //         }
-    //
-    //         const items = translations.map(translation => {
-    //             return {
-    //                 label: translation.label,
-    //                 action: () => {
-    //                     td.innerHTML = translation.texts[0];
-    //                 }
-    //             };
-    //         });
-    //
-    //         // Показываем второе меню справа от первого
-    //         new ContextMenu({ items, x: x + 200, y }).show();
-    //     } catch (err) {
-    //         console.error('Ошибка загрузки переводов:', err);
-    //         alert('Не удалось загрузить переводы');
-    //     } finally {
-    //         this.#columnLoader.hide();
-    //     }
-    // }
-
     /* вызов второго контекстного меню */
     async #showTranslationsMenu(lineNums, type, x, y, td) {
         /** @type {import('dompurify').Config} */
@@ -163,7 +134,7 @@ export class App {
             // Формирование пунктов меню
             const items = translationList.map(item => ({
                 label: item.title, // Отображение title в контекстном меню
-                action: async () => { // Делаем экшен асинхронным
+                action: async () => {
                     try {
                         this.#columnLoader.show(); // лоадер на время дозагрузки текста
 
@@ -203,7 +174,7 @@ export class App {
                 }
             }));
 
-            /* вызов второго контекстного меню */
+            /* непосредственно вызов второго контекстного меню */
             new ContextMenu({ items, x: x, y }).show();
         } catch (err) {
             console.error('Ошибка загрузки переводов:', err);
@@ -250,8 +221,6 @@ export class App {
 
                 const json = await this.#fetcher.getJson(btn.href);
 
-                // console.log(json);
-
                 if (json && json.length > 0) {
                     this.#tableManager.addColumn(id, json);
                     this.#buttonToggleManager.syncButtonState(btn, id);
@@ -267,13 +236,8 @@ export class App {
                         message = `В этом переводе нет строк ${range}.`;
                     }
 
-                    // Передаем текст, заголовок и 5000 миллисекунд (5 секунд)
-                    // NotificationModal.show('Данные отсутствуют или пустые.', 'Внимание', 5000);
-
                     ToastNotification.show(message);
                 }
-
-
             } catch (err) {
                 alert(err.message);
             } finally {
@@ -297,24 +261,123 @@ export class App {
             const elements = document.querySelectorAll('[data-text-id]');
             const textIds = Array.from(elements).map(el => el.dataset.textId);
 
-            // console.log(href);
-
             const json = await this.#fetcher.postJson(href, { textIds });
 
             // console.log(json);
 
+            this.#updateTable(json);
 
-            const match = href.match(/[?&]lines=(\d+)/);
-            if (match) {
-                const firstLine = match[1];
-                const target = document.getElementById(firstLine);
-                if (target) {
-                    target.scrollIntoView({behavior: 'smooth', block: 'start'});
-                }
-            }
+            // прокрутка к выбранному в оглавлении пункту
+            // const match = href.match(/[?&]lines=(\d+)/);
+            // if (match) {
+            //     const firstLine = match[1];
+            //     const target = document.getElementById(firstLine);
+            //     if (target) {
+            //         target.scrollIntoView({behavior: 'smooth', block: 'start'});
+            //     }
+            // }
 
             history.pushState(null, '', href);
         });
+    }
+
+    #updateTable(inputData) {
+// 1. список всех текстов
+        const keys = Object.keys(inputData);
+
+        if (keys.length === 0) {
+            return '';
+        }
+
+// 2. Берем первый текст за эталон для прохода по строкам
+        const baseSource = inputData[keys[0]];
+
+// 3. Собираем HTML-строки
+        const tableRowsHtml = baseSource.map((_, index) => {
+            // Получаем ID и класс из текущей строки первого текста
+            const [,, id] = baseSource[index];
+            const [, className] = baseSource[index];
+
+            // Генерируем ячейки <td> для каждого текста по текущему индексу строки
+            const cellsHtml = keys.map(key => {
+                if (inputData && inputData[key] && inputData[key][index]) {
+                    const text = inputData[key][index][0]; // Берем текст [0] из соответствующего массива
+                    return `<td><div class="${className}">${text}</div></td>`;
+                } else {
+                    return `<td><div></div></td>`;
+                }
+            }).join('');
+
+            // Собираем итоговую строку <tr>
+            return `
+        <tr data-num="${id}" class="${className}" id="${id}">
+            <td>${id}</td>
+            ${cellsHtml}
+        </tr>
+    `.trim();
+        }).join('\n');
+
+        // Обновляем тело таблицы
+        const tbody = document.querySelector('.main-container tbody');
+        if (tbody) {
+            tbody.innerHTML = tableRowsHtml;
+        } else {
+            console.error('Элемент tbody внутри .main-container не найден');
+        }
+
+        // 3. СИНХРОНИЗАЦИЯ ШАПКИ ТАБЛИЦЫ (<thead>)
+        const theadRow = document.querySelector('.main-container thead tr');
+
+        if (theadRow) {
+            // Находим самую первую ячейку (номер строки), которую нельзя удалять
+            const firstTh = theadRow.querySelector('th:not([data-text-id])') || document.createElement('th');
+
+            // Собираем существующие ячейки в карту (id -> элемент), чтобы сохранить их ссылки/текст
+            const existingThs = {};
+            theadRow.querySelectorAll('th[data-text-id]').forEach(th => {
+                existingThs[th.getAttribute('data-text-id')] = th;
+            });
+
+            // Очищаем строку заголовка
+            theadRow.innerHTML = '';
+
+            // Возвращаем на место первую колонку номеров
+            theadRow.appendChild(firstTh);
+
+            // Проходим по ключам из JSON и добавляем их в шапку в правильном порядке
+            keys.forEach(key => {
+                if (existingThs[key]) {
+                    // Если ячейка уже была в HTML, возвращаем её со всем содержимым
+                    theadRow.appendChild(existingThs[key]);
+                } else {
+                    // Если ячейки не было, создаем новую
+                    const newTh = document.createElement('th');
+                    newTh.setAttribute('data-text-id', key);
+                    newTh.textContent = key; // В качестве текста пишем название ключа (например, "guber")
+                    theadRow.appendChild(newTh);
+                }
+            });
+        }
+
+        // 4. Обновляем CSS-классы кнопок фильтров/переводов
+        const buttons = document.querySelectorAll('#buttons a[data-id]');
+        buttons.forEach(btn => {
+            const btnId = btn.getAttribute('data-id');
+
+            if (keys.includes(btnId)) {
+                btn.classList.add('btn-secondary');
+                btn.classList.remove('btn-outline-secondary');
+            } else {
+                btn.classList.add('btn-outline-secondary');
+                btn.classList.remove('btn-secondary');
+            }
+        });
+
+        // 5. ЗАКРЫВАЕМ ОГЛАВЛЕНИЕ
+        const details = document.getElementById('table-of-contents').firstElementChild;
+        if (details) {
+            details.removeAttribute('open');
+        }
     }
 
     /**
