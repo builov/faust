@@ -8,6 +8,14 @@ body {
     //padding-bottom: 2em;
 }
 
+#buttons {
+    li {
+        a.disabled {
+            color: #eee;
+        }
+    }
+}
+
 .main-container {
     //counter-reset: row-number;
     //margin-left: 50px; /* Размер отступа равен ширине зоны номеров */

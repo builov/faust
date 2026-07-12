@@ -326,6 +326,8 @@ export class App {
 
             // console.log(json);
 
+            history.pushState(null, '', href);
+
             this.#updateTable(json);
 
             // прокрутка к выбранному в оглавлении пункту
@@ -337,21 +339,21 @@ export class App {
             //         target.scrollIntoView({behavior: 'smooth', block: 'start'});
             //     }
             // }
-
-            history.pushState(null, '', href);
         });
     }
 
     #updateTable(inputData) {
         // 1. список всех текстов
-        const keys = Object.keys(inputData);
+        const textsOnPage = Object.keys(inputData);
 
-        if (keys.length === 0) {
+        // console.log('keys: ', keys);
+
+        if (textsOnPage.length === 0) {
             return '';
         }
 
         // 2. Берем первый текст за эталон для прохода по строкам
-        const baseSource = inputData[keys[0]];
+        const baseSource = inputData[textsOnPage[0]];
 
         // 3. Собираем HTML-строки
         const tableRowsHtml = baseSource.map((_, index) => {
@@ -360,7 +362,7 @@ export class App {
             const [, className] = baseSource[index];
 
             // Генерируем ячейки <td> для каждого текста по текущему индексу строки
-            const cellsHtml = keys.map(key => {
+            const cellsHtml = textsOnPage.map(key => {
                 if (inputData && inputData[key] && inputData[key][index]) {
                     const text = inputData[key][index][0]; // Берем текст [0] из соответствующего массива
                     return `<td><div class="${className}">${text}</div></td>`;
@@ -401,7 +403,7 @@ export class App {
             theadRow.appendChild(firstTh);
 
             // Проходим по ключам из JSON и добавляем их в шапку в правильном порядке
-            keys.forEach(textId => {
+            textsOnPage.forEach(textId => {
                 // обновление заголовка
                 const newTh = document.createElement('th');
                 newTh.setAttribute('data-text-id', textId);
@@ -421,12 +423,24 @@ export class App {
         buttons.forEach(btn => {
             const btnId = btn.getAttribute('data-id');
 
-            if (keys.includes(btnId)) {
-                btn.classList.add('btn-secondary');
-                btn.classList.remove('btn-outline-secondary');
+            // console.log(this.#metaData.getStartsFrom(btnId));
+
+            const range = this.#getUrlParams('range');
+            const [rangeFirstLine, rangeLastLine] = range.split('-').map(Number);
+            const startsFrom = this.#metaData.getStartsFrom(btnId)
+
+            // console.log('startsFrom: ', btnId, startsFrom);
+
+            if (!startsFrom?.length || startsFrom.some(num => num >= rangeFirstLine && num <= rangeLastLine)) {
+                if (textsOnPage.includes(btnId)) {
+                    btn.classList.add('btn-secondary');
+                    btn.classList.remove('btn-outline-secondary', 'disabled');
+                } else {
+                    btn.classList.add('btn-outline-secondary');
+                    btn.classList.remove('btn-secondary', 'disabled');
+                }
             } else {
-                btn.classList.add('btn-outline-secondary');
-                btn.classList.remove('btn-secondary');
+                btn.classList.add('disabled');
             }
         });
 
@@ -554,5 +568,15 @@ export class App {
                 cell.classList.remove('highlighted');
             });
         }
+    }
+
+    #getUrlParams(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if (urlParams.has(param)) {
+            return urlParams.get(param);
+        }
+
+        return undefined;
     }
 }
