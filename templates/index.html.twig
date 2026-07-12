@@ -2,15 +2,16 @@
 <html>
 <head>
     <title>{{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <!-- Подключаем скомпилированные стили (Bootstrap включен сюда) -->
     <link rel="stylesheet" href="/dist/css/main.css">
-    <style>
+{#    <style>#}
         {#.grid-container {#}
         {#    grid-template-columns: 30px {% for i in range(1, columns) %}1fr {% endfor %};">#}
         {#}#}
-    </style>
+{#    </style>#}
 </head>
-<body class="app-loading">
+<body class="app-loading app">
 {#<h1>{{ title }}</h1>#}
 {#<ol>#}
 {#    {% for item in original %}#}
@@ -50,7 +51,7 @@
     </div>
 
     <div>
-        <a href="/?range=1-{{ maxTextLength }}" class="link-body-emphasis text-decoration-none small">Показать все</a>
+        <a href="/?range=1-{{ maxTextLength }}" class="btn btn-outline-secondary btn-sm view-all-button">Показать все</a>
     </div>
 </nav>
 

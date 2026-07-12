@@ -12034,6 +12034,9 @@ nav #table-of-contents details ul {
 nav #table-of-contents details ul a {
   line-height: 0.9;
 }
+nav .view-all-button {
+  white-space: nowrap;
+}
 
 /* Стили для окна <dialog> */
 /* Контейнер строки для правильного позиционирования подсказки */
