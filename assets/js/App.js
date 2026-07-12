@@ -346,8 +346,6 @@ export class App {
         // 1. список всех текстов
         const textsOnPage = Object.keys(inputData);
 
-        // console.log('keys: ', keys);
-
         if (textsOnPage.length === 0) {
             return '';
         }
@@ -423,13 +421,9 @@ export class App {
         buttons.forEach(btn => {
             const btnId = btn.getAttribute('data-id');
 
-            // console.log(this.#metaData.getStartsFrom(btnId));
-
             const range = this.#getUrlParams('range');
             const [rangeFirstLine, rangeLastLine] = range.split('-').map(Number);
             const startsFrom = this.#metaData.getStartsFrom(btnId)
-
-            // console.log('startsFrom: ', btnId, startsFrom);
 
             if (!startsFrom?.length || startsFrom.some(num => num >= rangeFirstLine && num <= rangeLastLine)) {
                 if (textsOnPage.includes(btnId)) {
