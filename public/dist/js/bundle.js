@@ -3090,6 +3090,59 @@ function _initContextMenu() {
     // Передаём td в первое меню
     _assertClassBrand(_App_brand, _this2, _showContextMenu).call(_this2, lineNum, event.clientX, event.clientY, td);
   });
+
+  // Переменные для отслеживания движения пальца
+  var startX = 0;
+  var startY = 0;
+  var MOVE_THRESHOLD = 10; // Порог в пикселях, отличающий тап от скролла
+
+  // 1. Фиксируем начальную точку касания
+  container.addEventListener('touchstart', function (e) {
+    console.log('touchstart');
+    var td = e.target.closest('td');
+    if (!td) return;
+    var row = td.closest('tr');
+    if (!row) return;
+    var lineNum = row.dataset.num;
+    if (!lineNum) return;
+    var touch = e.touches[0];
+    startX = touch.clientX;
+    startY = touch.clientY;
+  }, {
+    passive: true
+  }); // passive повышает плавность скролла на мобильных
+
+  // 2. Проверяем завершение касания
+  container.addEventListener('touchend', function (e) {
+    var td = e.target.closest('td');
+    if (!td) return;
+    var row = td.closest('tr');
+    if (!row) return;
+    var lineNum = row.dataset.num;
+    if (!lineNum) return;
+    console.log('touchend ', lineNum);
+    var touch = e.changedTouches[0];
+    var diffX = Math.abs(touch.clientX - startX);
+    var diffY = Math.abs(touch.clientY - startY);
+
+    // Если пользователь сдвинул палец во время касания — это скролл
+    if (diffX > MOVE_THRESHOLD || diffY > MOVE_THRESHOLD) {
+      return;
+    }
+
+    // Если это был чистый короткий тап — обрабатываем действие
+    e.preventDefault();
+    // Передаём td в первое меню
+    _assertClassBrand(_App_brand, _this2, _showContextMenu).call(_this2, lineNum, touch.clientX, touch.clientY, td);
+  });
+
+  // снятие подсветки с диапазона строк
+  var events = ['click', 'contextmenu', 'touchstart'];
+  events.forEach(function (eventType) {
+    document.addEventListener(eventType, function () {
+      _assertClassBrand(_App_brand, _this2, _removeHighlight).call(_this2);
+    });
+  });
 }
 /* вызов первого контекстного меню */
 function _showContextMenu(lineNum, x, y, td) {
@@ -3114,11 +3167,12 @@ function _showContextMenu(lineNum, x, y, td) {
   ];
 
   /* вызов первого контекстного меню */
+  // new ContextMenu({ items, x, y }).show();
   new _ContextMenu_js__WEBPACK_IMPORTED_MODULE_7__.ContextMenu({
     items: items,
     x: x,
     y: y
-  }).show();
+  }).show(x, y);
 }
 /** Определяет массив строк для перевода и вызывает соответствующий метод. */
 function _handleTranslation(lineNum, type, x, y, td) {
@@ -3127,7 +3181,8 @@ function _handleTranslation(lineNum, type, x, y, td) {
 
   // console.log(ids); return;
 
-  _assertClassBrand(_App_brand, this, _showTranslationsMenu).call(this, ids, type, x, y, td).then(function (r) {
+  _assertClassBrand(_App_brand, this, _highlightRange).call(this, ids, td.cellIndex);
+  _assertClassBrand(_App_brand, this, _showTranslationsMenu).call(this, ids, type, x, y, td).then(function () {
     console.log('переведены строки: ', ids);
   });
 }
@@ -3137,7 +3192,7 @@ function _showTranslationsMenu(_x, _x2, _x3, _x4, _x5) {
 }
 function _showTranslationsMenu2() {
   _showTranslationsMenu2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(lineNums, type, x, y, td) {
-    var _this7 = this;
+    var _this8 = this;
     var purifyConfig, translationList, colIndex, items, _t3;
     return _regenerator().w(function (_context4) {
       while (1) switch (_context4.p = _context4.n) {
@@ -3174,12 +3229,12 @@ function _showTranslationsMenu2() {
                     while (1) switch (_context3.p = _context3.n) {
                       case 0:
                         _context3.p = 0;
-                        _classPrivateFieldGet(_columnLoader, _this7).show(); // лоадер на время дозагрузки текста
+                        _classPrivateFieldGet(_columnLoader, _this8).show(); // лоадер на время дозагрузки текста
 
                         // ШАГ 2: Запрашиваем текст конкретного перевода по его label
                         // Ожидается ответ вида: { "5616": "...", "5617": "..." } или объект с полем texts
                         _context3.n = 1;
-                        return _classPrivateFieldGet(_fetcher, _this7).fetchTranslationText(lineNums, item.label);
+                        return _classPrivateFieldGet(_fetcher, _this8).fetchTranslationText(lineNums, item.label);
                       case 1:
                         data = _context3.v;
                         // Защита на случай, если сервер вернет объект с текстами внутри поля texts или напрямую
@@ -3200,7 +3255,8 @@ function _showTranslationsMenu2() {
                             }
                           }
                         });
-                        _this7.initDynamicDialogs();
+                        _assertClassBrand(_App_brand, _this8, _removeHighlight).call(_this8);
+                        _this8.initDynamicDialogs();
                         _context3.n = 3;
                         break;
                       case 2:
@@ -3210,7 +3266,7 @@ function _showTranslationsMenu2() {
                         alert('Не удалось загрузить текст перевода');
                       case 3:
                         _context3.p = 3;
-                        _classPrivateFieldGet(_columnLoader, _this7).hide();
+                        _classPrivateFieldGet(_columnLoader, _this8).hide();
                         return _context3.f(3);
                       case 4:
                         return _context3.a(2);
@@ -3225,11 +3281,12 @@ function _showTranslationsMenu2() {
             };
           });
           /* непосредственно вызов второго контекстного меню */
+          // new ContextMenu({ items, x: x, y }).show();
           new _ContextMenu_js__WEBPACK_IMPORTED_MODULE_7__.ContextMenu({
             items: items,
             x: x,
             y: y
-          }).show();
+          }).show(x, y);
           _context4.n = 5;
           break;
         case 4:
@@ -3251,6 +3308,11 @@ function _showTranslationsMenu2() {
 function _initFilterButtons() {
   var _this4 = this;
   var buttonsContainer = document.querySelector('#buttons');
+  var elements = document.querySelectorAll('[data-text-id]');
+  var textIds = Array.from(elements).map(function (el) {
+    return el.dataset.textId;
+  });
+  _assertClassBrand(_App_brand, this, _setTranslationButtons).call(this, textIds);
   buttonsContainer.addEventListener('click', /*#__PURE__*/function () {
     var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(event) {
       var btn, id, json, urlParams, range, message, _t;
@@ -3352,6 +3414,7 @@ function _initNavLinks() {
             json = _context2.v;
             // console.log(json);
 
+            history.pushState(null, '', href);
             _assertClassBrand(_App_brand, _this5, _updateTable).call(_this5, json);
 
             // прокрутка к выбранному в оглавлении пункту
@@ -3363,8 +3426,6 @@ function _initNavLinks() {
             //         target.scrollIntoView({behavior: 'smooth', block: 'start'});
             //     }
             // }
-
-            history.pushState(null, '', href);
           case 3:
             return _context2.a(2);
         }
@@ -3378,13 +3439,13 @@ function _initNavLinks() {
 function _updateTable(inputData) {
   var _this6 = this;
   // 1. список всех текстов
-  var keys = Object.keys(inputData);
-  if (keys.length === 0) {
+  var textsOnPage = Object.keys(inputData);
+  if (textsOnPage.length === 0) {
     return '';
   }
 
   // 2. Берем первый текст за эталон для прохода по строкам
-  var baseSource = inputData[keys[0]];
+  var baseSource = inputData[textsOnPage[0]];
 
   // 3. Собираем HTML-строки
   var tableRowsHtml = baseSource.map(function (_, index) {
@@ -3395,7 +3456,7 @@ function _updateTable(inputData) {
       className = _baseSource$index2[1];
 
     // Генерируем ячейки <td> для каждого текста по текущему индексу строки
-    var cellsHtml = keys.map(function (key) {
+    var cellsHtml = textsOnPage.map(function (key) {
       if (inputData && inputData[key] && inputData[key][index]) {
         var text = inputData[key][index][0]; // Берем текст [0] из соответствующего массива
         return "<td><div class=\"".concat(className, "\">").concat(text, "</div></td>");
@@ -3429,7 +3490,7 @@ function _updateTable(inputData) {
     theadRow.appendChild(firstTh);
 
     // Проходим по ключам из JSON и добавляем их в шапку в правильном порядке
-    keys.forEach(function (textId) {
+    textsOnPage.forEach(function (textId) {
       // обновление заголовка
       var newTh = document.createElement('th');
       newTh.setAttribute('data-text-id', textId);
@@ -3443,23 +3504,63 @@ function _updateTable(inputData) {
   }
 
   // 4. Обновляем CSS-классы кнопок фильтров/переводов
-  var buttons = document.querySelectorAll('#buttons a[data-id]');
-  buttons.forEach(function (btn) {
-    var btnId = btn.getAttribute('data-id');
-    if (keys.includes(btnId)) {
-      btn.classList.add('btn-secondary');
-      btn.classList.remove('btn-outline-secondary');
-    } else {
-      btn.classList.add('btn-outline-secondary');
-      btn.classList.remove('btn-secondary');
-    }
-  });
+  _assertClassBrand(_App_brand, this, _setTranslationButtons).call(this, textsOnPage);
 
-  // 5. ЗАКРЫВАЕМ ОГЛАВЛЕНИЕ
+  // 5. помечаем активный пункт меню и ЗАКРЫВАЕМ ОГЛАВЛЕНИЕ
   var details = document.getElementById('table-of-contents').firstElementChild;
+  var range = _assertClassBrand(_App_brand, this, _getUrlParams).call(this, 'range');
+  if (range) {
+    var _range$split$map = range.split('-').map(Number),
+      _range$split$map2 = _slicedToArray(_range$split$map, 2),
+      rangeFirstLine = _range$split$map2[0],
+      rangeLastLine = _range$split$map2[1]; //на случай, если захотим усложнить логику
+
+    var links = document.querySelectorAll('details a');
+    links.forEach(function (link) {
+      var href = link.getAttribute('href');
+      link.classList.remove('active');
+      if (href && href.includes(range)) {
+        link.classList.add('active');
+      }
+    });
+  }
   if (details) {
     details.removeAttribute('open');
   }
+}
+/**
+ * Установка состояния кнопок переводов в зависимости от диапазона строк
+ * @param textsOnPage - массив id текстов
+ */
+function _setTranslationButtons(textsOnPage) {
+  var _this7 = this;
+  var buttons = document.querySelectorAll('#buttons a[data-id]');
+  buttons.forEach(function (btn) {
+    var btnId = btn.getAttribute('data-id');
+    var range = _assertClassBrand(_App_brand, _this7, _getUrlParams).call(_this7, 'range');
+    if (!range) {
+      return;
+    }
+    var _range$split$map3 = range.split('-').map(Number),
+      _range$split$map4 = _slicedToArray(_range$split$map3, 2),
+      rangeFirstLine = _range$split$map4[0],
+      rangeLastLine = _range$split$map4[1];
+    var startsFrom = _classPrivateFieldGet(_metaData, _this7).getStartsFrom(btnId);
+    if (!(startsFrom !== null && startsFrom !== void 0 && startsFrom.length) || startsFrom.some(function (num) {
+      return num >= rangeFirstLine && num <= rangeLastLine;
+    })) {
+      if (textsOnPage.includes(btnId)) {
+        btn.classList.add('btn-secondary');
+        btn.classList.remove('btn-outline-secondary', 'disabled');
+      } else {
+        btn.classList.add('btn-outline-secondary');
+        btn.classList.remove('btn-secondary', 'disabled');
+      }
+    } else {
+      btn.classList.add('disabled', 'btn-outline-secondary');
+      btn.classList.remove('btn-secondary');
+    }
+  });
 }
 /**
  * Возвращает массив data-num строк для заданного типа контекста.
@@ -3484,6 +3585,10 @@ function _getRelatedlineNums(lineNum, type) {
 
   // Функция проверки: является ли строка границей контекста
   var isBoundary = function isBoundary(line) {
+    // Если у элемента нет классов вообще — он является границей диапазона
+    if (!line.classList || line.classList.length === 0) {
+      return true;
+    }
     var _iterator = _createForOfIteratorHelper(line.classList),
       _step;
     try {
@@ -3521,7 +3626,8 @@ function _getRelatedlineNums(lineNum, type) {
   current = startRow.nextElementSibling;
   while (current) {
     if (isBoundary(current)) {
-      if (type === 'stanza' && current.classList.contains('stanza_end')) {
+      var _current$classList;
+      if (type === 'stanza' && (_current$classList = current.classList) !== null && _current$classList !== void 0 && _current$classList.contains('stanza_end')) {
         endRow = current; // включить строку с классом stanza_end
       } else {
         endRow = current.previousElementSibling; // закончить перед границей
@@ -3545,6 +3651,33 @@ function _getRelatedlineNums(lineNum, type) {
     row = row.nextElementSibling;
   }
   return ids;
+}
+function _highlightRange(ids, cellIndex) {
+  var table = _classPrivateFieldGet(_tableManager, this).element;
+  if (!table) return;
+  _assertClassBrand(_App_brand, this, _removeHighlight).call(this);
+  ids.forEach(function (id) {
+    var row = table.querySelector("tr[data-num=\"".concat(id, "\"]"));
+    if (row) {
+      var cell = row.cells[cellIndex];
+      cell.classList.add('highlighted');
+    }
+  });
+}
+function _removeHighlight() {
+  var table = _classPrivateFieldGet(_tableManager, this).element;
+  if (table) {
+    table.querySelectorAll('td.highlighted').forEach(function (cell) {
+      cell.classList.remove('highlighted');
+    });
+  }
+}
+function _getUrlParams(param) {
+  var urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has(param)) {
+    return urlParams.get(param);
+  }
+  return undefined;
 }
 
 /***/ },
@@ -3586,6 +3719,9 @@ var ButtonToggleManager = /*#__PURE__*/function () {
       } else {
         button.classList.replace('btn-secondary', 'btn-outline-secondary');
       }
+
+      // Снимаем фокус, чтобы мобильный браузер сразу обновил стили
+      button.blur();
     }
   }]);
 }();
@@ -3645,21 +3781,29 @@ var ContextMenu = /*#__PURE__*/function () {
       }
     });
     _classPrivateFieldSet(_items, this, items);
-    _classPrivateFieldSet(_x, this, x);
-    _classPrivateFieldSet(_y, this, y);
+    // this.#x = x;
+    // this.#y = y;
     _classPrivateFieldSet(_onHide, this, onHide);
   }
+
+  /**
+   * @param {number} x
+   * @param {number} y
+   */
   return _createClass(ContextMenu, [{
     key: "show",
-    value: function show() {
+    value: function show(x, y) {
       var _current$_,
         _this2 = this;
       // Закрываем предыдущее меню, если есть
       (_current$_ = _current._) === null || _current$_ === void 0 || _current$_.hide();
+      _classPrivateFieldSet(_x, this, x);
+      _classPrivateFieldSet(_y, this, y);
       _classPrivateFieldSet(_element, this, document.createElement('ul'));
       _classPrivateFieldGet(_element, this).className = 'context-menu';
-      _classPrivateFieldGet(_element, this).style.left = "".concat(_classPrivateFieldGet(_x, this), "px");
-      _classPrivateFieldGet(_element, this).style.top = "".concat(_classPrivateFieldGet(_y, this), "px");
+      // this.#element.style.left = `${this.#x}px`;
+      // this.#element.style.top = `${this.#y}px`;
+
       _classPrivateFieldGet(_items, this).forEach(function (item) {
         var li = document.createElement('li');
         li.textContent = item.label;
@@ -3671,7 +3815,37 @@ var ContextMenu = /*#__PURE__*/function () {
         });
         _classPrivateFieldGet(_element, _this2).appendChild(li);
       });
+
+      // 1. Сначала добавляем элемент в body, чтобы браузер смог рассчитать его реальные размеры
       document.body.appendChild(_classPrivateFieldGet(_element, this));
+
+      // 2. Получаем размеры самого меню (ширину и высоту)
+      var menuWidth = _classPrivateFieldGet(_element, this).offsetWidth;
+      var menuHeight = _classPrivateFieldGet(_element, this).offsetHeight;
+
+      // 3. Получаем размеры видимой области экрана (окна браузера)
+      var windowWidth = window.innerWidth;
+      var windowHeight = window.innerHeight;
+
+      // 4. Проверяем правый край: если меню выходит за рамки, сдвигаем его влево на свою ширину
+      var finalX = x;
+      if (x + menuWidth > windowWidth) {
+        finalX = x - menuWidth;
+        // Защита на случай, если экран смартфона слишком узкий (меньше ширины меню)
+        if (finalX < 0) finalX = 0;
+      }
+
+      // 5. Проверяем нижний край относительно видимого окна (y — это координата относительно вьюпорта)
+      var finalY = y;
+      if (y + menuHeight > windowHeight) {
+        finalY = y - menuHeight;
+        // Защита на случай, если меню длиннее, чем высота экрана
+        if (finalY < 0) finalY = 0;
+      }
+
+      // 6. Применяем финальные скорректированные координаты
+      _classPrivateFieldGet(_element, this).style.left = "".concat(finalX, "px");
+      _classPrivateFieldGet(_element, this).style.top = "".concat(finalY, "px");
       _current._ = this;
 
       // Закрытие при клике вне
@@ -3680,6 +3854,11 @@ var ContextMenu = /*#__PURE__*/function () {
           capture: true
         });
         document.addEventListener('contextmenu', _classPrivateFieldGet(_handleOutsideClick, _this2), {
+          capture: true
+        });
+
+        // Добавляем touchstart для быстрой обработки тапа мимо меню на смартфонах
+        document.addEventListener('touchstart', _classPrivateFieldGet(_handleOutsideClick, _this2), {
           capture: true
         });
       }, 0);
@@ -3696,6 +3875,9 @@ var ContextMenu = /*#__PURE__*/function () {
         capture: true
       });
       document.removeEventListener('contextmenu', _classPrivateFieldGet(_handleOutsideClick, this), {
+        capture: true
+      });
+      document.removeEventListener('touchstart', _classPrivateFieldGet(_handleOutsideClick, this), {
         capture: true
       });
       if (_current._ === this) {

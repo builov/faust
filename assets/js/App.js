@@ -253,6 +253,10 @@ export class App {
     #initFilterButtons() {
         const buttonsContainer = document.querySelector('#buttons');
 
+        const elements = document.querySelectorAll('[data-text-id]');
+        const textIds = Array.from(elements).map(el => el.dataset.textId);
+        this.#setTranslationButtons(textIds);
+
         buttonsContainer.addEventListener('click', async (event) => {
             event.preventDefault();
 
@@ -417,11 +421,48 @@ export class App {
         }
 
         // 4. Обновляем CSS-классы кнопок фильтров/переводов
+        this.#setTranslationButtons(textsOnPage);
+
+        // 5. помечаем активный пункт меню и ЗАКРЫВАЕМ ОГЛАВЛЕНИЕ
+        const details = document.getElementById('table-of-contents').firstElementChild;
+
+        const range = this.#getUrlParams('range');
+        if (range) {
+            const [rangeFirstLine, rangeLastLine] = range.split('-').map(Number); //на случай, если захотим усложнить логику
+
+            const links = document.querySelectorAll('details a');
+
+            links.forEach(link => {
+                const href = link.getAttribute('href');
+
+                link.classList.remove('active');
+
+                if (href && href.includes(range)) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        if (details) {
+            details.removeAttribute('open');
+        }
+    }
+
+    /**
+     * Установка состояния кнопок переводов в зависимости от диапазона строк
+     * @param textsOnPage - массив id текстов
+     */
+    #setTranslationButtons(textsOnPage) {
         const buttons = document.querySelectorAll('#buttons a[data-id]');
         buttons.forEach(btn => {
             const btnId = btn.getAttribute('data-id');
 
             const range = this.#getUrlParams('range');
+
+            if (!range) {
+                return;
+            }
+
             const [rangeFirstLine, rangeLastLine] = range.split('-').map(Number);
             const startsFrom = this.#metaData.getStartsFrom(btnId)
 
@@ -434,15 +475,10 @@ export class App {
                     btn.classList.remove('btn-secondary', 'disabled');
                 }
             } else {
-                btn.classList.add('disabled');
+                btn.classList.add('disabled', 'btn-outline-secondary');
+                btn.classList.remove('btn-secondary');
             }
         });
-
-        // 5. ЗАКРЫВАЕМ ОГЛАВЛЕНИЕ
-        const details = document.getElementById('table-of-contents').firstElementChild;
-        if (details) {
-            details.removeAttribute('open');
-        }
     }
 
     /**

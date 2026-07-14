@@ -81,6 +81,7 @@ else {
     $selected = [
         'faust',
         'fet',
+        'pasternak'
 //        'turgenev'
 //        'aksakov'
     ];
