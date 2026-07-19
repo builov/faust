@@ -10,6 +10,19 @@
         {#    grid-template-columns: 30px {% for i in range(1, columns) %}1fr {% endfor %};">#}
         {#}#}
 {#    </style>#}
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+        (function(m,e,t,r,i,k,a){
+            m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+            m[i].l=1*new Date();
+            for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+        })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=110860750', 'ym');
+
+        ym(110860750, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/110860750" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
 </head>
 <body class="app-loading app">
 {#<h1>{{ title }}</h1>#}
@@ -98,6 +111,26 @@
         </tbody>
     </table>
 </div>
+
+<nav class="navbar navbar-expand-lg bg-secondary py-0" data-bs-theme="dark">
+    <div class="container-fluid">
+        <!-- Кнопка «гамбургер» (также уменьшена с помощью py-1) -->
+        <button class="navbar-toggler py-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSmall" aria-controls="navbarSmall" aria-expanded="false" aria-label="Переключатель навигации">
+            <span class="navbar-toggler-icon" style="font-size: 0.85rem;"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSmall">
+            <ul class="navbar-nav me-auto small">
+{#                <li class="nav-item">#}
+{#                    <!-- py-2 возвращает аккуратный минимальный отступ самим ссылкам для удобства клика -->#}
+{#                    <a class="nav-link active py-2" aria-current="page" href="#">Главная</a>#}
+{#                </li>#}
+                <li class="nav-item">
+                    <a class="nav-link py-2" href="https://facetia.ru/faust-goethe" target="_blank">О «Фаусте» Гёте</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
 
 <div id="loading-indicator" class="spinner-border d-none" role="status">

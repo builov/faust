@@ -6,6 +6,7 @@ export class ScrollToTopButton {
     constructor() {
         this.#button = document.createElement('button');
         this.#button.className = 'scroll-to-top';
+        // this.#button.classList.add('bg-secondary');
         this.#button.innerHTML = '↑';
         this.#button.setAttribute('aria-label', 'Прокрутить наверх');
         document.body.appendChild(this.#button);
